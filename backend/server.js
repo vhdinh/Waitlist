@@ -13,8 +13,7 @@ app.use(express.json());
 
 const router = express.Router();
 
-const uri = "mongodb+srv://isthisvu:0K5FKdfWQwJteYAH@cluster0.2xtyt2k.mongodb.net/brick?retryWrites=true&w=majority";
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }
 );
 const connection = mongoose.connection;
 connection.once('open', () => {
@@ -23,10 +22,8 @@ connection.once('open', () => {
 
 //TWILIO - TEXTING
 const twilio = require('twilio');
-const accountSid = 'AC6c79d0d23c22e3a85192d9b722441601'; // Your Account SID from www.twilio.com/console
-const authToken = '5428c4983d80e3181cb89e3072eb4730'; // Your Auth Token from www.twilio.com/console
 
-const client = require('twilio')(accountSid, authToken);
+const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 module.exports = router;
 
 const customersRouter = require('./routes/customers');
@@ -39,7 +36,7 @@ app.use("/notify", function(req, res) {
         .create({
             body: `Hello ${req.body.name}, your table is ready`,
             to: '+12063838985', // Text this number
-            from: '+18888147551', // From a valid Twilio number
+            from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
         })
         .then((message) => console.log(message.sid));
     res.send({data: 'VU COOL'});
