@@ -4,7 +4,7 @@ import SmsIcon from '@mui/icons-material/Sms';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ActionColumnProps {
-    id: number;
+    _id: number;
     name: string;
     party: number;
     phoneNumber: string;
@@ -23,17 +23,17 @@ const ActionColumnWrapper = styled.div`
 
 function ActionColumn(props: ActionColumnProps) {
 
-    console.log('ACTION COLUMN', props);
+    console.log('ACTION COLUMN', props._id);
 
-    const notifyCustomer = (phoneNumber: string, name: string) => {
+    const notifyCustomer = () => {
 
         // Simple POST request with a JSON body using fetch
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phoneNumber: phoneNumber, name: name })
+            body: JSON.stringify({ id: props._id, phoneNumber: props.phoneNumber, name: props.name })
         };
-        fetch('http://localhost:5000/notify', requestOptions)
+        fetch(`http://localhost:5000/customers/${props._id}/notify`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 console.log('OHHHVu', r);
@@ -43,8 +43,22 @@ function ActionColumn(props: ActionColumnProps) {
             });
     };
 
-    const removeCustomer = (phoneNumber: string) => {
+    const removeCustomer = () => {
         // setList(list.filter((l) => l.phoneNumber !== phoneNumber));
+        // Simple POST request with a JSON body using fetch
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: props._id })
+        };
+        fetch(`http://localhost:5000/customers/${props._id}/delete`, requestOptions)
+            .then(res => res.json())
+            .then((r) => {
+                console.log('Deleted', r);
+                // setSnackMsg(`${name} has been notified`);
+                // setDisplaySnack(true);
+                // setList(list.filter((l) => l.phoneNumber !== phoneNumber));
+            });
     }
 
 
@@ -53,12 +67,12 @@ function ActionColumn(props: ActionColumnProps) {
             <SmsIcon
                 className={'sms'}
                 fontSize={'large'}
-                onClick={(e: any) => notifyCustomer(props.phoneNumber, props.name)}
+                onClick={(e: any) => notifyCustomer()}
             />
             <DeleteIcon
                 className={'delete'}
                 fontSize={'large'}
-                onClick={(e: any) => removeCustomer(props.phoneNumber)}
+                onClick={(e: any) => removeCustomer()}
             />
         </ActionColumnWrapper>
     )
