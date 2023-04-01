@@ -1,20 +1,6 @@
 import styled from '@emotion/styled';
 
-
-export const AppWrapper = styled.div`
-    .app-bar {
-        background: #F7F7F8;
-        img {
-            width: 100px;
-        }
-        #menu-appbar {
-            color: black;
-        }
-    }
-    #body-content {
-        height: 100%;
-    }
-
+export const WaitlistPageWrapper = styled.div`
     .waiting-screen {
         background: #F7F7F8;
         width: 100%;

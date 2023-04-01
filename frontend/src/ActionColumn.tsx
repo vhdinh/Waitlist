@@ -22,9 +22,6 @@ const ActionColumnWrapper = styled.div`
 `;
 
 function ActionColumn(props: ActionColumnProps) {
-
-    console.log('ACTION COLUMN', props._id);
-
     const notifyCustomer = () => {
 
         // Simple POST request with a JSON body using fetch

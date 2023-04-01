@@ -20,7 +20,7 @@ router.route('/add').post((req, res) => {
             client.messages
                 .create({
                     body: `You've been added to the waitlist at The Brick`,
-                    to: '+1' + req.body.phoneNumber, // Text this number
+                    to: req.body.phoneNumber, // Text this number
                     from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
                 })
                 .then((message) => console.log(message.sid));
