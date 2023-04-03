@@ -25,11 +25,13 @@ import { useAppState } from './context/App.provider';
 const pages = [
     {
         label: 'Waitlist',
-        url: '/waitlist'
+        url: '/waitlist',
+        role: []
     },
     {
         label: 'Reservations',
-        url: '/reservations'
+        url: '/reservations',
+        role: ['admin'],
     }
 ];
 const settings = ['Admin'];
@@ -76,16 +78,20 @@ function App() {
                             <img src={img} />
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }} style={{justifyContent: 'center'}}>
-                            {pages.map((page, index) => (
-                                <Button
-                                    key={index}
-                                    onClick={() => handleCloseNavMenu(page.url)}
-                                    sx={{ my: 2, color: 'black', display: 'block' }}
-                                    size={'large'}
-                                >
-                                    {page.label}
-                                </Button>
-                            ))}
+                            {pages.map((page, index) => {
+                                if (isAdmin) {
+                                    return (
+                                        <Button
+                                            key={index}
+                                            onClick={() => handleCloseNavMenu(page.url)}
+                                            sx={{ my: 2, color: 'black', display: 'block' }}
+                                            size={'large'}
+                                        >
+                                            {page.label}
+                                        </Button>
+                                    )
+                                }
+                            })}
                         </Box>
 
                         <Box sx={{ flexGrow: 0 }}>
@@ -124,9 +130,10 @@ function App() {
                 <Outlet />
             </Container>
             <Snackbar
+                className={'snackbar'}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 open={displaySnack}
-                autoHideDuration={6000}
+                autoHideDuration={10000}
                 onClose={() => setDisplaySnack(false)}
             >
                 <Alert severity="success" sx={{ width: '100%' }}>

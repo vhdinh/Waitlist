@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import WaitlistPage from './WaitlistPage';
 import { AppProvider } from './context/App.provider';
+import { WaitlistProvider } from './context/Waitlist.provider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,7 +20,9 @@ const router = createBrowserRouter([
         path: "/",
         element: (
             <AppProvider>
-                <App/>
+                <WaitlistProvider>
+                    <App/>
+                </WaitlistProvider>
             </AppProvider>
         ),
         children: [

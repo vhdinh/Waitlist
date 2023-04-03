@@ -1,24 +1,6 @@
 import styled from '@emotion/styled';
 
 export const WaitlistPageWrapper = styled.div`
-    .waiting-screen {
-        background: #F7F7F8;
-        width: 100%;
-        height: 100vh;
-        .ws-content {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            img {
-                max-width: 250px;
-            }
-        }
-    }
     .title {
         width: 100%;
         text-align: center;
@@ -29,16 +11,33 @@ export const WaitlistPageWrapper = styled.div`
             width: 100%;
             display: flex;
             justify-content: center;
+            button {
+                background: black;
+                color: white;
+                font-size: 24px;
+                min-width: 300px;
+            }
         }
         .customer-list {
             margin-top: 48px;
             padding: 0 0 0 16px;
+            .MuiDataGrid-columnHeaders {
+                max-height: 75px !important;
+            }
+            .MuiDataGrid-columnHeaderTitle, .MuiDataGrid-cellContent {
+                font-size: 24px;
+                padding: 36px;
+            }
+            .MuiDataGrid-columnHeader, .MuiDataGrid-row, .MuiDataGrid-cell {
+                height: 75px !important;
+                max-height: 75px !important;
+            }
             .customer {
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
                 align-content: 
-                font-size: 24px;
+                font-size: 24px !important;
                 align-items: center;
                 border-bottom: 1px solid gray;
                 padding: 24px 0;
@@ -54,10 +53,9 @@ export const WaitlistPageWrapper = styled.div`
                 }
                 .customer-action {
                     display: flex;
-                    gap: 24px;
+                    gap: 12px;
                 }
             }
         }
     }
-    
 `;

@@ -10,6 +10,23 @@ export const AppWrapper = styled.div`
         #menu-appbar {
             color: black;
         }
+        .MuiToolbar-root {
+            height: 74.23px;
+        }
+    }
+    .snackbar {
+        margin-top: 55px;
+        .MuiPaper-root {
+            background: #2E7D31;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            svg {
+                color: white;
+            }
+            display: flex;
+            align-items: center;
+        }
     }
     #body-content {
         height: 100%;
@@ -73,5 +90,4 @@ export const AppWrapper = styled.div`
             }
         }
     }
-    
 `;

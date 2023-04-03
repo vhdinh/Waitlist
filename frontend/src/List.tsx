@@ -4,28 +4,7 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } fro
 import ActionColumn from './ActionColumn';
 import styled from '@emotion/styled';
 
-const rows = [
-    {
-        id: 1,
-        name: 'Vu',
-        phoneNumber: '2063838985',
-        party: 6
-    },
-    {
-        id: 2,
-        name: 'Monica',
-        phoneNumber: '2063549543',
-        party: 6
-    },
-    {
-        id: 3,
-        name: 'Maria',
-        phoneNumber: '2063838935',
-        party: 12
-    }
-];
-
-const getColumns = (isAdmin: boolean): GridColDef[] => {
+const getColumns = (): GridColDef[] => {
     const arr: GridColDef[] = [
         {
             field: 'name',
@@ -44,9 +23,7 @@ const getColumns = (isAdmin: boolean): GridColDef[] => {
             flex: 1,
             align: 'left',
         },
-    ];
-    if (isAdmin) {
-        arr.push({
+        {
             field: 'action',
             headerName: '', // @ts-ignore
             renderCell: (params: GridRenderCellParams) => {
@@ -54,9 +31,9 @@ const getColumns = (isAdmin: boolean): GridColDef[] => {
             },
             sortable: false,
             align: 'right',
-            flex: 1,
-        })
-    }
+            width: 135,
+        }
+    ];
     return arr;
 }
 
@@ -70,33 +47,41 @@ interface Customer {
 }
 
 interface ListProps {
-    isAdmin: boolean;
     list: Customer[];
 }
 
 const ListWrapper = styled.div`
     width: 100%;
+    .Mui-odd {
+        background: #F9F6FA;
+    }
 `;
 
 function List(props: ListProps) {
 
     return (
         <ListWrapper>
-            <Box sx={{ height: 400, width: '100%' }}>
+            <Box sx={{ height: 'calc(100vh - 400px)', width: '100%' }}>
                 <DataGrid
                     rows={props.list}
-                    columns={getColumns(props.isAdmin)}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 20,
-                            },
-                        },
-                    }}
-                    pageSizeOptions={[20]}
+                    columns={getColumns()}
+                    // initialState={{
+                    //     pagination: {
+                    //         paginationModel: {
+                    //             pageSize: 20,
+                    //         },
+                    //     },
+                    // }}
+                    // pageSizeOptions={[20]}
                     disableRowSelectionOnClick
                     disableColumnMenu
+                    hideFooterPagination
+                    hideFooterSelectedRowCount
+                    hideFooter
                     getRowId={(row) => row._id}
+                    getRowClassName={(params) =>
+                        params.indexRelativeToCurrentPage % 2 === 0 ? 'Mui-even' : 'Mui-odd'
+                    }
                 />
             </Box>
         </ListWrapper>

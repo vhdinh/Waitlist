@@ -8,6 +8,10 @@ import React, {
 } from 'react';
 
 export type WaitlistState = {
+    reloadList: boolean;
+    setReloadList: Dispatch<SetStateAction<boolean>>;
+    openAddToListModal: boolean;
+    setOpenAddToListModal: Dispatch<SetStateAction<boolean>>;
 };
 
 const WaitlistContext = createContext<WaitlistState>(
@@ -18,8 +22,9 @@ WaitlistContext.displayName = 'WaitlistContext';
 export const WaitlistProvider = ({
     children,
 }: PropsWithChildren<Record<string, unknown>>) => {
-    const [showModal, setShowModal] = useState<boolean>(false);
+    const [openAddToListModal, setOpenAddToListModal] = useState(false);
     const [userAccepted, setUserAccepted] = useState<boolean>(false);
+    const [reloadList, setReloadList] = useState(false);
 
     // Add to wait list
 
@@ -30,7 +35,12 @@ export const WaitlistProvider = ({
 
     return (
         <WaitlistContext.Provider
-            value={{}}
+            value={{
+                reloadList,
+                setReloadList,
+                openAddToListModal,
+                setOpenAddToListModal
+            }}
         >
             {children}
         </WaitlistContext.Provider>

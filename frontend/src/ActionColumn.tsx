@@ -2,6 +2,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import SmsIcon from '@mui/icons-material/Sms';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useWaitlistState } from './context/Waitlist.provider';
+import { useAppState } from './context/App.provider';
 
 interface ActionColumnProps {
     _id: number;
@@ -22,8 +24,9 @@ const ActionColumnWrapper = styled.div`
 `;
 
 function ActionColumn(props: ActionColumnProps) {
+    const { setReloadList } = useWaitlistState();
+    const { isAdmin, setDisplaySnack, setSnackMsg } = useAppState();
     const notifyCustomer = () => {
-
         // Simple POST request with a JSON body using fetch
         const requestOptions = {
             method: 'POST',
@@ -33,10 +36,9 @@ function ActionColumn(props: ActionColumnProps) {
         fetch(`http://localhost:5000/customers/${props._id}/notify`, requestOptions)
             .then(res => res.json())
             .then((r) => {
-                console.log('OHHHVu', r);
-                // setSnackMsg(`${name} has been notified`);
-                // setDisplaySnack(true);
-                // setList(list.filter((l) => l.phoneNumber !== phoneNumber));
+                setSnackMsg(`${props.name} has been notified`);
+                setDisplaySnack(true);
+                setReloadList(true);
             });
     };
 
@@ -55,22 +57,28 @@ function ActionColumn(props: ActionColumnProps) {
                 // setSnackMsg(`${name} has been notified`);
                 // setDisplaySnack(true);
                 // setList(list.filter((l) => l.phoneNumber !== phoneNumber));
+                setReloadList(true);
             });
     }
 
 
     return (
         <ActionColumnWrapper>
-            <SmsIcon
-                className={'sms'}
-                fontSize={'large'}
-                onClick={(e: any) => notifyCustomer()}
-            />
-            <DeleteIcon
-                className={'delete'}
-                fontSize={'large'}
-                onClick={(e: any) => removeCustomer()}
-            />
+            { isAdmin ? (
+                <>
+                    <SmsIcon
+                        className={'sms'}
+                        fontSize={'large'}
+                        onClick={(e: any) => notifyCustomer()}
+                    />
+                    <DeleteIcon
+                        className={'delete'}
+                        fontSize={'large'}
+                        onClick={(e: any) => removeCustomer()}
+                    />
+                </>
+            ) : <></>
+            }
         </ActionColumnWrapper>
     )
 }
