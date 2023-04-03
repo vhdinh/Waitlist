@@ -1,14 +1,31 @@
-# Getting Started with Create React App
+# Intro
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is intended for restaurants to utilize a waitlist and sms notification to its customer. 
+This project uses React, Node, Express, Twilio (sms), Mongodb Atlas (db) 
 
 ## Available Scripts
 
 In the project directory, you can run:
 
+running frontend 
 ### `npm start`
+running backend
+navigate to the backend directory
+### `node server.js`
 
-Runs the app in the development mode.\
+### Backend
+In the backend directory, create an .env file.
+
+The backend is connected to [Mongodb Atlas](https://account.mongodb.com/account/login)
+MONGODB_URL="mongodb+srv://<username>:<password>@cluster0.2xtyt2k.mongodb.net/<nameOfTable>?retryWrites=true&w=majority"
+
+The sms service is connect to [Twilio](https://www.twilio.com/login)
+TWILIO_AUTH_TOKEN="<Twilio_auth_token>"
+TWILIO_ACCOUNT_SID="<Twilio_account_sid>"
+TWILIO_PHONE_NUMBER="<Twilio_phone_number>"
+
+
+Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\

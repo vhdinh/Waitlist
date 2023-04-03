@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 
-
 export const AppWrapper = styled.div`
     .app-bar {
         background: #F7F7F8;

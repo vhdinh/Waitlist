@@ -17,9 +17,11 @@ const ActionColumnWrapper = styled.div`
     gap: 24px;
     .sms {
         color: #1976d2;
+        cursor: pointer;
     }
     .delete {
         color: red;
+        cursor: pointer;
     }
 `;
 
