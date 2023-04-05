@@ -16,7 +16,6 @@ export const AppWrapper = styled.div`
     .snackbar {
         margin-top: 55px;
         .MuiPaper-root {
-            background: #2E7D31;
             color: white;
             font-weight: 600;
             font-size: 18px;
@@ -26,6 +25,12 @@ export const AppWrapper = styled.div`
             display: flex;
             align-items: center;
         }
+    }
+    .MuiAlert-standardSuccess {
+        background: #2E7D31;
+    }
+    .MuiAlert-standardError {
+        background: red;
     }
     #body-content {
         height: 100%;

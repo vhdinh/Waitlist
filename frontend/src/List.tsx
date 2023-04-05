@@ -1,8 +1,10 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import ActionColumn from './ActionColumn';
 import styled from '@emotion/styled';
+import { useAppState } from './context/App.provider';
+import CircleIcon from '@mui/icons-material/Circle';
 
 const getColumns = (): GridColDef[] => {
     const arr: GridColDef[] = [
@@ -31,7 +33,7 @@ const getColumns = (): GridColDef[] => {
             },
             sortable: false,
             align: 'right',
-            width: 135,
+            width: 150,
         }
     ];
     return arr;
@@ -53,14 +55,39 @@ interface ListProps {
 const ListWrapper = styled.div`
     width: 100%;
     .Mui-odd {
-        background: #F9F6FA;
+        background: #FCFCFC;
+    }
+    .accepts {
+        background: #D8EEE1;
+    }
+    .accepts-icon {
+        color: #D8EEE1;
+    }
+    .decline {
+        background: #FBDBC1;
+    }
+    .decline-icon {
+        color: #FBDBC1;
     }
 `;
 
 function List(props: ListProps) {
+    const {isAdmin} = useAppState();
 
     return (
         <ListWrapper>
+            {
+                isAdmin ? (
+                    <div style={{fontSize: '20px', display: 'flex', gap: 24, paddingBottom: 8, position: 'absolute', marginTop: '-28px'}}>
+                        <span style={{display: 'flex', justifyItems: 'center', gap: 12}}>
+                            <CircleIcon className={'accepts-icon'}/> Accepted
+                        </span>
+                        <span style={{display: 'flex', justifyItems: 'center', gap: 12}}>
+                            <CircleIcon className={'decline-icon'}/> Declined
+                        </span>
+                    </div>
+                ) : <></>
+            }
             <Box sx={{ height: 'calc(100vh - 400px)', width: '100%' }}>
                 <DataGrid
                     rows={props.list}
@@ -79,9 +106,17 @@ function List(props: ListProps) {
                     hideFooterSelectedRowCount
                     hideFooter
                     getRowId={(row) => row._id}
-                    getRowClassName={(params) =>
-                        params.indexRelativeToCurrentPage % 2 === 0 ? 'Mui-even' : 'Mui-odd'
-                    }
+                    getRowClassName={(params) => {
+                        let c = '';
+                        // user accepts
+                        if (params.row.msg === '1' && isAdmin) {
+                            c += 'accepts';
+                        } else if (params.row.msg === '6' && isAdmin) {
+                            c += 'decline';
+                        }
+                        c += params.indexRelativeToCurrentPage % 2 === 0 ? ' Mui-even' : ' Mui-odd'
+                        return c;
+                    }}
                 />
             </Box>
         </ListWrapper>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -10,17 +10,18 @@ import {
     Button,
     Container,
     Typography,
-    IconButton, Snackbar, Alert,
+    IconButton,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import { AppWrapper } from './App.style';
 import SettingsIcon from '@mui/icons-material/Settings';
-import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
 import img from './assets/BrickTransparent.png';
 import { Outlet } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from './context/App.provider';
+import AdminPasscodeModal from './AdminPasscodeModal';
 
 const pages = [
     {
@@ -34,24 +35,28 @@ const pages = [
         role: ['admin'],
     }
 ];
-const settings = ['Admin'];
 
 function App() {
-    const { displaySnack, setDisplaySnack, snackMsg, isAdmin, setIsAdmin } = useAppState();
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const {
+        displaySnack,
+        setDisplaySnack,
+        snackMsg,
+        isAdmin,
+        setIsAdmin,
+        setDisplayAdminDialog
+    } = useAppState();
     const navigate = useNavigate();
-
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
-    };
 
     const handleCloseNavMenu = (url: string) => {
         navigate(url);
     };
 
     const handleCloseUserMenu = () => {
-        setIsAdmin(!isAdmin);
-        setAnchorElUser(null);
+        if (!isAdmin) {
+            return setDisplayAdminDialog(true);
+        } else {
+            setIsAdmin(false);
+        }
     };
 
   return (
@@ -93,35 +98,12 @@ function App() {
                                 }
                             })}
                         </Box>
-
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
                                     <SettingsIcon fontSize={'large'} />
                                 </IconButton>
                             </Tooltip>
-                            <Menu
-                                sx={{ mt: '45px' }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                            >
-                                {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>
-                                ))}
-                            </Menu>
                         </Box>
                     </Toolbar>
                 </Container>
@@ -136,10 +118,11 @@ function App() {
                 autoHideDuration={10000}
                 onClose={() => setDisplaySnack(false)}
             >
-                <Alert severity="success" sx={{ width: '100%' }}>
-                    {snackMsg}
+                <Alert severity={snackMsg.severity} sx={{ width: '100%' }}>
+                    {snackMsg.msg}
                 </Alert>
             </Snackbar>
+            <AdminPasscodeModal />
         </Box>
     </AppWrapper>
   );

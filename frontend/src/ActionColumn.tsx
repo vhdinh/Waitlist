@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { IconButton } from '@mui/material';
 import SmsIcon from '@mui/icons-material/Sms';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useWaitlistState } from './context/Waitlist.provider';
@@ -9,19 +10,35 @@ interface ActionColumnProps {
     _id: number;
     name: string;
     party: number;
+    notified: boolean;
     phoneNumber: string;
+    msg?: string;
 }
 
-const ActionColumnWrapper = styled.div`
+interface ActionColumnWrapperProps {
+    response: string;
+}
+
+const ActionColumnWrapper = styled.div<ActionColumnWrapperProps>`
     display: flex;
-    gap: 24px;
+    gap: 18px;
+    // background: ${props => props.response === '1' ? '#479AD1' : props.response === '6' ? '#000000' : ''};
     .sms {
         color: #1976d2;
         cursor: pointer;
+        &:disabled {
+            cursor: not-allowed;
+        }
     }
     .delete {
-        color: red;
+        color: black;
         cursor: pointer;
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+    .Mui-disabled svg {
+        color: #D5D7D8 !important;
     }
 `;
 
@@ -38,7 +55,7 @@ function ActionColumn(props: ActionColumnProps) {
         fetch(`http://localhost:5000/customers/${props._id}/notify`, requestOptions)
             .then(res => res.json())
             .then((r) => {
-                setSnackMsg(`${props.name} has been notified`);
+                setSnackMsg({ msg: `${props.name} has been notified`, severity: 'success' });
                 setDisplaySnack(true);
                 setReloadList(true);
             });
@@ -65,19 +82,30 @@ function ActionColumn(props: ActionColumnProps) {
 
 
     return (
-        <ActionColumnWrapper>
+        <ActionColumnWrapper response={props.msg || ''}>
             { isAdmin ? (
                 <>
-                    <SmsIcon
-                        className={'sms'}
-                        fontSize={'large'}
+                    <IconButton
                         onClick={(e: any) => notifyCustomer()}
-                    />
-                    <DeleteIcon
-                        className={'delete'}
-                        fontSize={'large'}
+                        size={'large'}
+                        disabled={props.notified}
+                    >
+                        <SmsIcon
+                            style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
+                            className={'sms'}
+                            fontSize={'large'}
+                        />
+                    </IconButton>
+                    <IconButton
                         onClick={(e: any) => removeCustomer()}
-                    />
+                        size={'large'}
+                    >
+                        <DeleteIcon
+                            className={'delete'}
+                            fontSize={'large'}
+                        />
+                    </IconButton>
+
                 </>
             ) : <></>
             }

@@ -18,7 +18,7 @@ import AddToListModal from './AddToListModal';
 import { useWaitlistState } from './context/Waitlist.provider';
 
 function WaitlistPage() {
-    const timer = useAutoTimer(120);
+    const timer = useAutoTimer(120); // 120 seconds
     const [list, setList] = useState([]);
 
     const { isAdmin } = useAppState();

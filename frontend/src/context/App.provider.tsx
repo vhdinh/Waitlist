@@ -6,14 +6,22 @@ import React, {
     useContext,
     useState,
 } from 'react';
+import { AlertColor } from '@mui/material/Alert/Alert';
+
+interface SnackMsg {
+    msg: string;
+    severity: AlertColor;
+}
 
 export type AppState = {
     isAdmin: boolean;
     setIsAdmin: Dispatch<SetStateAction<boolean>>;
     displaySnack: boolean;
     setDisplaySnack: Dispatch<SetStateAction<boolean>>;
-    snackMsg: string;
-    setSnackMsg: Dispatch<SetStateAction<string>>;
+    snackMsg: SnackMsg;
+    setSnackMsg: Dispatch<SetStateAction<SnackMsg>>;
+    displayAdminDialog: boolean;
+    setDisplayAdminDialog: Dispatch<SetStateAction<boolean>>;
 };
 
 const AppContext = createContext<AppState>(
@@ -26,7 +34,8 @@ export const AppProvider = ({
 }: PropsWithChildren<Record<string, unknown>>) => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [displaySnack, setDisplaySnack] = useState(false);
-    const [snackMsg, setSnackMsg] = useState('');
+    const [displayAdminDialog, setDisplayAdminDialog] = useState(false);
+    const [snackMsg, setSnackMsg] = useState<SnackMsg>({msg: '', severity: 'success'});
 
     return (
         <AppContext.Provider
@@ -36,7 +45,9 @@ export const AppProvider = ({
                 displaySnack,
                 setDisplaySnack,
                 snackMsg,
-                setSnackMsg
+                setSnackMsg,
+                displayAdminDialog,
+                setDisplayAdminDialog
             }}
         >
             {children}

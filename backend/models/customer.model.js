@@ -7,11 +7,19 @@ const customerSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        minlength: 2
+        minlength: 1
     },
     phoneNumber: {
         type: Number,
         required: true,
+    },
+    notified: {
+        type: Boolean,
+        required: true,
+    },
+    msg: { // 1: accept 6: decline
+        type: String,
+        required: false,
     },
     partySize: {
         type: Number,

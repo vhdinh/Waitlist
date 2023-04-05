@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
     DialogTitle,
     DialogContent,
-    DialogActions,
     Button,
     Stepper,
     StepLabel,
@@ -12,7 +11,7 @@ import {
     Step, Typography,
 } from '@mui/material';
 import styled from '@emotion/styled';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
+import Dialog  from '@mui/material/Dialog';
 import { TransitionProps } from '@mui/material/transitions';
 import Slide from '@mui/material/Slide';
 import { useAppState } from './context/App.provider';
@@ -67,9 +66,6 @@ const buttonStyles = {
 function AddToListModal(props: AddToListModalProps) {
     const [open, setOpen] = React.useState(false);
     const [activeStep, setActiveStep] = React.useState(0);
-    const [completed, setCompleted] = React.useState<{
-        [k: number]: boolean;
-    }>({});
     const [state, setState] = useState(initialState);
     const { setSnackMsg, setDisplaySnack} = useAppState();
     const { setReloadList } = useWaitlistState();
@@ -110,7 +106,6 @@ function AddToListModal(props: AddToListModalProps) {
            return setActiveStep(activeStep + 1);
         }
         else {
-            console.log('ADDING', state);
             // handle submit
             // Simple POST request with a JSON body using fetch
             const requestOptions = {
@@ -121,12 +116,23 @@ function AddToListModal(props: AddToListModalProps) {
             fetch('http://localhost:5000/customers/add', requestOptions)
                 .then(res => res.json())
                 .then((r) => {
-                    console.log('added Customer', r);
-                    setSnackMsg(`${state.name} has been added to the waitlist`);
-                    setDisplaySnack(true);
-                    setReloadList(true);
-                    handleClose();
-                });
+                    console.log('RRR', r.includes('error-invalid-phone'));
+                    if (r.includes('error-invalid-phone')) {
+                        setSnackMsg({msg: `Invalid phone number`, severity: 'error' });
+                        setDisplaySnack(true);
+                    } else if (r.includes('error-saving-user')) {
+                        setSnackMsg({msg: `Unable to add to waitlist, please try again`, severity: 'error' });
+                        setDisplaySnack(true);
+                    } else {
+                        console.log('added Customer', r);
+                        setSnackMsg({msg: `${state.name} has been added to the waitlist`, severity: 'success'});
+                        setDisplaySnack(true);
+                        setReloadList(true);
+                        handleClose();
+                    }
+                }).catch((e) => {
+                    console.log('caughtttt', e);
+            });
         }
 
     }
@@ -164,6 +170,53 @@ function AddToListModal(props: AddToListModalProps) {
                 TransitionComponent={Transition}
             >
                 <DialogTitle>
+                    <div
+                        className={'modal-action'}
+                        style={{ display: 'flex', justifyContent: 'space-between'}}
+                    >
+                        <div>
+                            <Button
+                                size='large'
+                                variant="contained"
+                                onClick={handleClose}
+                                style={{
+                                    background: 'black',
+                                    color: 'white',
+                                    fontSize: '24px',
+                                    minWidth: '150px'
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '12px'
+                            }}
+                        >
+                            {activeStep > 0 && (
+                                <Button
+                                    size='large'
+                                    variant="contained"
+                                    onClick={handleBack}
+                                    style={buttonStyles.container}
+                                >
+                                    Back
+                                </Button>
+                            )}
+
+                            <Button
+                                size='large'
+                                variant="contained"
+                                onClick={handleNext}
+                                style={getDisabledState() ? buttonStyles.containerDisabled : buttonStyles.container}
+                                disabled={getDisabledState()}
+                            >
+                                {getButtonText()}
+                            </Button>
+                        </div>
+                    </div>
                     <Stepper
                         style={{marginTop: '48px'}}
                         activeStep={activeStep}
@@ -219,6 +272,7 @@ function AddToListModal(props: AddToListModalProps) {
                                 <FormControl fullWidth>
                                     <TextField
                                         required
+                                        autoFocus
                                         id="outlined-required"
                                         type="tel"
                                         value={state.party}
@@ -243,9 +297,9 @@ function AddToListModal(props: AddToListModalProps) {
                                     <FormControl fullWidth>
                                         <TextField
                                             required
+                                            autoFocus
                                             id="outlined-required"
                                             name={'name'}
-                                            defaultValue="Name"
                                             value={state.name}
                                             onChange={handleNameChange}
                                             autoComplete={'off'}
@@ -269,6 +323,7 @@ function AddToListModal(props: AddToListModalProps) {
                                     <FormControl fullWidth>
                                         <TextField
                                             required
+                                            autoFocus
                                             id="outlined-required"
                                             type={'tel'}
                                             value={state.phoneNumber}
@@ -283,53 +338,6 @@ function AddToListModal(props: AddToListModalProps) {
                         }
                     </Grid>
                 </DialogContent>
-                <DialogActions
-                    className={'modal-action'}
-                    style={{ display: 'flex', justifyContent: 'space-between'}}
-                >
-                    <div>
-                        <Button
-                            size='large'
-                            variant="contained"
-                            onClick={handleClose}
-                            style={{
-                                background: 'black',
-                                color: 'white',
-                                fontSize: '24px',
-                                minWidth: '150px'
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '12px'
-                        }}
-                    >
-                        {activeStep > 0 && (
-                            <Button
-                                size='large'
-                                variant="contained"
-                                onClick={handleBack}
-                                style={buttonStyles.container}
-                            >
-                                Back
-                            </Button>
-                        )}
-
-                        <Button
-                            size='large'
-                            variant="contained"
-                            onClick={handleNext}
-                            style={getDisabledState() ? buttonStyles.containerDisabled : buttonStyles.container}
-                            disabled={getDisabledState()}
-                        >
-                            {getButtonText()}
-                        </Button>
-                    </div>
-                </DialogActions>
             </Dialog>
         </AddToListModalWrapper>
 
