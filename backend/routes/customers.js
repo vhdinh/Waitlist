@@ -22,7 +22,7 @@ router.route('/add').post((req, res) => {
             console.log('user-saved:', r);
             client.messages
                 .create({
-                    body: `You've been added to the waitlist at The Brick, We will notify you when a table is ready`,
+                    body: `You've been added to the waitlist at The Brick, we will notify you when a table is ready.`,
                     to: req.body.phoneNumber, // Text this number
                     from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
                 })
@@ -88,9 +88,6 @@ router.route('/reply').post((req, res) => {
                 </Response>
             `);
 
-        res.json(`${msgFrom} has responded with ${msgBody}`)
-
-            // TODO: hook up socket to send to UI
     })
 })
 
