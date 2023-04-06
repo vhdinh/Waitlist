@@ -57,4 +57,17 @@ router.route('/:id/delete').post((req, res) => {
         .catch((e) => res.status(400).json('error-deleting-user: ' + err))
 });
 
+router.route('/reply').post((req, res) => {
+    console.log('----REPLY----', req.body);
+    const msgFrom = req.body.From;
+    const msgBody = req.body.Body;
+    res.send(`
+        <Response>
+            <Message>
+                Hello ${msgFrom}. You said: ${msgBody}   
+            </Message>
+        </Response>
+    `)
+})
+
 module.exports = router;
