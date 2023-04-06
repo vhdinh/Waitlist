@@ -77,9 +77,9 @@ router.route('/reply').post((req, res) => {
             message: 'reload'
         });
         let rspMsg = '';
-        if(msgBody === '1') {
+        if(msgBody == '1') {
             rspMsg = `Thank you, please check in to be seated promptly.`
-        } else if (msgBody === '6') {
+        } else if (msgBody == '6') {
             rspMsg = `Thank you, you have been removed from the waitlist.`
         }
         // // if we want to respond to user with another msg
