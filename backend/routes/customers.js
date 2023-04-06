@@ -22,18 +22,15 @@ router.route('/add').post((req, res) => {
             console.log('user-saved:', r);
             client.messages
                 .create({
-                    body: `You've been added to the waitlist at The Brick`,
+                    body: `You've been added to the waitlist at The Brick, We will notify you when a table is ready`,
                     to: req.body.phoneNumber, // Text this number
                     from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
                 })
                 .then((message) => {
                     console.log('user-added:', message);
-                    Customer.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() => {
-                        socket.ioObject.sockets.emit('user_replied', {
-                            message: 'reload'
-                        });
+                    Customer.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() =>
                         res.json(`${name} has been added to the waitlist`)
-                    })
+                    )
                 })
                 .catch((e) => {
                     Customer.findByIdAndRemove(r._id).then((r) => res.status(400).json('error-invalid-phone: ' + e));
