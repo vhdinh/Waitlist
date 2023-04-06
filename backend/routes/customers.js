@@ -28,9 +28,12 @@ router.route('/add').post((req, res) => {
                 })
                 .then((message) => {
                     console.log('user-added:', message);
-                    Customer.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() =>
+                    Customer.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() => {
+                        socket.ioObject.sockets.emit('user_replied', {
+                            message: 'reload'
+                        });
                         res.json(`${name} has been added to the waitlist`)
-                    )
+                    })
                 })
                 .catch((e) => {
                     Customer.findByIdAndRemove(r._id).then((r) => res.status(400).json('error-invalid-phone: ' + e));
