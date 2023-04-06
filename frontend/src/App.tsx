@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -22,7 +22,11 @@ import { Outlet } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from './context/App.provider';
 import AdminPasscodeModal from './AdminPasscodeModal';
-import socketClient from 'socket.io-client';
+import io from 'socket.io-client';
+import { useWaitlistState } from './context/Waitlist.provider';
+
+// @ts-ignore
+const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
 
 const pages = [
     {
@@ -46,13 +50,15 @@ function App() {
         setIsAdmin,
         setDisplayAdminDialog
     } = useAppState();
+    const { setReloadList } = useWaitlistState();
     const navigate = useNavigate();
 
-    const socket = socketClient(`${process.env.REACT_APP_BRICK_API}`);
-
-    // socket.on('connection', () => {
-    //     console.log(`I'm connected with the back-end`);
-    // })
+    useEffect(() => {
+        socket.on('user_replied', (data: any) => {
+            console.log('USER REPLIED', data);
+            if (data.message === 'reload') setReloadList(true)
+        })
+    }, [socket])
 
     const handleCloseNavMenu = (url: string) => {
         navigate(url);

@@ -34,7 +34,6 @@ function WaitlistPage() {
     useEffect(() => {
         if (reloadList) {
             getWaitList();
-
         }
     }, [reloadList])
 
