@@ -5,8 +5,16 @@ export const WaitlistPageWrapper = styled.div`
         width: 100%;
         text-align: center;
     }
+    @media (max-width: 660px) {
+        .title {
+            font-size: 4rem;
+        }
+    }
     .body-content {
-        padding: 48px 8px;
+        padding: 36px 8px;
+        @media (max-width: 660px) {
+            padding: 24px 8px;
+        }
         .join-waitlist {
             width: 100%;
             display: flex;
@@ -16,6 +24,12 @@ export const WaitlistPageWrapper = styled.div`
                 color: white;
                 font-size: 24px;
                 min-width: 300px;
+            }
+            @media (max-width: 660px) {
+                button {
+                    font-size: 18px;
+                    min-width: 250px;
+                }
             }
         }
         .customer-list {
@@ -32,6 +46,16 @@ export const WaitlistPageWrapper = styled.div`
                 height: 75px !important;
                 max-height: 75px !important;
             }
+            @media (max-width: 660px) {
+                .MuiDataGrid-columnHeaderTitle, .MuiDataGrid-cellContent {
+                    font-size: 16px;
+                    padding: 24px;
+                }
+                .MuiDataGrid-columnHeader, .MuiDataGrid-row, .MuiDataGrid-cell {
+                    height: 50px !important;
+                    max-height: 50px !important;
+                }
+            }   
             .customer {
                 width: 100%;
                 display: flex;

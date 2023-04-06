@@ -13,6 +13,13 @@ export const AppWrapper = styled.div`
             height: 74.23px;
         }
     }
+    @media (max-width: 660px) {
+        .app-bar {
+            .MuiToolbar-root {
+                height: 50px;
+            }
+        }
+    }
     .snackbar {
         margin-top: 55px;
         .MuiPaper-root {

@@ -21,6 +21,7 @@ function WaitlistPage() {
     const timer = useAutoTimer(120); // 120 seconds
     const [list, setList] = useState([]);
 
+
     const { isAdmin } = useAppState();
     const { reloadList, setReloadList, openAddToListModal, setOpenAddToListModal } = useWaitlistState();
 

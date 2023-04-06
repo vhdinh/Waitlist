@@ -10,7 +10,7 @@ import { useAppState } from './context/App.provider';
 
 function AdminPasscodeModal() {
     const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin } = useAppState();
-    const [adminPasscode, setAdminPasscode] = useState(null);
+    const [adminPasscode, setAdminPasscode] = useState('');
 
     const handleChange = (e: any) => {
         setAdminPasscode(e.target.value);
@@ -20,7 +20,7 @@ function AdminPasscodeModal() {
         if (adminPasscode === process.env.REACT_APP_ADMIN_PASSCODE) {
             setIsAdmin(true);
         }
-        setAdminPasscode(null);
+        setAdminPasscode('');
         setDisplayAdminDialog(false);
     }
 
@@ -32,30 +32,32 @@ function AdminPasscodeModal() {
         >
             <DialogTitle id="alert-dialog-title">
                 <Typography
-                    variant="h4"
-                    style={{marginBottom: '24px', marginTop: '24px'}}
+                    variant="inherit"
+                    style={{marginBottom: '24px', marginTop: '24px', fontSize: '24px'}}
                 >
                     Enter admin code
                 </Typography>
             </DialogTitle>
             <DialogContent>
-                <FormControl fullWidth>
-                    <TextField
-                        required
-                        autoFocus
-                        id="outlined-required"
-                        type="password"
-                        value={adminPasscode}
-                        onChange={handleChange}
-                        autoComplete={'off'}
-                        inputProps={{
-                            style: {fontSize: 24},
-                            inputMode: 'tel',
-                            pattern: "[0-9]*"
-                        }} // font size of input text
-                        InputLabelProps={{style: {fontSize: 24}}} // font size of input label
-                    />
-                </FormControl>
+                <form>
+                    <FormControl fullWidth>
+                        <TextField
+                            required
+                            autoFocus
+                            id="outlined-required"
+                            type="password"
+                            value={adminPasscode}
+                            onChange={handleChange}
+                            autoComplete={'off'}
+                            inputProps={{
+                                style: {fontSize: 24},
+                                inputMode: 'tel',
+                                pattern: "[0-9]*"
+                            }} // font size of input text
+                            InputLabelProps={{style: {fontSize: 24}}} // font size of input label
+                        />
+                    </FormControl>
+                </form>
             </DialogContent>
             <DialogActions style={{justifyContent: 'space-between'}}>
                 <Button

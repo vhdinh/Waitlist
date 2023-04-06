@@ -18,14 +18,19 @@ router.route('/add').post((req, res) => {
 
     newCustomer.save()
         .then((r) => {
-            console.log('new_user_added', r);
+            console.log('user-saved:', r);
             client.messages
                 .create({
                     body: `You've been added to the waitlist at The Brick`,
                     to: req.body.phoneNumber, // Text this number
                     from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
                 })
-                .then((message) => res.json(`${name} has been added to the waitlist`))
+                .then((message) => {
+                    console.log('user-added:', message);
+                    Customer.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() =>
+                        res.json(`${name} has been added to the waitlist`)
+                    )
+                })
                 .catch((e) => {
                     Customer.findByIdAndRemove(r._id).then((r) => res.status(400).json('error-invalid-phone: ' + e));
                 });
@@ -44,6 +49,7 @@ router.route('/:id/notify').post((req, res) => {
                 from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
             })
             .then((message) => {
+                console.log('notify-success: ', message);
                 Customer.findByIdAndUpdate(req.body.id, { notified: true })
                     .then((r) => res.json(`${req.body.id} notified`))
                     .catch((e) => res.status(400).json(`error-update-notified: ${req.body.id} notified updated failed`));
@@ -61,13 +67,19 @@ router.route('/reply').post((req, res) => {
     console.log('----REPLY----', req.body);
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
-    res.send(`
-        <Response>
-            <Message>
-                Hello ${msgFrom}. You said: ${msgBody}   
-            </Message>
-        </Response>
-    `)
+    const num = msgFrom.substring(1);
+    Customer.findOneAndUpdate({phoneNumber: num}, { msg: msgBody }).then(() =>
+        res.json(`${msgFrom} has responded with ${msgBody}`)
+        // // if we want to respond to user with another msg
+        // res.send(`
+        //     <Response>
+        //         <Message>
+        //             Hello ${msgFrom}. You said: ${msgBody}
+        //         </Message>
+        //     </Response>
+        // `);
+        // TODO: hook up socket to send to UI
+    )
 })
 
 module.exports = router;

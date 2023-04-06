@@ -4,13 +4,16 @@ const app = express();
 const cors = require("cors");
 const fs = require("fs");
 const mongoose = require('mongoose');
+const socketIo = require('socket.io');
+const http = require('http');
+const server = http.createServer(app)
 
 require('dotenv').config();
 
 app.use(cors());
 
 app.use(express.json());
-// app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }))
 const router = express.Router();
 
 mongoose.connect(process.env.MONGODB_URL, {
@@ -24,6 +27,22 @@ connection.once('open', () => {
     console.log("MongoDB database connection established successfully");
 })
 
+const io = socketIo(server,{
+    cors: {
+        origin: 'http://localhost:3000'
+    }
+});
+
+io.on('connection', (socket) => {
+   console.log('----client connected:', socket.id);
+   socket.join('waitlist');
+
+
+   socket.on('disconnect', (reason) => {
+       console.log('disconnected: ', reason);
+   });
+});
+
 //TWILIO - TEXTING
 const twilio = require('twilio');
 
@@ -34,6 +53,6 @@ const customersRouter = require('./routes/customers');
 
 app.use('/customers', customersRouter);
 
-app.listen(process.env.PORT || 5000, () => {
+server.listen(process.env.PORT || 5000, () => {
     console.log(`Server is running on port: ${process.env.PORT || 5000}`);
 });

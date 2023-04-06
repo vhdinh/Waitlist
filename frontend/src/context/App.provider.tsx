@@ -16,6 +16,8 @@ interface SnackMsg {
 export type AppState = {
     isAdmin: boolean;
     setIsAdmin: Dispatch<SetStateAction<boolean>>;
+    loading: boolean;
+    setLoading: Dispatch<SetStateAction<boolean>>;
     displaySnack: boolean;
     setDisplaySnack: Dispatch<SetStateAction<boolean>>;
     snackMsg: SnackMsg;
@@ -33,6 +35,7 @@ export const AppProvider = ({
     children,
 }: PropsWithChildren<Record<string, unknown>>) => {
     const [isAdmin, setIsAdmin] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [displaySnack, setDisplaySnack] = useState(false);
     const [displayAdminDialog, setDisplayAdminDialog] = useState(false);
     const [snackMsg, setSnackMsg] = useState<SnackMsg>({msg: '', severity: 'success'});
@@ -42,6 +45,8 @@ export const AppProvider = ({
             value={{
                 isAdmin,
                 setIsAdmin,
+                loading,
+                setLoading,
                 displaySnack,
                 setDisplaySnack,
                 snackMsg,

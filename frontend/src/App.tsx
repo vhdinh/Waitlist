@@ -22,6 +22,7 @@ import { Outlet } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from './context/App.provider';
 import AdminPasscodeModal from './AdminPasscodeModal';
+import socketClient from 'socket.io-client';
 
 const pages = [
     {
@@ -46,6 +47,12 @@ function App() {
         setDisplayAdminDialog
     } = useAppState();
     const navigate = useNavigate();
+
+    const socket = socketClient(`${process.env.REACT_APP_BRICK_API}`);
+
+    // socket.on('connection', () => {
+    //     console.log(`I'm connected with the back-end`);
+    // })
 
     const handleCloseNavMenu = (url: string) => {
         navigate(url);
@@ -115,7 +122,7 @@ function App() {
                 className={'snackbar'}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 open={displaySnack}
-                autoHideDuration={10000}
+                autoHideDuration={5000}
                 onClose={() => setDisplaySnack(false)}
             >
                 <Alert severity={snackMsg.severity} sx={{ width: '100%' }}>

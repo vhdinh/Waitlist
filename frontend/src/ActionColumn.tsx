@@ -22,7 +22,6 @@ interface ActionColumnWrapperProps {
 const ActionColumnWrapper = styled.div<ActionColumnWrapperProps>`
     display: flex;
     gap: 18px;
-    // background: ${props => props.response === '1' ? '#479AD1' : props.response === '6' ? '#000000' : ''};
     .sms {
         color: #1976d2;
         cursor: pointer;

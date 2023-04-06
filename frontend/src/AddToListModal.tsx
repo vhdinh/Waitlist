@@ -43,8 +43,8 @@ const Transition = React.forwardRef(function Transition(
 
 const initialState = {
     name: '',
-    phoneNumber: null,
-    party: null,
+    phoneNumber: '',
+    party: '',
 }
 
 const buttonStyles = {
@@ -67,7 +67,7 @@ function AddToListModal(props: AddToListModalProps) {
     const [open, setOpen] = React.useState(false);
     const [activeStep, setActiveStep] = React.useState(0);
     const [state, setState] = useState(initialState);
-    const { setSnackMsg, setDisplaySnack} = useAppState();
+    const { setSnackMsg, setDisplaySnack, loading, setLoading } = useAppState();
     const { setReloadList } = useWaitlistState();
 
     useEffect(() => {
@@ -102,10 +102,12 @@ function AddToListModal(props: AddToListModalProps) {
     };
 
     const handleNext = () => {
+
         if (activeStep < 2) {
            return setActiveStep(activeStep + 1);
         }
         else {
+            setLoading(true);
             // handle submit
             // Simple POST request with a JSON body using fetch
             const requestOptions = {
@@ -132,7 +134,7 @@ function AddToListModal(props: AddToListModalProps) {
                     }
                 }).catch((e) => {
                     console.log('caughtttt', e);
-            });
+            }).finally(() => setLoading(false));
         }
 
     }
@@ -142,6 +144,7 @@ function AddToListModal(props: AddToListModalProps) {
     }
 
     const getDisabledState = () => {
+        if (loading) return true;
         if (activeStep === 0 && state.party) {
             return false;
         }
