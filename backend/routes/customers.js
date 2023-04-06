@@ -82,15 +82,17 @@ router.route('/reply').post((req, res) => {
         } else if (msgBody === '6') {
             rspMsg = `Thank you, you have been removed from the waitlist.`
         }
-        res.json(`${msgFrom} has responded with ${msgBody}`)
-            // // if we want to respond to user with another msg
-            res.send(`
+        // // if we want to respond to user with another msg
+        res.send(`
                 <Response>
                     <Message>
                         ${rspMsg}
                     </Message>
                 </Response>
             `);
+
+        res.json(`${msgFrom} has responded with ${msgBody}`)
+
             // TODO: hook up socket to send to UI
     })
 })
