@@ -52,7 +52,7 @@ function ActionColumn(props: ActionColumnProps) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: props._id, phoneNumber: props.phoneNumber, name: props.name })
         };
-        fetch(`http://localhost:5000/customers/${props._id}/notify`, requestOptions)
+        fetch(`${process.env.REACT_APP_BRICK_API}/customers/${props._id}/notify`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 setSnackMsg({ msg: `${props.name} has been notified`, severity: 'success' });
@@ -69,7 +69,7 @@ function ActionColumn(props: ActionColumnProps) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: props._id })
         };
-        fetch(`http://localhost:5000/customers/${props._id}/delete`, requestOptions)
+        fetch(`${process.env.REACT_APP_BRICK_API}/customers/${props._id}/delete`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 console.log('Deleted', r);

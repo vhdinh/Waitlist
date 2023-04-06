@@ -113,7 +113,7 @@ function AddToListModal(props: AddToListModalProps) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phoneNumber: state.phoneNumber, name: state.name, partySize: state.party})
             };
-            fetch('http://localhost:5000/customers/add', requestOptions)
+            fetch(`${process.env.REACT_APP_BRICK_API}/customers/add`, requestOptions)
                 .then(res => res.json())
                 .then((r) => {
                     console.log('RRR', r.includes('error-invalid-phone'));
