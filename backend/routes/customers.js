@@ -1,6 +1,7 @@
 const router = require('express').Router();
 let Customer = require('../models/customer.model');
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const socket = require('../server');
 
 router.route('/').get((req, res) => {
     Customer.find()
@@ -27,9 +28,12 @@ router.route('/add').post((req, res) => {
                 })
                 .then((message) => {
                     console.log('user-added:', message);
-                    Customer.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() =>
+                    Customer.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() => {
+                        socket.ioObject.sockets.emit('user_replied', {
+                            message: 'reload'
+                        });
                         res.json(`${name} has been added to the waitlist`)
-                    )
+                    })
                 })
                 .catch((e) => {
                     Customer.findByIdAndRemove(r._id).then((r) => res.status(400).json('error-invalid-phone: ' + e));
@@ -44,7 +48,7 @@ router.route('/:id/notify').post((req, res) => {
         client.messages
             .create({
                 // body: `We're ready for you at the Brick, please check in with the host or call us at 425-264-5220`,
-                body: `We're ready for you at the Brick, please reply 1 to confirm or 6 to cancel`,
+                body: `We're ready for you at the Brick, please reply "1" to confirm or "6" to cancel`,
                 to: c.phoneNumber, // Text this number
                 from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
             })
@@ -68,18 +72,27 @@ router.route('/reply').post((req, res) => {
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
     const num = msgFrom.substring(1);
-    Customer.findOneAndUpdate({phoneNumber: num}, { msg: msgBody }).then(() =>
+    Customer.findOneAndUpdate({phoneNumber: num}, { msg: msgBody }).then(() => {
+        socket.ioObject.sockets.emit('user_replied', {
+            message: 'reload'
+        });
+        let rspMsg = '';
+        if(msgBody === '1') {
+            rspMsg = `Thank you, please check in to be seated promptly.`
+        } else if (msgBody === '6') {
+            rspMsg = `Thank you, you have been removed from the waitlist.`
+        }
         res.json(`${msgFrom} has responded with ${msgBody}`)
-        // // if we want to respond to user with another msg
-        // res.send(`
-        //     <Response>
-        //         <Message>
-        //             Hello ${msgFrom}. You said: ${msgBody}
-        //         </Message>
-        //     </Response>
-        // `);
-        // TODO: hook up socket to send to UI
-    )
+            // // if we want to respond to user with another msg
+            res.send(`
+                <Response>
+                    <Message>
+                        ${rspMsg}
+                    </Message>
+                </Response>
+            `);
+            // TODO: hook up socket to send to UI
+    })
 })
 
 module.exports = router;

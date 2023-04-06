@@ -4,8 +4,8 @@ const app = express();
 const cors = require("cors");
 const fs = require("fs");
 const mongoose = require('mongoose');
-const socketIo = require('socket.io');
 const http = require('http');
+const { Server } = require('socket.io');
 const server = http.createServer(app)
 
 require('dotenv').config();
@@ -27,27 +27,22 @@ connection.once('open', () => {
     console.log("MongoDB database connection established successfully");
 })
 
-const io = socketIo(server,{
+const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:3000'
+        origin: process.env.UI_URL,
+        methods: ['GET', 'POST']
     }
-});
+})
 
 io.on('connection', (socket) => {
    console.log('----client connected:', socket.id);
-   socket.join('waitlist');
-
-
    socket.on('disconnect', (reason) => {
        console.log('disconnected: ', reason);
    });
 });
 
-//TWILIO - TEXTING
-const twilio = require('twilio');
-
-const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-module.exports = router;
+const socketIoObject = io;
+module.exports.ioObject = socketIoObject;
 
 const customersRouter = require('./routes/customers');
 
