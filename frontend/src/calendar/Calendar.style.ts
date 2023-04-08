@@ -133,8 +133,7 @@ export const CalendarWrapper = styled.div`
     }
     
     .calendar .header .icon {
-       transform: scale(2.5);
-
+        transform: scale(2.5);
         cursor: pointer;
         transition: .15s ease-out;
     }

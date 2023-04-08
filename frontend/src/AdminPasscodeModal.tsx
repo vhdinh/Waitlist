@@ -40,25 +40,23 @@ function AdminPasscodeModal() {
                 </Typography>
             </DialogTitle>
             <DialogContent>
-                <form>
-                    <FormControl fullWidth>
-                        <TextField
-                            required
-                            autoFocus
-                            id="outlined-required"
-                            type="password"
-                            value={adminPasscode}
-                            onChange={handleChange}
-                            autoComplete={'off'}
-                            inputProps={{
-                                style: {fontSize: 24},
-                                inputMode: 'tel',
-                                pattern: "[0-9]*"
-                            }} // font size of input text
-                            InputLabelProps={{style: {fontSize: 24}}} // font size of input label
-                        />
-                    </FormControl>
-                </form>
+                <FormControl fullWidth>
+                    <TextField
+                        required
+                        autoFocus
+                        id="outlined-required"
+                        type="password"
+                        value={adminPasscode}
+                        onChange={handleChange}
+                        autoComplete={'off'}
+                        inputProps={{
+                            style: {fontSize: 24},
+                            inputMode: 'tel',
+                            pattern: "[0-9]*"
+                        }} // font size of input text
+                        InputLabelProps={{style: {fontSize: 24}}} // font size of input label
+                    />
+                </FormControl>
             </DialogContent>
             <DialogActions style={{justifyContent: 'space-between'}}>
                 <Button
