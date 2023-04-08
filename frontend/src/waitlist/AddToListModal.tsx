@@ -14,8 +14,8 @@ import styled from '@emotion/styled';
 import Dialog  from '@mui/material/Dialog';
 import { TransitionProps } from '@mui/material/transitions';
 import Slide from '@mui/material/Slide';
-import { useAppState } from './context/App.provider';
-import { useWaitlistState } from './context/Waitlist.provider';
+import { useAppState } from '../context/App.provider';
+import { useWaitlistState } from '../context/Waitlist.provider';
 
 interface AddToListModalProps {
     open: boolean;

@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import ActionColumn from './ActionColumn';
 import styled from '@emotion/styled';
-import { useAppState } from './context/App.provider';
+import { useAppState } from '../context/App.provider';
 import CircleIcon from '@mui/icons-material/Circle';
 
 const getColumns = (): GridColDef[] => {

@@ -48,14 +48,17 @@ export const WaitlistPageWrapper = styled.div`
             }
             @media (max-width: 660px) {
                 .MuiDataGrid-columnHeaderTitle, .MuiDataGrid-cellContent {
-                    font-size: 16px;
-                    padding: 24px;
+                    font-size: 12px;
+                    padding: 12px;
                 }
                 .MuiDataGrid-columnHeader, .MuiDataGrid-row, .MuiDataGrid-cell {
                     height: 50px !important;
                     max-height: 50px !important;
                 }
-            }   
+            }
+            .MuiDataGrid-columnSeparator {
+                display: none;
+            }
             .customer {
                 width: 100%;
                 display: flex;

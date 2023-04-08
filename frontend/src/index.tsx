@@ -7,9 +7,10 @@ import {
     createBrowserRouter,
     RouterProvider,
 } from "react-router-dom";
-import WaitlistPage from './WaitlistPage';
+import WaitlistPage from './waitlist/WaitlistPage';
 import { AppProvider } from './context/App.provider';
 import { WaitlistProvider } from './context/Waitlist.provider';
+import CalendarPage from './calendar/CalendarPage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -31,12 +32,8 @@ const router = createBrowserRouter([
                 element: <WaitlistPage />,
             },
             {
-                path: "/waitlist",
-                element: <WaitlistPage />,
-            },
-            {
                 path: "/reservations",
-                element: <>Reservations</>,
+                element: <CalendarPage />,
             },
         ],
     },

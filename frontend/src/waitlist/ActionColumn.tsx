@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 import { IconButton } from '@mui/material';
 import SmsIcon from '@mui/icons-material/Sms';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useWaitlistState } from './context/Waitlist.provider';
-import { useAppState } from './context/App.provider';
+import { useWaitlistState } from '../context/Waitlist.provider';
+import { useAppState } from '../context/App.provider';
 
 interface ActionColumnProps {
     _id: number;

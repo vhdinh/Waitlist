@@ -31,14 +31,14 @@ const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
 const pages = [
     {
         label: 'Waitlist',
-        url: '/waitlist',
+        url: '/',
         role: []
     },
-    {
-        label: 'Reservations',
-        url: '/reservations',
-        role: ['admin'],
-    }
+    // {
+    //     label: 'Reservations',
+    //     url: '/reservations',
+    //     role: ['admin'],
+    // }
 ];
 
 function App() {
