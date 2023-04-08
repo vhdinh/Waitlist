@@ -16,7 +16,8 @@ function AdminPasscodeModal() {
         setAdminPasscode(e.target.value);
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
         if (adminPasscode === process.env.REACT_APP_ADMIN_PASSCODE) {
             setIsAdmin(true);
         }
@@ -76,7 +77,7 @@ function AdminPasscodeModal() {
                 <Button
                     size='large'
                     variant="contained"
-                    onClick={() => handleSubmit()}
+                    onClick={(e) => handleSubmit(e)}
                     style={{
                         background: 'black',
                         color: 'white',

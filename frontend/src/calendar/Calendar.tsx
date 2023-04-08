@@ -14,6 +14,7 @@ import {
 } from "date-fns";
 import { CalendarWrapper } from './Calendar.style';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 const initialState = {
     currentMonth: new Date(),
@@ -28,18 +29,16 @@ function Calendar() {
         const dateFormat = "MMMM yyyy";
         return (
             <div className="header row flex-middle">
-                <div className="col col-start">
-                    <div className="icon" onClick={prevMonth}>
-                        chevron_left
-                    </div>
+                <div className="col col-start" onClick={prevMonth}>
+                    <ChevronLeftIcon className="icon"/>
                 </div>
                 <div className="col col-center">
-        <span>
-          {format(state.currentMonth, dateFormat)}
-        </span>
+                    <span>
+                      {format(state.currentMonth, dateFormat)}
+                    </span>
                 </div>
                 <div className="col col-end" onClick={nextMonth}>
-                    <div className="icon">chevron_right</div>
+                    <ChevronRightIcon className="icon"/>
                 </div>
             </div>
         );

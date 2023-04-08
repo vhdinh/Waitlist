@@ -101,8 +101,8 @@ function AddToListModal(props: AddToListModalProps) {
         }))
     };
 
-    const handleNext = () => {
-
+    const handleNext = (e: any) => {
+        e.preventDefault();
         if (activeStep < 2) {
            return setActiveStep(activeStep + 1);
         }

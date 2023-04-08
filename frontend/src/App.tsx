@@ -34,11 +34,11 @@ const pages = [
         url: '/',
         role: []
     },
-    // {
-    //     label: 'Reservations',
-    //     url: '/reservations',
-    //     role: ['admin'],
-    // }
+    {
+        label: 'Reservations',
+        url: '/reservations',
+        role: ['admin'],
+    }
 ];
 
 function App() {
