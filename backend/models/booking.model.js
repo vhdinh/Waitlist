@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const customerSchema = new Schema({
+const bookingSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -17,26 +17,22 @@ const customerSchema = new Schema({
         type: Boolean,
         required: true,
     },
-    accepted: { // 1: accept 6: decline
-        type: Boolean,
-        required: true,
+    msg: { // 1: accept 6: decline
+        type: String,
+        required: false,
     },
     partySize: {
         type: Number,
         required: true,
     },
-    seated: {
-        type: Boolean,
-        required: true,
-    },
-    abandoned: {
-        type: Boolean,
+    note: {
+        type: String,
         required: false,
     }
 }, {
     timestamps: true,
 });
 
-const Customer = mongoose.model('Customer', customerSchema);
+const Booking = mongoose.model('Booking', bookingSchema);
 
-module.exports = Customer;
+module.exports = Booking;

@@ -4,7 +4,7 @@ const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWI
 const socket = require('../server');
 
 router.route('/').get((req, res) => {
-    Customer.find()
+    Customer.find({ seated: false})
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -15,7 +15,14 @@ router.route('/add').post((req, res) => {
     const phoneNumber = req.body.phoneNumber;
     const partySize = req.body.partySize;
 
-    const newCustomer = new Customer({name: name, phoneNumber: phoneNumber, partySize: partySize, notified: false });
+    const newCustomer = new Customer({
+        name: name,
+        phoneNumber: phoneNumber,
+        partySize: partySize,
+        notified: false,
+        accepted: false,
+        seated: false,
+    });
 
     newCustomer.save()
         .then((r) => {
@@ -62,17 +69,30 @@ router.route('/:id/notify').post((req, res) => {
 });
 router.route('/:id/delete').post((req, res) => {
     console.log('delete:', req.body);
-    Customer.findByIdAndRemove(req.body.id)
+    // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAITLIST
+    Customer.findByIdAndUpdate(req.body.id, {abandoned: !req.body.seated})
         .then((r) => res.json(`${req.body.id} deleted`))
-        .catch((e) => res.status(400).json('error-deleting-user: ' + err))
+        .catch((e) => res.status(400).json('error-deleting-user: ' + e))
+    // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAITLIST
+    // Customer.findByIdAndRemove(req.body.id)
+    //     .then((r) => res.json(`${req.body.id} deleted`))
+    //     .catch((e) => res.status(400).json('error-deleting-user: ' + e))
 });
 
+router.route('/:id/seated').post((req, res) => {
+    console.log('seated:', req.body);
+    Customer.findByIdAndUpdate(req.body.id, { seated: true })
+        .then((r) => res.json(`${req.body.id} seated`))
+        .catch((e) => res.status(400).json('error-seating-user: ' + e))
+});
+
+
 router.route('/reply').post((req, res) => {
-    console.log('----REPLY----', req.body);
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
+    const accepted = msgBody == '1' ? true : false;
     const num = msgFrom.substring(1);
-    Customer.findOneAndUpdate({phoneNumber: num}, { msg: msgBody }).then(() => {
+    Customer.findOneAndUpdate({phoneNumber: num}, { accepted: accepted }).then(() => {
         socket.ioObject.sockets.emit('user_replied', {
             message: 'reload'
         });

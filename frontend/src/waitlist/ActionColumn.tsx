@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { IconButton } from '@mui/material';
 import SmsIcon from '@mui/icons-material/Sms';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
 import { useWaitlistState } from '../context/Waitlist.provider';
 import { useAppState } from '../context/App.provider';
 
@@ -12,17 +13,21 @@ interface ActionColumnProps {
     party: number;
     notified: boolean;
     phoneNumber: string;
-    msg?: string;
+    accepted: boolean;
+    seated: boolean;
 }
 
-interface ActionColumnWrapperProps {
-    response: string;
-}
-
-const ActionColumnWrapper = styled.div<ActionColumnWrapperProps>`
+const ActionColumnWrapper = styled.div`
     display: flex;
-    gap: 18px;
+    gap: 8px;
     .sms {
+        color: #1976d2;
+        cursor: pointer;
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+    .seated {
         color: #1976d2;
         cursor: pointer;
         &:disabled {
@@ -60,13 +65,29 @@ function ActionColumn(props: ActionColumnProps) {
             });
     };
 
+    const seatCustomer = () => {
+        // Simple POST request with a JSON body using fetch
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: props._id, seated: true })
+        };
+        fetch(`${process.env.REACT_APP_BRICK_API}/customers/${props._id}/seated`, requestOptions)
+            .then(res => res.json())
+            .then((r) => {
+                setSnackMsg({ msg: `${props.name} has been seated and removed from the list`, severity: 'success' });
+                setDisplaySnack(true);
+                setReloadList(true);
+            });
+    };
+
     const removeCustomer = () => {
         // setList(list.filter((l) => l.phoneNumber !== phoneNumber));
         // Simple POST request with a JSON body using fetch
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: props._id })
+            body: JSON.stringify({ id: props._id, seated: props.seated })
         };
         fetch(`${process.env.REACT_APP_BRICK_API}/customers/${props._id}/delete`, requestOptions)
             .then(res => res.json())
@@ -79,22 +100,42 @@ function ActionColumn(props: ActionColumnProps) {
             });
     }
 
+    console.log('ACTION COLUMN', props);
 
     return (
-        <ActionColumnWrapper response={props.msg || ''}>
+        <ActionColumnWrapper>
             { isAdmin ? (
                 <>
-                    <IconButton
-                        onClick={(e: any) => notifyCustomer()}
-                        size={'large'}
-                        disabled={props.notified}
-                    >
-                        <SmsIcon
-                            style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
-                            className={'sms'}
-                            fontSize={'large'}
-                        />
-                    </IconButton>
+                    {
+                        !props.notified && (
+                            <IconButton
+                                onClick={(e: any) => notifyCustomer()}
+                                size={'large'}
+                                disabled={props.notified}
+                            >
+                                <SmsIcon
+                                    style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
+                                    className={'sms'}
+                                    fontSize={'large'}
+                                />
+                            </IconButton>
+                        )
+                    }
+                    {
+                        props.notified && (
+                            <IconButton
+                                onClick={(e: any) => seatCustomer()}
+                                size={'large'}
+                                disabled={props.accepted}
+                            >
+                                <AirlineSeatReclineNormalIcon
+                                    style={{color: `${props.seated ? 'gray' : '#1875D1'}`}}
+                                    className={'seated'}
+                                    fontSize={'large'}
+                                />
+                            </IconButton>
+                        )
+                    }
                     <IconButton
                         onClick={(e: any) => removeCustomer()}
                         size={'large'}

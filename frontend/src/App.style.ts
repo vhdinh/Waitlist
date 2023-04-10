@@ -10,7 +10,9 @@ export const AppWrapper = styled.div`
             color: black;
         }
         .MuiToolbar-root {
-            height: 74.23px;
+            button {
+                margin: 0 !important;
+            }
         }
     }
     @media (max-width: 660px) {
