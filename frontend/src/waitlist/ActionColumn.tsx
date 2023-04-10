@@ -13,7 +13,7 @@ interface ActionColumnProps {
     party: number;
     notified: boolean;
     phoneNumber: string;
-    accepted: boolean;
+    msg: string;
     seated: boolean;
 }
 
@@ -124,7 +124,7 @@ function ActionColumn(props: ActionColumnProps) {
                             <IconButton
                                 onClick={(e: any) => seatCustomer()}
                                 size={'large'}
-                                disabled={props.accepted}
+                                disabled={props.msg == '1' || props.msg == '6'}
                             >
                                 <AirlineSeatReclineNormalIcon
                                     style={{color: `${props.seated ? 'gray' : '#1875D1'}`}}
