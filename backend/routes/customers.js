@@ -2,9 +2,21 @@ const router = require('express').Router();
 let Customer = require('../models/customer.model');
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const socket = require('../server');
+import startOfDay from 'date-fns/startOfDay'
 
 router.route('/').get((req, res) => {
-    Customer.find({ deleted: false})
+    Customer.find()
+        .then(c => res.json(c))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/getCurrent').get((req, res) => {
+    Customer.find({
+        createdAt: {
+            $gte: startOfDay(new Date()),
+        },
+        deleted: false
+    })
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -92,7 +104,7 @@ router.route('/reply').post((req, res) => {
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
     const num = msgFrom.substring(1);
-    Customer.findOneAndUpdate({phoneNumber: num}, { msg: msgBody }).then(() => {
+    Customer.findOneAndUpdate({phoneNumber: num, deleted: false}, { msg: msgBody }).then(() => {
         socket.ioObject.sockets.emit('user_replied', {
             message: 'reload'
         });
