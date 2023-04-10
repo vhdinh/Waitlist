@@ -2,7 +2,7 @@ const router = require('express').Router();
 let Customer = require('../models/customer.model');
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const socket = require('../server');
-// const fns = require('date-fns')
+const fns = require('date-fns')
 
 router.route('/').get((req, res) => {
     Customer.find()
@@ -10,16 +10,16 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
-// router.route('/getCurrent').get((req, res) => {
-//     Customer.find({
-//         createdAt: {
-//             $gte: fns.startOfDay(new Date()),
-//         },
-//         deleted: false
-//     })
-//         .then(c => res.json(c))
-//         .catch(err => res.status(400).json('Error: ' + err));
-// });
+router.route('/getCurrent').get((req, res) => {
+    Customer.find({
+        createdAt: {
+            $gte: fns.startOfDay(new Date()),
+        },
+        deleted: false
+    })
+        .then(c => res.json(c))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
 
 router.route('/add').post((req, res) => {
     console.log('add:', req.body);
@@ -94,7 +94,7 @@ router.route('/:id/delete').post((req, res) => {
 
 router.route('/:id/seated').post((req, res) => {
     console.log('seated:', req.body);
-    Customer.findByIdAndUpdate(req.body.id, { seated: true })
+    Customer.findByIdAndUpdate(req.body.id, { seated: true, deleted: true })
         .then((r) => res.json(`${req.body.id} seated`))
         .catch((e) => res.status(400).json('error-seating-user: ' + e))
 });
