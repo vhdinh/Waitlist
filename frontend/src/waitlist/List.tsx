@@ -109,9 +109,9 @@ function List(props: ListProps) {
                     getRowClassName={(params) => {
                         let c = '';
                         // user accepts
-                        if (params.row.msg === '1' && isAdmin) {
+                        if (params.row.accepted === '1' && isAdmin) {
                             c += 'accepts';
-                        } else if (params.row.msg === '6' && isAdmin) {
+                        } else if (params.row.accepted === '6' && isAdmin) {
                             c += 'decline';
                         }
                         c += params.indexRelativeToCurrentPage % 2 === 0 ? ' Mui-even' : ' Mui-odd'

@@ -100,8 +100,6 @@ function ActionColumn(props: ActionColumnProps) {
             });
     }
 
-    console.log('ACTION COLUMN', props);
-
     return (
         <ActionColumnWrapper>
             { isAdmin ? (

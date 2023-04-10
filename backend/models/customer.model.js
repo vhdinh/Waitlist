@@ -18,8 +18,8 @@ const customerSchema = new Schema({
         required: true,
     },
     accepted: { // 1: accept 6: decline
-        type: Boolean,
-        required: true,
+        type: String,
+        required: false,
     },
     partySize: {
         type: Number,
@@ -29,7 +29,7 @@ const customerSchema = new Schema({
         type: Boolean,
         required: true,
     },
-    abandoned: {
+    deleted: {
         type: Boolean,
         required: false,
     }

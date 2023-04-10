@@ -4,7 +4,7 @@ const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWI
 const socket = require('../server');
 
 router.route('/').get((req, res) => {
-    Customer.find({ seated: false})
+    Customer.find({ deleted: false})
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -70,7 +70,7 @@ router.route('/:id/notify').post((req, res) => {
 router.route('/:id/delete').post((req, res) => {
     console.log('delete:', req.body);
     // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAITLIST
-    Customer.findByIdAndUpdate(req.body.id, {abandoned: !req.body.seated})
+    Customer.findByIdAndUpdate(req.body.id, {deleted: true})
         .then((r) => res.json(`${req.body.id} deleted`))
         .catch((e) => res.status(400).json('error-deleting-user: ' + e))
     // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAITLIST
@@ -90,9 +90,8 @@ router.route('/:id/seated').post((req, res) => {
 router.route('/reply').post((req, res) => {
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
-    const accepted = msgBody == '1' ? true : false;
     const num = msgFrom.substring(1);
-    Customer.findOneAndUpdate({phoneNumber: num}, { accepted: accepted }).then(() => {
+    Customer.findOneAndUpdate({phoneNumber: num}, { accepted: msgBody }).then(() => {
         socket.ioObject.sockets.emit('user_replied', {
             message: 'reload'
         });
