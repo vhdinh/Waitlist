@@ -87,7 +87,7 @@ function ActionColumn(props: ActionColumnProps) {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: props._id, seated: props.seated })
+            body: JSON.stringify({ id: props._id })
         };
         fetch(`${process.env.REACT_APP_BRICK_API}/customers/${props._id}/delete`, requestOptions)
             .then(res => res.json())

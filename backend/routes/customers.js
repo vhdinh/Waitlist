@@ -20,8 +20,9 @@ router.route('/add').post((req, res) => {
         phoneNumber: phoneNumber,
         partySize: partySize,
         notified: false,
-        accepted: false,
+        msg: '',
         seated: false,
+        deleted: false,
     });
 
     newCustomer.save()
@@ -91,7 +92,7 @@ router.route('/reply').post((req, res) => {
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
     const num = msgFrom.substring(1);
-    Customer.findOneAndUpdate({phoneNumber: num}, { accepted: msgBody }).then(() => {
+    Customer.findOneAndUpdate({phoneNumber: num}, { msg: msgBody }).then(() => {
         socket.ioObject.sockets.emit('user_replied', {
             message: 'reload'
         });

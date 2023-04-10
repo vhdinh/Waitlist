@@ -17,7 +17,7 @@ const customerSchema = new Schema({
         type: Boolean,
         required: true,
     },
-    accepted: { // 1: accept 6: decline
+    msg: { // 1: accept 6: decline
         type: String,
         required: false,
     },
