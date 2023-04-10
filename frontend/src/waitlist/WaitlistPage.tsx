@@ -39,7 +39,7 @@ function WaitlistPage() {
 
     const getWaitList = () => {
         // Simple GET request with a JSON body using fetch
-        fetch(`${process.env.REACT_APP_BRICK_API}/customers/getCurrent`)
+        fetch(`${process.env.REACT_APP_BRICK_API}/customers`)
             .then(res => res.json())
             .then((r) => {
                 setList(r);
