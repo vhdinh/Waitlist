@@ -46,15 +46,28 @@ export const WaitlistPageWrapper = styled.div`
                 height: 75px !important;
                 max-height: 75px !important;
             }
-            @media (max-width: 660px) {
+            @media (max-width: 820px) {
                 .MuiDataGrid-columnHeaderTitle, .MuiDataGrid-cellContent {
-                    font-size: 12px;
-                    padding: 12px;
+                    font-size: 18px;
+                    padding: 8px;
                 }
                 .MuiDataGrid-columnHeader, .MuiDataGrid-row, .MuiDataGrid-cell {
                     height: 50px !important;
                     max-height: 50px !important;
                 }
+            }
+            @media (max-width: 660px) {
+                .MuiDataGrid-columnHeaderTitle, .MuiDataGrid-cellContent {
+                    font-size: 12px;
+                    padding: 8px;
+                }
+                .MuiDataGrid-columnHeader, .MuiDataGrid-row, .MuiDataGrid-cell {
+                    height: 50px !important;
+                    max-height: 50px !important;
+                }
+            }
+            .MuiDataGrid-cell:focus {
+                outline: none !important;
             }
             .MuiDataGrid-columnSeparator {
                 display: none;

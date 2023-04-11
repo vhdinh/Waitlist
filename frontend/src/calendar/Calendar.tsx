@@ -82,11 +82,11 @@ function Calendar() {
                                 ? "disabled"
                                 : isSameDay(day, state.selectedDate) ? "selected" : ""
                         }`}
-                        // key={day}
+                        key={day.toDateString()}
                         onClick={() => onDateClick(cloneDay)}
                     >
                         <span className="number">{formattedDate}</span>
-                        <span className="bg">{formattedDate}</span>
+                        {/*<span className="bg">{formattedDate}</span>*/}
                     </div>
                 );
                 day = addDays(day, 1);
@@ -94,7 +94,7 @@ function Calendar() {
             rows.push(
                 <div
                     className="row"
-                    // key={day}
+                    key={day.toDateString()}
                 >
                     {days}
                 </div>

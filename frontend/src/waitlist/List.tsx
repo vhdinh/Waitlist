@@ -5,8 +5,9 @@ import ActionColumn from './ActionColumn';
 import styled from '@emotion/styled';
 import { useAppState } from '../context/App.provider';
 import CircleIcon from '@mui/icons-material/Circle';
+import PhoneNumberColumn from './PhoneNumberColumn';
 
-const getColumns = (): GridColDef[] => {
+const getColumns = (isAdmin: boolean): GridColDef[] => {
     const arr: GridColDef[] = [
         {
             field: 'name',
@@ -17,25 +18,42 @@ const getColumns = (): GridColDef[] => {
         },
         {
             field: 'partySize',
-            headerName: 'Party Size',
+            headerName: 'Party',
             headerAlign: 'left',
             type: 'number',
             editable: true,
             sortable: false,
             flex: 1,
             align: 'left',
-        },
-        {
-            field: 'action',
-            headerName: '', // @ts-ignore
-            renderCell: (params: GridRenderCellParams) => {
-                return <ActionColumn {...params.row} />
-            },
-            sortable: false,
-            align: 'right',
-            width: 150,
         }
     ];
+
+    if (isAdmin) {
+        arr.push(
+            {
+                field: 'phoneNumber',
+                headerName: 'Phone', // @ts-ignore
+                renderCell: (params: GridRenderCellParams) => {
+                    return <PhoneNumberColumn {...params.row} />
+                },
+                sortable: false,
+                flex: 1,
+                align: 'left',
+            }
+        )
+        arr.push(
+            {
+                field: 'action',
+                headerName: '', // @ts-ignore
+                renderCell: (params: GridRenderCellParams) => {
+                    return <ActionColumn {...params.row} />
+                },
+                sortable: false,
+                align: 'right',
+                width: 150,
+            }
+        )
+    }
     return arr;
 }
 
@@ -92,7 +110,7 @@ function List(props: ListProps) {
             <Box sx={{ height: 'calc(100vh - 400px)', width: '100%' }}>
                 <DataGrid
                     rows={props.list}
-                    columns={getColumns()}
+                    columns={getColumns(isAdmin)}
                     // initialState={{
                     //     pagination: {
                     //         paginationModel: {
@@ -106,6 +124,7 @@ function List(props: ListProps) {
                     hideFooterPagination
                     hideFooterSelectedRowCount
                     hideFooter
+                    rowSelection={false}
                     getRowId={(row) => row._id}
                     getRowClassName={(params) => {
                         let c = '';

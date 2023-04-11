@@ -101,6 +101,12 @@ function AddToListModal(props: AddToListModalProps) {
         }))
     };
 
+    const handleKeyPress = (e: any) => {
+        if (e.charCode === 13) {
+            handleNext(e);
+        }
+    }
+
     const handleNext = (e: any) => {
         e.preventDefault();
         if (activeStep < 2) {
@@ -280,6 +286,7 @@ function AddToListModal(props: AddToListModalProps) {
                                         type="tel"
                                         value={state.party}
                                         onChange={handlePartyChange}
+                                        onKeyPress={handleKeyPress}
                                         autoComplete={'off'}
                                         inputProps={{style: {fontSize: 24}}} // font size of input text
                                         InputLabelProps={{style: {fontSize: 24}}} // font size of input label
@@ -305,6 +312,7 @@ function AddToListModal(props: AddToListModalProps) {
                                             name={'name'}
                                             value={state.name}
                                             onChange={handleNameChange}
+                                            onKeyPress={handleKeyPress}
                                             autoComplete={'off'}
                                             inputProps={{style: {fontSize: 24}}} // font size of input text
                                             InputLabelProps={{style: {fontSize: 24}}} // font size of input label
@@ -331,6 +339,7 @@ function AddToListModal(props: AddToListModalProps) {
                                             type={'tel'}
                                             value={state.phoneNumber}
                                             onChange={handlePhoneChange}
+                                            onKeyPress={handleKeyPress}
                                             autoComplete={'off'}
                                             inputProps={{style: {fontSize: 24}}} // font size of input text
                                             InputLabelProps={{style: {fontSize: 24}}} // font size of input label

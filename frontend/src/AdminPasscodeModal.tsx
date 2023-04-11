@@ -25,6 +25,12 @@ function AdminPasscodeModal() {
         setDisplayAdminDialog(false);
     }
 
+    const handleKeyPress = (e: any) => {
+        if (e.charCode === 13) {
+            handleSubmit(e);
+        }
+    }
+
     return (
         <Dialog
             open={displayAdminDialog}
@@ -48,6 +54,7 @@ function AdminPasscodeModal() {
                         type="password"
                         value={adminPasscode}
                         onChange={handleChange}
+                        onKeyPress={handleKeyPress}
                         autoComplete={'off'}
                         inputProps={{
                             style: {fontSize: 24},
