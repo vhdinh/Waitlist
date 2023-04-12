@@ -7,7 +7,6 @@ interface PhoneNumberColumnProps {
     notified: boolean;
     phoneNumber: string;
     msg: string;
-    seated: boolean;
 }
 
 const phoneNumberAutoFormat = (phoneNumber: string): string => {

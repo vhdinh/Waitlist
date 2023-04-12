@@ -9,7 +9,7 @@ import {
 import { useAppState } from './context/App.provider';
 
 function AdminPasscodeModal() {
-    const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin } = useAppState();
+    const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin, setRole } = useAppState();
     const [adminPasscode, setAdminPasscode] = useState('');
 
     const handleChange = (e: any) => {
@@ -18,7 +18,11 @@ function AdminPasscodeModal() {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        if (adminPasscode === process.env.REACT_APP_ADMIN_PASSCODE) {
+        if (adminPasscode === process.env.REACT_APP_EMPLOYEE_PASSCODE) {
+            setRole('employee');
+            setIsAdmin(true);
+        } else if (adminPasscode === process.env.REACT_APP_ADMIN_PASSCODE) {
+            setRole('admin');
             setIsAdmin(true);
         }
         setAdminPasscode('');

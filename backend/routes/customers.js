@@ -33,7 +33,6 @@ router.route('/add').post((req, res) => {
         partySize: partySize,
         notified: false,
         msg: '',
-        seated: false,
         deleted: false,
     });
 
@@ -82,7 +81,7 @@ router.route('/:id/notify').post((req, res) => {
 });
 router.route('/:id/delete').post((req, res) => {
     console.log('delete:', req.body);
-    // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAITLIST
+    // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAIT LIST
     Customer.findByIdAndUpdate(req.body.id, {deleted: true})
         .then((r) => res.json(`${req.body.id} deleted`))
         .catch((e) => res.status(400).json('error-deleting-user: ' + e))
@@ -91,14 +90,6 @@ router.route('/:id/delete').post((req, res) => {
     //     .then((r) => res.json(`${req.body.id} deleted`))
     //     .catch((e) => res.status(400).json('error-deleting-user: ' + e))
 });
-
-router.route('/:id/seated').post((req, res) => {
-    console.log('seated:', req.body);
-    Customer.findByIdAndUpdate(req.body.id, { seated: true, deleted: true })
-        .then((r) => res.json(`${req.body.id} seated`))
-        .catch((e) => res.status(400).json('error-seating-user: ' + e))
-});
-
 
 router.route('/reply').post((req, res) => {
     const msgFrom = req.body.From;

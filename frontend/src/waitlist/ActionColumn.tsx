@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import { IconButton } from '@mui/material';
 import SmsIcon from '@mui/icons-material/Sms';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
 import { useWaitlistState } from '../context/Waitlist.provider';
 import { useAppState } from '../context/App.provider';
 
@@ -14,20 +13,12 @@ interface ActionColumnProps {
     notified: boolean;
     phoneNumber: string;
     msg: string;
-    seated: boolean;
 }
 
 const ActionColumnWrapper = styled.div`
     display: flex;
     gap: 8px;
     .sms {
-        color: #1976d2;
-        cursor: pointer;
-        &:disabled {
-            cursor: not-allowed;
-        }
-    }
-    .seated {
         color: #1976d2;
         cursor: pointer;
         &:disabled {
@@ -60,22 +51,6 @@ function ActionColumn(props: ActionColumnProps) {
             .then(res => res.json())
             .then((r) => {
                 setSnackMsg({ msg: `${props.name} has been notified`, severity: 'success' });
-                setDisplaySnack(true);
-                setReloadList(true);
-            });
-    };
-
-    const seatCustomer = () => {
-        // Simple POST request with a JSON body using fetch
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: props._id, seated: true })
-        };
-        fetch(`${process.env.REACT_APP_BRICK_API}/customers/${props._id}/seated`, requestOptions)
-            .then(res => res.json())
-            .then((r) => {
-                setSnackMsg({ msg: `${props.name} has been seated and removed from the list`, severity: 'success' });
                 setDisplaySnack(true);
                 setReloadList(true);
             });
@@ -114,21 +89,6 @@ function ActionColumn(props: ActionColumnProps) {
                                 <SmsIcon
                                     style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
                                     className={'sms'}
-                                    fontSize={'large'}
-                                />
-                            </IconButton>
-                        )
-                    }
-                    {
-                        props.notified && (
-                            <IconButton
-                                onClick={(e: any) => seatCustomer()}
-                                size={'large'}
-                                disabled={props.msg === '' || props.msg == '6' || props.seated}
-                            >
-                                <AirlineSeatReclineNormalIcon
-                                    style={{color: `${props.seated ? 'gray' : '#1875D1'}`}}
-                                    className={'seated'}
                                     fontSize={'large'}
                                 />
                             </IconButton>

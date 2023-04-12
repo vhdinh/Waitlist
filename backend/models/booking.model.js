@@ -17,6 +17,14 @@ const bookingSchema = new Schema({
         type: Boolean,
         required: true,
     },
+    startTime: {
+        type: Number,
+        required:true
+    },
+    endTime: {
+        type: Number,
+        required:true
+    },
     msg: { // 1: accept 6: decline
         type: String,
         required: false,

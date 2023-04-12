@@ -25,10 +25,6 @@ const customerSchema = new Schema({
         type: Number,
         required: true,
     },
-    seated: {
-        type: Boolean,
-        required: true,
-    },
     deleted: {
         type: Boolean,
         required: false,
