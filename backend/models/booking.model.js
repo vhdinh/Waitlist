@@ -33,6 +33,10 @@ const bookingSchema = new Schema({
         type: Number,
         required: true,
     },
+    deleted: {
+        type: Boolean,
+        required: false,
+    },
     note: {
         type: String,
         required: false,

@@ -21,13 +21,15 @@ function WaitlistPage() {
     const timer = useAutoTimer(120); // 120 seconds
     const [list, setList] = useState([]);
 
-
     const { isAdmin, role } = useAppState();
     const { reloadList, setReloadList, openAddToListModal, setOpenAddToListModal } = useWaitlistState();
-    console.log('ROLEEE', role);
+
     useEffect(() => {
         if (timer === 0) {
             setOpenAddToListModal(false);
+        }
+        if (timer === 10) {
+            getWaitList();
         }
     }, [timer])
 

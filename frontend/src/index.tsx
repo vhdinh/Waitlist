@@ -11,6 +11,7 @@ import WaitlistPage from './waitlist/WaitlistPage';
 import { AppProvider } from './context/App.provider';
 import { WaitlistProvider } from './context/Waitlist.provider';
 import CalendarPage from './calendar/CalendarPage';
+import { CalendarProvider } from './context/Calendar.provider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -22,7 +23,9 @@ const router = createBrowserRouter([
         element: (
             <AppProvider>
                 <WaitlistProvider>
-                    <App/>
+                    <CalendarProvider>
+                        <App/>
+                    </CalendarProvider>
                 </WaitlistProvider>
             </AppProvider>
         ),

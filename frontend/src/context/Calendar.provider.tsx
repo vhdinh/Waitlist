@@ -8,6 +8,8 @@ import React, {
 } from 'react';
 
 export type CalendarState = {
+    openCalendarOverview: boolean;
+    setOpenCalendarOverview: Dispatch<SetStateAction<boolean>>;
 };
 
 const CalendarContext = createContext<CalendarState>(
@@ -19,10 +21,14 @@ CalendarContext.displayName = 'CalendarContext';
 export const CalendarProvider = ({
      children,
 }: PropsWithChildren<Record<string, unknown>>) => {
+    const [openCalendarOverview, setOpenCalendarOverview] = useState(false);
 
     return (
         <CalendarContext.Provider
-            value={{}}
+            value={{
+                openCalendarOverview,
+                setOpenCalendarOverview
+            }}
         >
             {children}
         </CalendarContext.Provider>

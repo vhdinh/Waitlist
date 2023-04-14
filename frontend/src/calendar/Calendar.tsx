@@ -16,13 +16,30 @@ import { CalendarWrapper } from './Calendar.style';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
+export interface Booking {
+    _id: string;
+    name: string;
+    phoneNumber: number;
+    partySize: number;
+    notified: boolean;
+    msg: string;
+    deleted: boolean;
+    startTime: number;
+    formatStart?: string;
+    endTime: number;
+    formatEnd?: string;
+    note: string;
+    createdAt: string;
+    updatedAt: string;
+    key?: number;
+}
+
 const initialState = {
     currentMonth: new Date(),
-    selectedDate: new Date()
+    selectedDate: new Date().setUTCHours(0,0,0,0),
 };
 
 function Calendar() {
-
     const [state, setState] = useState(initialState)
 
     const renderHeader = () => {
@@ -105,7 +122,8 @@ function Calendar() {
     }
 
     const onDateClick = (day: any) => {
-        const d = parse(day.getDate().toString(), 'd', new Date())
+        const d = parse(day.getDate().toString(), 'd', new Date());
+        console.log('DDD', d);
     }
 
     const nextMonth = () => {

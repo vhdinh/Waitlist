@@ -45,8 +45,10 @@ const socketIoObject = io;
 module.exports.ioObject = socketIoObject;
 
 const customersRouter = require('./routes/customers');
+const bookingRouter = require('./routes/booking');
 
 app.use('/customers', customersRouter);
+app.use('/booking', bookingRouter);
 
 server.listen(process.env.PORT || 5000, () => {
     console.log(`Server is running on port: ${process.env.PORT || 5000}`);

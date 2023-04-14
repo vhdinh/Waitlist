@@ -24,3 +24,12 @@ code {
         font-size: 16px !important;
     }
 }
+
+.calendar-overview .MuiPaper-root {
+    /*background: transparent;*/
+    height: 50%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+}

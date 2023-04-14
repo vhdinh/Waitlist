@@ -79,21 +79,17 @@ function ActionColumn(props: ActionColumnProps) {
         <ActionColumnWrapper>
             { isAdmin ? (
                 <>
-                    {
-                        !props.notified && (
-                            <IconButton
-                                onClick={(e: any) => notifyCustomer()}
-                                size={'large'}
-                                disabled={props.notified}
-                            >
-                                <SmsIcon
-                                    style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
-                                    className={'sms'}
-                                    fontSize={'large'}
-                                />
-                            </IconButton>
-                        )
-                    }
+                    <IconButton
+                        onClick={(e: any) => notifyCustomer()}
+                        size={'large'}
+                        disabled={props.notified}
+                    >
+                        <SmsIcon
+                            style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
+                            className={'sms'}
+                            fontSize={'large'}
+                        />
+                    </IconButton>
                     <IconButton
                         onClick={(e: any) => removeCustomer()}
                         size={'large'}

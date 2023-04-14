@@ -32,7 +32,7 @@ const pages = [
     {
         label: 'Waitlist',
         url: '/',
-        role: []
+        role: ['employee', 'admin']
     },
     {
         label: 'Reservations',
@@ -48,7 +48,9 @@ function App() {
         snackMsg,
         isAdmin,
         setIsAdmin,
-        setDisplayAdminDialog
+        setDisplayAdminDialog,
+        role,
+        setRole
     } = useAppState();
     const { setReloadList } = useWaitlistState();
     const navigate = useNavigate();
@@ -69,6 +71,7 @@ function App() {
             return setDisplayAdminDialog(true);
         } else {
             setIsAdmin(false);
+            setRole('');
         }
     };
 
@@ -97,7 +100,7 @@ function App() {
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }} style={{justifyContent: 'center'}}>
                             {pages.map((page, index) => {
-                                if (isAdmin) {
+                                if (page.role.includes(role)) {
                                     return (
                                         <Button
                                             key={index}
