@@ -1,14 +1,13 @@
 import React from 'react';
 import Calendar from './Calendar';
 import CalendarOverview from './CalendarOverview';
-import { useCalendarState } from '../context/Calendar.provider';
 
 function CalendarPage() {
     return (
-        <>
+        <div className={'calendar-page'}>
             <Calendar />
             <CalendarOverview />
-        </>
+        </div>
     )
 }
 

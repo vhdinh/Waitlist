@@ -81,7 +81,6 @@ export const AppWrapper = styled.div`
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
-                align-content: 
                 font-size: 24px;
                 align-items: center;
                 border-bottom: 1px solid gray;
@@ -92,7 +91,7 @@ export const AppWrapper = styled.div`
                 .party {
                     display: flex;
                     align-items: center;
-                    align-content: left;
+                    //align-content: left;
                     gap: 12px;
                     width: 20%;
                 }

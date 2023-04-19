@@ -10,7 +10,13 @@ const server = http.createServer(app)
 
 require('dotenv').config();
 
-app.use(cors());
+const corsOptions = {
+    AccessControlAllowOrigin: '*',
+    origin: `${process.env.UI_URL}`,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+}
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))

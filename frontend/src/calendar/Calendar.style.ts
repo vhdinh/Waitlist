@@ -139,7 +139,7 @@ export const CalendarWrapper = styled.div`
     }
     
     .calendar .header .icon:hover {
-        transform: scale(1.75);
+        transform: scale(2.5);
         transition: .25s ease-out;
         color: var(--main-color);
     }
@@ -201,6 +201,21 @@ export const CalendarWrapper = styled.div`
         top: .75em;
         right: .75em;
         font-weight: 700;
+    }
+    .calendar .body .cell .res {
+      //display: flex;
+      //justify-content: start;
+      //align-items: center;
+      //height: 100%;
+      //width: 100%;
+      //padding: 25px;
+      //gap: 8px;
+      color: gray;
+      position: absolute;
+      top: 30px;
+      left:35%;
+      display: flex;
+      align-items: center;
     }
     
     .calendar .body .disabled {

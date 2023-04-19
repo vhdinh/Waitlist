@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     format,
     parse,
@@ -15,32 +15,44 @@ import {
 import { CalendarWrapper } from './Calendar.style';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
-export interface Booking {
-    _id: string;
-    name: string;
-    phoneNumber: number;
-    partySize: number;
-    notified: boolean;
-    msg: string;
-    deleted: boolean;
-    startTime: number;
-    formatStart?: string;
-    endTime: number;
-    formatEnd?: string;
-    note: string;
-    createdAt: string;
-    updatedAt: string;
-    key?: number;
-}
-
-const initialState = {
-    currentMonth: new Date(),
-    selectedDate: new Date().setUTCHours(0,0,0,0),
-};
+import {StartOfToday, Today, useCalendarState} from "../context/Calendar.provider";
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
+import {Booking} from "./Calendar.type";
 
 function Calendar() {
-    const [state, setState] = useState(initialState)
+    const {
+        displayMonth,
+        currentMonth,
+        setCurrentMonth,
+        selectedDate,
+        setSelectedDate,
+        reloadCalendar,
+        setReloadCalendar
+    } = useCalendarState();
+    const [ currentMonthBookings, setCurrentMonthBookings ] = useState<Booking[]>([]);
+    console.log('current Month', currentMonth);
+
+    useEffect(() => {
+        getCurrentMonthBooking()
+    }, [currentMonth])
+
+    useEffect(() => {
+        if (reloadCalendar) {
+            getCurrentMonthBooking();
+            setReloadCalendar(false);
+        }
+    }, [reloadCalendar])
+
+    const getCurrentMonthBooking = () => {
+        // Simple GET request with a JSON body using fetch
+        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getMonth/${currentMonth.getTime()}`)
+            .then(res => res.json())
+            .then((r) => {
+                console.log('GOT MONTH BOOKING', r);
+                setCurrentMonthBookings(r);
+            });
+    }
 
     const renderHeader = () => {
         const dateFormat = "MMMM yyyy";
@@ -49,9 +61,15 @@ function Calendar() {
                 <div className="col col-start" onClick={prevMonth}>
                     <ChevronLeftIcon className="icon"/>
                 </div>
+                {/*<button onClick={() => setCurrentMonth(new Date())}>Today</button>*/}
                 <div className="col col-center">
-                    <span>
-                      {format(state.currentMonth, dateFormat)}
+                    <span
+                        onClick={() => {
+                            setCurrentMonth(Today);
+                            setSelectedDate(StartOfToday);
+                        }}
+                    >
+                      {format(currentMonth, dateFormat)}
                     </span>
                 </div>
                 <div className="col col-end" onClick={nextMonth}>
@@ -64,7 +82,7 @@ function Calendar() {
     const renderDays = () => {
         const dateFormat = "EEEE";
         const days = [];
-        let startDate = startOfWeek(state.currentMonth);
+        let startDate = startOfWeek(currentMonth);
         for (let i = 0; i < 7; i++) {
             days.push(
                 <div className="col col-center" key={i}>
@@ -77,7 +95,7 @@ function Calendar() {
     }
 
     const renderCells = () => {
-        const monthStart = startOfMonth(state.currentMonth);
+        const monthStart = startOfMonth(currentMonth);
         const monthEnd = endOfMonth(monthStart);
         const startDate = startOfWeek(monthStart);
         const endDate = endOfWeek(monthEnd);
@@ -87,23 +105,35 @@ function Calendar() {
         let days = [];
         let day = startDate;
         let formattedDate = "";
-
         while (day <= endDate) {
             for (let i = 0; i < 7; i++) {
                 formattedDate = format(day, dateFormat);
                 const cloneDay = day;
+                let tomorrow =  new Date(cloneDay)
+                tomorrow.setDate(day.getDate() + 1);
+
+                const numOfBookingForDay = currentMonthBookings?.filter((b) => {
+                    return b.startTime > cloneDay.getTime() && b.endTime < tomorrow.getTime();
+                })
                 days.push(
                     <div
                         className={`col cell ${
                             !isSameMonth(day, monthStart)
                                 ? "disabled"
-                                : isSameDay(day, state.selectedDate) ? "selected" : ""
+                                : isSameDay(day, selectedDate) ? "selected" : ""
                         }`}
                         key={day.toDateString()}
                         onClick={() => onDateClick(cloneDay)}
                     >
                         <span className="number">{formattedDate}</span>
                         {/*<span className="bg">{formattedDate}</span>*/}
+                        {
+                            numOfBookingForDay.length > 0 && (
+                                <span className='res'>
+                                    {numOfBookingForDay.length} <DinnerDiningIcon />
+                                </span>
+                            )
+                        }
                     </div>
                 );
                 day = addDays(day, 1);
@@ -123,23 +153,16 @@ function Calendar() {
 
     const onDateClick = (day: any) => {
         const d = parse(day.getDate().toString(), 'd', new Date());
-        console.log('DDD', d);
+        setSelectedDate(day.getTime());
     }
 
     const nextMonth = () => {
-        setState({
-            ...state,
-            currentMonth: addMonths(state.currentMonth, 1)
-        });
+        setCurrentMonth(addMonths(currentMonth, 1));
     }
 
     const prevMonth = () => {
-        setState({
-            ...state,
-            currentMonth: subMonths(state.currentMonth, 1)
-        });
+        setCurrentMonth(subMonths(currentMonth, 1));
     }
-
 
     return (
         <CalendarWrapper >

@@ -9,7 +9,7 @@ interface PhoneNumberColumnProps {
     msg: string;
 }
 
-const phoneNumberAutoFormat = (phoneNumber: string): string => {
+export const phoneNumberAutoFormat = (phoneNumber: string): string => {
     const number = phoneNumber.trim().replace(/[^0-9]/g, "");
 
     if (number.length < 4) return number;
