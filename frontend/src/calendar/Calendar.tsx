@@ -19,6 +19,7 @@ import {StartOfToday, Today, useCalendarState} from "../context/Calendar.provide
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import {Booking} from "./Calendar.type";
+import {useAppState} from "../context/App.provider";
 
 function Calendar() {
     const {
@@ -31,7 +32,6 @@ function Calendar() {
         setReloadCalendar
     } = useCalendarState();
     const [ currentMonthBookings, setCurrentMonthBookings ] = useState<Booking[]>([]);
-    console.log('current Month', currentMonth);
 
     useEffect(() => {
         getCurrentMonthBooking()
@@ -61,7 +61,6 @@ function Calendar() {
                 <div className="col col-start" onClick={prevMonth}>
                     <ChevronLeftIcon className="icon"/>
                 </div>
-                {/*<button onClick={() => setCurrentMonth(new Date())}>Today</button>*/}
                 <div className="col col-center">
                     <span
                         onClick={() => {

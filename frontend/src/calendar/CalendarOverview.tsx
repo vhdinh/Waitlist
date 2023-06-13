@@ -7,6 +7,7 @@ import {useCalendarState} from "../context/Calendar.provider";
 import { Typography, Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
+import {useAppState} from "../context/App.provider";
 interface CalendarOverviewProps {
 }
 
@@ -29,6 +30,7 @@ const CalendarOverviewWrapper = styled.div`
 `;
 
 function CalendarOverview(props: CalendarOverviewProps) {
+    const { isAdmin } = useAppState();
     const {selectedDate, setReloadCalendar, reloadCalendar} = useCalendarState();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
@@ -45,7 +47,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
 
     const getBooking = () => {
         // Simple GET request with a JSON body using fetch
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${selectedDate}`)
+        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${selectedDate}/${isAdmin}`)
             .then(res => res.json())
             .then((r) => {
                 const f = new Intl.DateTimeFormat('en-us', {

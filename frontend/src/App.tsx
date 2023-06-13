@@ -24,6 +24,7 @@ import { useAppState } from './context/App.provider';
 import AdminPasscodeModal from './AdminPasscodeModal';
 import io from 'socket.io-client';
 import { useWaitlistState } from './context/Waitlist.provider';
+import {useCalendarState} from "./context/Calendar.provider";
 
 // @ts-ignore
 const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
@@ -53,6 +54,7 @@ function App() {
         setRole
     } = useAppState();
     const { setReloadList } = useWaitlistState();
+    const { setReloadCalendar } = useCalendarState();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -71,6 +73,8 @@ function App() {
             return setDisplayAdminDialog(true);
         } else {
             setIsAdmin(false);
+            setReloadList(true);
+            setReloadCalendar(true);
             setRole('');
         }
     };

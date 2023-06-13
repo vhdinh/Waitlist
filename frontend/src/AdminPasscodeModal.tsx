@@ -7,9 +7,11 @@ import {
     DialogTitle, FormControl, TextField, Typography
 } from '@mui/material';
 import { useAppState } from './context/App.provider';
+import {useCalendarState} from "./context/Calendar.provider";
 
 function AdminPasscodeModal() {
-    const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin, setRole } = useAppState();
+    const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin, setRole, } = useAppState();
+    const { setReloadCalendar } = useCalendarState();
     const [adminPasscode, setAdminPasscode] = useState('');
 
     const handleChange = (e: any) => {
@@ -24,6 +26,7 @@ function AdminPasscodeModal() {
         } else if (adminPasscode === process.env.REACT_APP_ADMIN_PASSCODE) {
             setRole('admin');
             setIsAdmin(true);
+            setReloadCalendar(true);
         }
         setAdminPasscode('');
         setDisplayAdminDialog(false);
