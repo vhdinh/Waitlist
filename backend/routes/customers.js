@@ -95,25 +95,34 @@ router.route('/reply').post((req, res) => {
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
     const num = msgFrom.substring(1);
-    Customer.findOneAndUpdate({phoneNumber: num, deleted: false}, { msg: msgBody }).then(() => {
-        socket.ioObject.sockets.emit('user_replied', {
-            message: 'reload'
-        });
-        let rspMsg = '';
-        if(msgBody == '1') {
-            rspMsg = `Thank you, please check in to be seated promptly.`
-        } else if (msgBody == '6') {
-            rspMsg = `Thank you, you have been removed from the waitlist.`
-        }
-        // // if we want to respond to user with another msg
-        res.send(`
-                <Response>
-                    <Message>
-                        ${rspMsg}
-                    </Message>
-                </Response>
-            `);
-
+    console.log(`webhook user replied from: ${msgFrom}, number: ${num}, msg: ${msgBody}`);
+    Customer.findOneAndUpdate(
+        {
+            phoneNumber: num,
+            deleted: false,
+            createdAt: {
+                $gte: fns.startOfDay(new Date()),
+            },
+        },{ msg: msgBody }).then(() => {
+            socket.ioObject.sockets.emit('user_replied', {
+                message: 'reload'
+            });
+            let rspMsg = '';
+            if(msgBody == '1') {
+                console.log('notification: user accepted ', msgBody);
+                rspMsg = `Thank you, please check in to be seated promptly.`
+            } else if (msgBody == '6') {
+                console.log('notification: user rejected ', msgBody);
+                rspMsg = `Thank you, you have been removed from the waitlist.`
+            }
+            // // if we want to respond to user with another msg
+            res.send(`
+                    <Response>
+                        <Message>
+                            ${rspMsg}
+                        </Message>
+                    </Response>
+                `);
     })
 })
 
