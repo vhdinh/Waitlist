@@ -13,6 +13,7 @@ interface CalendarOverviewProps {
 
 const CalendarOverviewWrapper = styled.div`
   width: 100%;
+  height: 100%;
   padding: 16px 0;
   .co-header {
     display: flex;
@@ -21,6 +22,9 @@ const CalendarOverviewWrapper = styled.div`
     margin-bottom: 8px;
     button {
       background: black;
+      &:disabled {
+        background: unset;
+      }
     }
     .actions {
       display: flex;
@@ -89,6 +93,19 @@ function CalendarOverview(props: CalendarOverviewProps) {
 
     const renderEachBooking = () => {
         return (
+            bookings.length > 0 ? (
+                <div className={'bookings'}>
+                    {
+                        bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} />)
+                    }
+                </div>
+            ) : (
+                <div className={'bookings_empty'}>
+                    No reservations for today
+                </div>
+            )
+        )
+        return (
             <div className={'bookings'}>
                 {
                     bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} />)
@@ -105,12 +122,23 @@ function CalendarOverview(props: CalendarOverviewProps) {
         )
     }
 
+    const getActionButtonDisabledState = (): boolean => {
+        const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+        const todayStartNow = todayStart.getTime();
+        // disable the button for any day in the past
+        if (selectedDate >= todayStartNow) {
+            return false;
+        }
+        return true;
+    }
+
     const displayActionButtons = () => {
         if (!displayAddNewBooking) {
             return (
                 <Button
                     onClick={() => setDisplayAddNewBooking(true)}
                     variant="contained"
+                    disabled={getActionButtonDisabledState()}
                     startIcon={<AddIcon />}
                 >
                     Booking
@@ -144,7 +172,6 @@ function CalendarOverview(props: CalendarOverviewProps) {
                     {format(selectedDate, 'MMMM dd')}
                 </Typography>
                 {displayActionButtons()}
-
             </div>
             {displayAddNewBooking ? renderNewBooking() : renderEachBooking()}
         </CalendarOverviewWrapper>
