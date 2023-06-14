@@ -17,9 +17,15 @@ const customerSchema = new Schema({
         type: Boolean,
         required: true,
     },
+    notifiedAt: {
+        type: Date,
+    },
     msg: { // 1: accept 6: decline
         type: String,
         required: false,
+    },
+    msgAt: {
+        type: Date,
     },
     partySize: {
         type: Number,

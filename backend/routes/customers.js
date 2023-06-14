@@ -22,7 +22,7 @@ router.route('/getCurrent').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
-    console.log('add:', req.body);
+    console.log('route /add:', req.body);
     const name = req.body.name;
     const phoneNumber = req.body.phoneNumber;
     const partySize = req.body.partySize;
@@ -62,7 +62,7 @@ router.route('/add').post((req, res) => {
 });
 
 router.route('/:id/notify').post((req, res) => {
-    console.log('notify:', req.body);
+    console.log('route /notify:', req.body);
     Customer.findById(req.body.id).then((c) => {
         client.messages
             .create({
@@ -73,7 +73,7 @@ router.route('/:id/notify').post((req, res) => {
             })
             .then((message) => {
                 console.log('notify-success: ', message);
-                Customer.findByIdAndUpdate(req.body.id, { notified: true })
+                Customer.findByIdAndUpdate(req.body.id, { notified: true, notifiedAt: new Date() })
                     .then((r) => res.json(`${req.body.id} notified`))
                     .catch((e) => res.status(400).json(`error-update-notified: ${req.body.id} notified updated failed`));
             }).catch((e) => res.status(400).json('error-notifying-user: ' + e));
@@ -103,7 +103,7 @@ router.route('/reply').post((req, res) => {
             createdAt: {
                 $gte: fns.startOfDay(new Date()),
             },
-        },{ msg: msgBody }).then(() => {
+        },{ msg: msgBody, msgAt: new Date() }).then(() => {
             socket.ioObject.sockets.emit('user_replied', {
                 message: 'reload'
             });
