@@ -20,6 +20,7 @@ import { useWaitlistState } from '../context/Waitlist.provider';
 function WaitlistPage() {
     const timer = useAutoTimer(120); // 120 seconds
     const [list, setList] = useState([]);
+    const [timedOut, setTimedOut] = useState(false);
 
     const { isAdmin, role } = useAppState();
     const { reloadList, setReloadList, openAddToListModal, setOpenAddToListModal } = useWaitlistState();
@@ -27,8 +28,10 @@ function WaitlistPage() {
     useEffect(() => {
         if (timer === 0) {
             setOpenAddToListModal(false);
+            setTimedOut(true);
         }
-        if (timer === 10) {
+        // check if we are timed out and if timer has reset
+        if (timedOut && timer > 119) {
             getWaitList();
         }
     }, [timer])
@@ -45,6 +48,7 @@ function WaitlistPage() {
             .then(res => res.json())
             .then((r) => {
                 setList(r);
+                setTimedOut(false);
                 setReloadList(false);
             });
     }

@@ -88,6 +88,9 @@ const ListWrapper = styled.div`
     .decline-icon {
         color: #FBDBC1;
     }
+    input {
+      font-size: 24px;
+    }
 `;
 
 function List(props: ListProps) {

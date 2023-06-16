@@ -16,6 +16,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import Slide from '@mui/material/Slide';
 import { useAppState } from '../context/App.provider';
 import { useWaitlistState } from '../context/Waitlist.provider';
+import Loader from "../common/Loader";
 
 interface AddToListModalProps {
     open: boolean;
@@ -30,6 +31,14 @@ const steps = [
 
 const AddToListModalWrapper = styled.div`
     width: 100%;
+    .loader {
+        height: 100vh;
+        width: 100%;
+        position: absolute;
+        &:before {
+          content: '';
+        }
+    }
 `;
 
 const Transition = React.forwardRef(function Transition(
@@ -178,6 +187,7 @@ function AddToListModal(props: AddToListModalProps) {
                 onClose={() => handleClose()}
                 TransitionComponent={Transition}
             >
+                { loading && <Loader />}
                 <DialogTitle>
                     <div
                         className={'modal-action'}
