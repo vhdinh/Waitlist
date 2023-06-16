@@ -10,6 +10,20 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/logs/:start/:end').get((req, res) => {
+    const start = new Date(parseInt(req.params.start));
+    let end = new Date(parseInt(req.params.end));
+    Customer.find({
+        createdAt: {
+            $gt: fns.startOfDay(start),
+            $lt: fns.endOfDay(end),
+        },
+    })
+        .then(c => res.json(c))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+
 router.route('/getCurrent').get((req, res) => {
     Customer.find({
         createdAt: {
