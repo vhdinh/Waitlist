@@ -114,14 +114,6 @@ function List(props: ListProps) {
                 <DataGrid
                     rows={props.list}
                     columns={getColumns(isAdmin)}
-                    // initialState={{
-                    //     pagination: {
-                    //         paginationModel: {
-                    //             pageSize: 20,
-                    //         },
-                    //     },
-                    // }}
-                    // pageSizeOptions={[20]}
                     disableRowSelectionOnClick
                     disableColumnMenu
                     hideFooterPagination

@@ -31,7 +31,11 @@ const LogsPageWrapper = styled.div`
       background: black;
       color: white;
       font-size: 24px;
-      min-width: 200px;
+      width: 100%;
+      &.Mui-disabled {
+        background: #e0e0e0;
+        color: #424242;
+      }
     }
   }
   .logs-container {
@@ -96,6 +100,7 @@ function LogsPage() {
                                 variant="contained"
                                 size='large'
                                 className={'search-btn'}
+                                disabled={!start || !end}
                                 onClick={() => handleLogsSearch()}
                             >
                                 Search
