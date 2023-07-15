@@ -39,6 +39,11 @@ const pages = [
         label: 'Reservations',
         url: '/reservations',
         role: ['admin'],
+    },
+    {
+        label: 'Logs',
+        url: '/logs',
+        role: ['admin'],
     }
 ];
 

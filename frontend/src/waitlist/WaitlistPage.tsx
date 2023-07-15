@@ -55,7 +55,8 @@ function WaitlistPage() {
 
     useEffect(() => {
         getWaitList();
-    }, [])
+    }, []);
+
 
     return (
         <WaitlistPageWrapper>
