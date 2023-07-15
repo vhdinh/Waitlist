@@ -12,6 +12,7 @@ import { AppProvider } from './context/App.provider';
 import { WaitlistProvider } from './context/Waitlist.provider';
 import CalendarPage from './calendar/CalendarPage';
 import { CalendarProvider } from './context/Calendar.provider';
+import LogsPage from "./logs/LogsPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
                 path: "/reservations",
                 element: <CalendarPage />,
             },
+            {
+                path: '/logs',
+                element: <LogsPage />,
+            }
         ],
     },
 ]);

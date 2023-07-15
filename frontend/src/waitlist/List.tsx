@@ -88,6 +88,9 @@ const ListWrapper = styled.div`
     .decline-icon {
         color: #FBDBC1;
     }
+    input {
+      font-size: 24px;
+    }
 `;
 
 function List(props: ListProps) {
@@ -111,14 +114,6 @@ function List(props: ListProps) {
                 <DataGrid
                     rows={props.list}
                     columns={getColumns(isAdmin)}
-                    // initialState={{
-                    //     pagination: {
-                    //         paginationModel: {
-                    //             pageSize: 20,
-                    //         },
-                    //     },
-                    // }}
-                    // pageSizeOptions={[20]}
                     disableRowSelectionOnClick
                     disableColumnMenu
                     hideFooterPagination
