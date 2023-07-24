@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle, FormControl, TextField, Typography
+    DialogTitle,
+    FormControl,
+    TextField,
+    Typography
 } from '@mui/material';
-import { useAppState } from './context/App.provider';
+import {Role, useAppState} from './context/App.provider';
 import {useCalendarState} from "./context/Calendar.provider";
 
 function AdminPasscodeModal() {
@@ -21,10 +24,10 @@ function AdminPasscodeModal() {
     const handleSubmit = (e: any) => {
         e.preventDefault();
         if (adminPasscode === process.env.REACT_APP_EMPLOYEE_PASSCODE) {
-            setRole('employee');
+            setRole(Role.EMPLOYEE);
             setIsAdmin(true);
         } else if (adminPasscode === process.env.REACT_APP_ADMIN_PASSCODE) {
-            setRole('admin');
+            setRole(Role.ADMIN);
             setIsAdmin(true);
             setReloadCalendar(true);
         }

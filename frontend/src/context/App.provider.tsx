@@ -8,6 +8,11 @@ import React, {
 } from 'react';
 import { AlertColor } from '@mui/material/Alert/Alert';
 
+export enum Role {
+    'EMPLOYEE' = 'employee',
+    'ADMIN' = 'admin',
+}
+
 interface SnackMsg {
     msg: string;
     severity: AlertColor;
@@ -16,8 +21,8 @@ interface SnackMsg {
 export type AppState = {
     isAdmin: boolean;
     setIsAdmin: Dispatch<SetStateAction<boolean>>;
-    role: string;
-    setRole: Dispatch<SetStateAction<string>>;
+    role: Role;
+    setRole: Dispatch<SetStateAction<Role>>;
     loading: boolean;
     setLoading: Dispatch<SetStateAction<boolean>>;
     displaySnack: boolean;
@@ -36,7 +41,7 @@ AppContext.displayName = 'AppContext';
 export const AppProvider = ({
     children,
 }: PropsWithChildren<Record<string, unknown>>) => {
-    const [role, setRole] = useState('');
+    const [role, setRole] = useState<Role>(Role.EMPLOYEE);
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(false);
     const [displaySnack, setDisplaySnack] = useState(false);

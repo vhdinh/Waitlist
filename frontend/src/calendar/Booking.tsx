@@ -63,7 +63,8 @@ const BookingComponentWrapper = styled.div`
 `
 
 function BookingComponent(props: Booking) {
-    const { setReloadCalendar } = useCalendarState();
+    const { setReloadCalendar, selectedDate } = useCalendarState();
+    console.log('EACH BOOKING', selectedDate, props);
 
     const handleBookingEdit = () => {
         console.log('EDIT', props._id);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Booking } from './Calendar.type';
+import NewBooking from "./NewBooking";
 import { addHours, getMinutes, getHours, getSeconds, format } from 'date-fns';
 import BookingComponent from './Booking';
 import {useCalendarState} from "../context/Calendar.provider";
@@ -101,7 +102,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 </div>
             ) : (
                 <div className={'bookings_empty'}>
-                    No reservations for today
+                    No reservations for {format(selectedDate, 'MMMM dd')}
                 </div>
             )
         )
@@ -113,14 +114,6 @@ function CalendarOverview(props: CalendarOverviewProps) {
             </div>
         )
     };
-
-    const renderNewBooking = () => {
-        return (
-            <>
-                gonna add a new booking
-            </>
-        )
-    }
 
     const getActionButtonDisabledState = (): boolean => {
         const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
@@ -173,7 +166,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 </Typography>
                 {displayActionButtons()}
             </div>
-            {displayAddNewBooking ? renderNewBooking() : renderEachBooking()}
+            {displayAddNewBooking ? <NewBooking /> : renderEachBooking()}
         </CalendarOverviewWrapper>
     )
 }
