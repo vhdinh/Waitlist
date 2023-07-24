@@ -39,10 +39,8 @@ router.route('/getDay/:day/:isAdmin').get((req, res) => {
         },
     };
     if (!isAdmin) {
-        console.log('NOT ADMIN');
         filters.deleted = false;
     };
-    console.log('GET DAY', req.params, isAdmin, filters);
     Booking.find(filters)
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
@@ -50,24 +48,22 @@ router.route('/getDay/:day/:isAdmin').get((req, res) => {
 
 router.route('/add').post((req, res) => {
     const newBooking = new Booking({
-        name: 'April25Anniversary',
-        phoneNumber: 2063838985,
-        partySize: 50,
+        name: req.body.name,
+        phoneNumber: req.body.phoneNumber,
+        partySize: req.body.partySize,
         notified: false,
         msg: '',
         deleted: false,
-        startTime: 1682370000000,
-        endTime: 1682383800000,
-        note: '5 year anniversary. Please make it special, i am testing a long note and want to see what happens. Why why istthis happening?'
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
+        note: req.body.note
     });
-    console.log('-------', newBooking);
     newBooking.save()
         .then((r) => {
             console.log('booking-saved:', r);
             res.json(`you has been added to the reservation`);
         })
         .catch(err => res.status(400).json('error-saving-user: ' + err));
-    // res.json('Cool Vu');
 });
 
 router.route('/delete/:id').post((req, res) => {

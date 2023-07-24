@@ -36,7 +36,7 @@ const CalendarOverviewWrapper = styled.div`
 
 function CalendarOverview(props: CalendarOverviewProps) {
     const { isAdmin } = useAppState();
-    const {selectedDate, setReloadCalendar, reloadCalendar} = useCalendarState();
+    const {selectedDate, setReloadCalendar, reloadCalendar, bookingData } = useCalendarState();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
 
@@ -77,7 +77,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
+            body: JSON.stringify(bookingData)
         };
 
         fetch(`${process.env.REACT_APP_BRICK_API}/booking/add`, requestOptions)
@@ -125,6 +125,10 @@ function CalendarOverview(props: CalendarOverviewProps) {
         return true;
     }
 
+    const validateBookingForm = () => {
+        return !bookingData.name || !bookingData.phoneNumber || !bookingData.startTime  || !bookingData.endTime || !bookingData.partySize;
+    }
+
     const displayActionButtons = () => {
         if (!displayAddNewBooking) {
             return (
@@ -148,6 +152,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
                     </Button>
                     <Button
                         onClick={() => addBooking()}
+                        disabled={validateBookingForm()}
                         variant="contained"
                         startIcon={<SaveIcon />}
                     >

@@ -12,22 +12,8 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
-import dayjs from 'dayjs';
 import {TimeMappingNew, getTodayTimeMapping, getFormattedTime} from "./util";
 import {useCalendarState} from "../context/Calendar.provider";
-import moment from "moment";
-
-interface NewBooking {
-    name: string;
-    phoneNumber?: number;
-    startTime: number;
-    endTime: number;
-    partySize: number;
-    note?: string;
-    msg?: string;
-    notified?: boolean;
-}
 
 const NewBookingWrapper = styled.div`
     .input-container {
@@ -39,21 +25,13 @@ const NewBookingWrapper = styled.div`
 `;
 
 function NewBooking() {
-    const { selectedDate } = useCalendarState();
-    const [bookingData, setBookingData] = useState<NewBooking>({
-        name: '',
-        phoneNumber: undefined,
-        startTime: 0,
-        endTime: 0,
-        partySize: 0,
-        note: ''
-    });
+    const { selectedDate, setBookingData, bookingData } = useCalendarState();
 
     const handleChange = (e: any) => {
         console.log('handleChange', e);
         setBookingData(oldState => ({
             ...oldState,
-            [e.target.name]: e.target.name === 'partySize' ? Number(e.target.value) : e.target.value,
+            [e.target.name]: e.target.name === 'partySize' || e.target.name === 'phoneNumber' ? Number(e.target.value) : e.target.value,
         }))
     };
 
@@ -153,9 +131,6 @@ function NewBooking() {
                                     {getTodayTimeMapping(selectedDate).map((t) => {
                                         return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
                                     })}
-                                    {/*{TimeMappingNew.map((t) => {*/}
-                                    {/*    return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>*/}
-                                    {/*})}*/}
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -178,12 +153,6 @@ function NewBooking() {
                                     {getTodayTimeMapping(selectedDate).filter((t) => t.value > bookingData.startTime).map((t) => {
                                         return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
                                     })}
-                                    {/*{TimeMappingNew.filter((t) => t.value > bookingData.startTime).map((t) => {*/}
-                                    {/*    return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>*/}
-                                    {/*})}*/}
-                                    {/*{TimeMappingNew.map((t) => {*/}
-                                    {/*    return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>*/}
-                                    {/*})}*/}
                                 </Select>
                             </FormControl>
                         </Grid>

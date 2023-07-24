@@ -1,5 +1,16 @@
 import moment from "moment";
 
+export interface NewBooking {
+    name: string;
+    phoneNumber?: number;
+    startTime: number;
+    endTime: number;
+    partySize: number;
+    note?: string;
+    msg?: string;
+    notified?: boolean;
+}
+
 interface TimeSlot {
     label: string;
     value: number
