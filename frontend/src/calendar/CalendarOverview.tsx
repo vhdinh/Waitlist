@@ -4,7 +4,7 @@ import { Booking } from './Calendar.type';
 import NewBooking from "./NewBooking";
 import { addHours, getMinutes, getHours, getSeconds, format } from 'date-fns';
 import BookingComponent from './Booking';
-import {useCalendarState} from "../context/Calendar.provider";
+import {InitialNewBooking, useCalendarState} from "../context/Calendar.provider";
 import { Typography, Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
@@ -36,12 +36,14 @@ const CalendarOverviewWrapper = styled.div`
 
 function CalendarOverview(props: CalendarOverviewProps) {
     const { isAdmin } = useAppState();
-    const {selectedDate, setReloadCalendar, reloadCalendar, bookingData } = useCalendarState();
+    const {selectedDate, setReloadCalendar, reloadCalendar, bookingData, setBookingData } = useCalendarState();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
 
     useEffect(() => {
         getBooking();
+        setDisplayAddNewBooking(false);
+        setBookingData(InitialNewBooking);
     }, [selectedDate]);
 
     useEffect(() => {
@@ -58,7 +60,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 const f = new Intl.DateTimeFormat('en-us', {
                     timeStyle: 'short'
                 })
-                const results = r.map((booking: Booking) => {
+                const results = r.sort((a: Booking, b: Booking) => a.startTime - b.startTime).map((booking: Booking) => {
                     const s = new Date(booking.startTime);
                     const e = new Date(booking.endTime);
                     return {
@@ -67,7 +69,6 @@ function CalendarOverview(props: CalendarOverviewProps) {
                         formatEnd: f.format(e),
                     }
                 })
-                console.log('gotResult', results);
                 setBookings(results);
             });
     };
@@ -86,6 +87,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 console.log('RRR', r.includes('error-invalid-phone'));
                 setReloadCalendar(true);
                 setDisplayAddNewBooking(false);
+                setBookingData(InitialNewBooking);
             }).catch((e) => {
             console.log('caughtttt RESERVATIN', e);
         });
@@ -145,7 +147,10 @@ function CalendarOverview(props: CalendarOverviewProps) {
             return (
                 <div className={'actions'}>
                     <Button
-                        onClick={() => setDisplayAddNewBooking(false)}
+                        onClick={() => {
+                            setBookingData(InitialNewBooking);
+                            setDisplayAddNewBooking(false)
+                        }}
                         variant="contained"
                     >
                         Cancel
@@ -167,7 +172,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
         <CalendarOverviewWrapper>
             <div className={'co-header'}>
                 <Typography variant={'h5'}>
-                    {format(selectedDate, 'MMMM dd')}
+                    Selected Date: {format(selectedDate, 'MMMM dd')}
                 </Typography>
                 {displayActionButtons()}
             </div>

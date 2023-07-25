@@ -31,6 +31,15 @@ CalendarContext.displayName = 'CalendarContext';
 export const StartOfToday = new Date().setHours(0,0,0,0);
 export const Today = new Date();
 
+export const InitialNewBooking = {
+    name: '',
+    phoneNumber: undefined,
+    startTime: 0,
+    endTime: 0,
+    partySize: 0,
+    note: ''
+};
+
 export const CalendarProvider = ({
      children,
 }: PropsWithChildren<Record<string, unknown>>) => {
@@ -39,16 +48,7 @@ export const CalendarProvider = ({
     const [displayMonth ] = useState(Today);
     const [selectedDate, setSelectedDate] = useState(StartOfToday);
     const [reloadCalendar, setReloadCalendar] = useState(false);
-    const [bookingData, setBookingData] = useState<NewBooking>({
-        name: '',
-        phoneNumber: undefined,
-        startTime: 0,
-        endTime: 0,
-        partySize: 0,
-        note: ''
-    });
-
-
+    const [bookingData, setBookingData] = useState<NewBooking>(InitialNewBooking);
 
     return (
         <CalendarContext.Provider

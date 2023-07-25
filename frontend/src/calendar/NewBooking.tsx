@@ -2,17 +2,13 @@ import React, {useState} from 'react';
 import styled from "@emotion/styled";
 import {
     FormControl,
-    FormGroup,
     Grid,
-    Input,
-    InputLabel,
     MenuItem,
-    OutlinedInput,
     Select,
     TextField,
     Typography
 } from "@mui/material";
-import {TimeMappingNew, getTodayTimeMapping, getFormattedTime} from "./util";
+import {getTodayTimeMapping} from "./util";
 import {useCalendarState} from "../context/Calendar.provider";
 
 const NewBookingWrapper = styled.div`
@@ -28,15 +24,13 @@ function NewBooking() {
     const { selectedDate, setBookingData, bookingData } = useCalendarState();
 
     const handleChange = (e: any) => {
-        console.log('handleChange', e);
         setBookingData(oldState => ({
             ...oldState,
-            [e.target.name]: e.target.name === 'partySize' || e.target.name === 'phoneNumber' ? Number(e.target.value) : e.target.value,
+            [e.target.name]: e.target.name === 'partySize' || e.target.name === 'phoneNumber' ? Number(e.target.value) || '' : e.target.value,
         }))
     };
 
     const handleSelectChange = (e: any) => {
-        console.log('setting', e.target, bookingData);
         setBookingData(oldState => ({
             ...oldState,
             [`${e.target.name}`]: e.target.value,

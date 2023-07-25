@@ -1,12 +1,9 @@
 import React from 'react';
 import { Booking } from './Calendar.type';
 import styled from '@emotion/styled';
-import {Card, CardContent, Button, CardActions, Typography} from "@mui/material";
-import PeopleIcon from '@mui/icons-material/People';
-import AddIcon from "@mui/icons-material/Add";
-import ScheduleIcon from '@mui/icons-material/Schedule';
+import {Card, CardContent, Button, Typography} from "@mui/material";
 import {phoneNumberAutoFormat} from "../waitlist/PhoneNumberColumn";
-import {useCalendarState} from "../context/Calendar.provider";
+import {StartOfToday, useCalendarState} from "../context/Calendar.provider";
 
 const BookingComponentWrapper = styled.div`
     display: block;
@@ -64,8 +61,6 @@ const BookingComponentWrapper = styled.div`
 
 function BookingComponent(props: Booking) {
     const { setReloadCalendar, selectedDate } = useCalendarState();
-    console.log('EACH BOOKING', selectedDate, props);
-
     const handleBookingEdit = () => {
         console.log('EDIT', props._id);
     }
@@ -143,7 +138,7 @@ function BookingComponent(props: Booking) {
                         <Button
                             className={'bc-edit'}
                             onClick={() => handleBookingEdit()}
-                            disabled={props.deleted}
+                            disabled={props.deleted || StartOfToday > props.startTime}
                         >
                             EDIT
                         </Button>
