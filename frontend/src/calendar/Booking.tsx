@@ -135,13 +135,13 @@ function BookingComponent(props: Booking) {
                         </Typography>
                     </div>
                     <div className={'bc-actions'}>
-                        <Button
-                            className={'bc-edit'}
-                            onClick={() => handleBookingEdit()}
-                            disabled={props.deleted || StartOfToday > props.startTime}
-                        >
-                            EDIT
-                        </Button>
+                        {/*<Button*/}
+                        {/*    className={'bc-edit'}*/}
+                        {/*    onClick={() => handleBookingEdit()}*/}
+                        {/*    disabled={props.deleted || StartOfToday > props.startTime}*/}
+                        {/*>*/}
+                        {/*    EDIT*/}
+                        {/*</Button>*/}
                         <Button
                             className={`bc-delete ${props.deleted ? 'un-delete' : 'deleted'}`}
                             onClick={() => handleBookingDelete()}

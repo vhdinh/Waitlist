@@ -48,7 +48,6 @@ function Calendar() {
         fetch(`${process.env.REACT_APP_BRICK_API}/booking/getMonth/${currentMonth.getTime()}`)
             .then(res => res.json())
             .then((r) => {
-                console.log('GOT MONTH BOOKING', r);
                 setCurrentMonthBookings(r);
             });
     }

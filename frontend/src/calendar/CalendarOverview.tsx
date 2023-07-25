@@ -39,6 +39,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
     const {selectedDate, setReloadCalendar, reloadCalendar, bookingData, setBookingData } = useCalendarState();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
+    const [loadingOverview, setLoadingOverview] = useState(false);
 
     useEffect(() => {
         getBooking();
@@ -53,6 +54,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
     }, [reloadCalendar])
 
     const getBooking = () => {
+        setLoadingOverview(true);
         // Simple GET request with a JSON body using fetch
         fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${selectedDate}/${isAdmin}`)
             .then(res => res.json())
@@ -70,6 +72,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
                     }
                 })
                 setBookings(results);
+                setLoadingOverview(false);
             });
     };
 
@@ -176,7 +179,13 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 </Typography>
                 {displayActionButtons()}
             </div>
-            {displayAddNewBooking ? <NewBooking /> : renderEachBooking()}
+            <div>
+                {
+                    !loadingOverview ? (
+                        displayAddNewBooking ? <NewBooking /> : renderEachBooking()
+                    ): <>Loading...</>
+                }
+            </div>
         </CalendarOverviewWrapper>
     )
 }
