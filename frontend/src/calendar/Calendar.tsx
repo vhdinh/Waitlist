@@ -33,6 +33,15 @@ function Calendar() {
     const [ currentMonthBookings, setCurrentMonthBookings ] = useState<Booking[]>([]);
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            console.log('This will run every 24 hours!');
+            setReloadCalendar(true);
+            setSelectedDate(StartOfToday);
+        }, 86400000);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
         getCurrentMonthBooking()
     }, [currentMonth])
 

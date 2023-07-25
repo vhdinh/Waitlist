@@ -6,7 +6,7 @@ import React, {
     useContext,
     useState,
 } from 'react';
-import {NewBooking} from "../calendar/util";
+import {NewBookingType} from "../calendar/util";
 
 export type CalendarState = {
     reloadCalendar: boolean;
@@ -18,8 +18,8 @@ export type CalendarState = {
     setCurrentMonth: Dispatch<SetStateAction<Date>>;
     selectedDate: number;
     setSelectedDate: Dispatch<SetStateAction<number>>;
-    bookingData: NewBooking;
-    setBookingData: Dispatch<SetStateAction<NewBooking>>;
+    bookingData: NewBookingType;
+    setBookingData: Dispatch<SetStateAction<NewBookingType>>;
 };
 
 const CalendarContext = createContext<CalendarState>(
@@ -48,7 +48,7 @@ export const CalendarProvider = ({
     const [displayMonth ] = useState(Today);
     const [selectedDate, setSelectedDate] = useState(StartOfToday);
     const [reloadCalendar, setReloadCalendar] = useState(false);
-    const [bookingData, setBookingData] = useState<NewBooking>(InitialNewBooking);
+    const [bookingData, setBookingData] = useState<NewBookingType>(InitialNewBooking);
 
     return (
         <CalendarContext.Provider

@@ -8,7 +8,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {getTodayTimeMapping} from "./util";
+import {getTodayTimeMapping, NewBookingType} from "./util";
 import {useCalendarState} from "../context/Calendar.provider";
 
 const NewBookingWrapper = styled.div`
@@ -24,14 +24,14 @@ function NewBooking() {
     const { selectedDate, setBookingData, bookingData } = useCalendarState();
 
     const handleChange = (e: any) => {
-        setBookingData(oldState => ({
+        setBookingData((oldState: NewBookingType) => ({
             ...oldState,
             [e.target.name]: e.target.name === 'partySize' || e.target.name === 'phoneNumber' ? Number(e.target.value) || '' : e.target.value,
         }))
     };
 
     const handleSelectChange = (e: any) => {
-        setBookingData(oldState => ({
+        setBookingData((oldState: NewBookingType) => ({
             ...oldState,
             [`${e.target.name}`]: e.target.value,
         }))

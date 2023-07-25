@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export interface NewBooking {
+export interface NewBookingType {
     name: string;
     phoneNumber?: number;
     startTime: number;
