@@ -127,7 +127,7 @@ export const CalendarWrapper = styled.div`
     .header {
         text-transform: uppercase;
         font-weight: 700;
-        font-size: 115%;
+        font-size: 140%;
         padding: 1.5em 0;
         border-bottom: 1px solid #eee;
     }
@@ -155,8 +155,8 @@ export const CalendarWrapper = styled.div`
     .calendar .days {
         text-transform: uppercase;
         font-weight: 400;
-        color: #ccc;
-        font-size: 70%;
+        //color: #ccc;
+        font-size: 80%;
         padding: .75em 0;
         border-bottom: 1px solid #eee;
     }
@@ -202,6 +202,11 @@ export const CalendarWrapper = styled.div`
         right: .75em;
         font-weight: 700;
     }
+  
+    .calendar .body .cell.today {
+      background: yellow;
+    }
+  
     .calendar .body .cell .res {
       //display: flex;
       //justify-content: start;

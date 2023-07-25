@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Booking } from './Calendar.type';
+import NewBooking from "./NewBooking";
 import { addHours, getMinutes, getHours, getSeconds, format } from 'date-fns';
 import BookingComponent from './Booking';
-import {useCalendarState} from "../context/Calendar.provider";
+import {InitialNewBooking, useCalendarState} from "../context/Calendar.provider";
 import { Typography, Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
+import {useAppState} from "../context/App.provider";
 interface CalendarOverviewProps {
 }
 
 const CalendarOverviewWrapper = styled.div`
   width: 100%;
+  height: 100%;
   padding: 16px 0;
   .co-header {
     display: flex;
@@ -20,6 +23,9 @@ const CalendarOverviewWrapper = styled.div`
     margin-bottom: 8px;
     button {
       background: black;
+      &:disabled {
+        background: unset;
+      }
     }
     .actions {
       display: flex;
@@ -29,12 +35,16 @@ const CalendarOverviewWrapper = styled.div`
 `;
 
 function CalendarOverview(props: CalendarOverviewProps) {
-    const {selectedDate, setReloadCalendar, reloadCalendar} = useCalendarState();
+    const { isAdmin } = useAppState();
+    const {selectedDate, setReloadCalendar, reloadCalendar, bookingData, setBookingData } = useCalendarState();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
+    const [loadingOverview, setLoadingOverview] = useState(false);
 
     useEffect(() => {
         getBooking();
+        setDisplayAddNewBooking(false);
+        setBookingData(InitialNewBooking);
     }, [selectedDate]);
 
     useEffect(() => {
@@ -44,14 +54,15 @@ function CalendarOverview(props: CalendarOverviewProps) {
     }, [reloadCalendar])
 
     const getBooking = () => {
+        setLoadingOverview(true);
         // Simple GET request with a JSON body using fetch
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${selectedDate}`)
+        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${selectedDate}/${isAdmin}`)
             .then(res => res.json())
             .then((r) => {
                 const f = new Intl.DateTimeFormat('en-us', {
                     timeStyle: 'short'
                 })
-                const results = r.map((booking: Booking) => {
+                const results = r.sort((a: Booking, b: Booking) => a.startTime - b.startTime).map((booking: Booking) => {
                     const s = new Date(booking.startTime);
                     const e = new Date(booking.endTime);
                     return {
@@ -60,8 +71,8 @@ function CalendarOverview(props: CalendarOverviewProps) {
                         formatEnd: f.format(e),
                     }
                 })
-                console.log('gotResult', results);
                 setBookings(results);
+                setLoadingOverview(false);
             });
     };
 
@@ -70,7 +81,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
+            body: JSON.stringify(bookingData)
         };
 
         fetch(`${process.env.REACT_APP_BRICK_API}/booking/add`, requestOptions)
@@ -79,6 +90,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 console.log('RRR', r.includes('error-invalid-phone'));
                 setReloadCalendar(true);
                 setDisplayAddNewBooking(false);
+                setBookingData(InitialNewBooking);
             }).catch((e) => {
             console.log('caughtttt RESERVATIN', e);
         });
@@ -86,6 +98,19 @@ function CalendarOverview(props: CalendarOverviewProps) {
     };
 
     const renderEachBooking = () => {
+        return (
+            bookings.length > 0 ? (
+                <div className={'bookings'}>
+                    {
+                        bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} />)
+                    }
+                </div>
+            ) : (
+                <div className={'bookings_empty'}>
+                    No reservations for {format(selectedDate, 'MMMM dd')}
+                </div>
+            )
+        )
         return (
             <div className={'bookings'}>
                 {
@@ -95,12 +120,18 @@ function CalendarOverview(props: CalendarOverviewProps) {
         )
     };
 
-    const renderNewBooking = () => {
-        return (
-            <>
-                gonna add a new booking
-            </>
-        )
+    const getActionButtonDisabledState = (): boolean => {
+        const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+        const todayStartNow = todayStart.getTime();
+        // disable the button for any day in the past
+        if (selectedDate >= todayStartNow) {
+            return false;
+        }
+        return true;
+    }
+
+    const validateBookingForm = () => {
+        return !bookingData.name || !bookingData.phoneNumber || !bookingData.startTime  || !bookingData.endTime || !bookingData.partySize;
     }
 
     const displayActionButtons = () => {
@@ -109,6 +140,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 <Button
                     onClick={() => setDisplayAddNewBooking(true)}
                     variant="contained"
+                    disabled={getActionButtonDisabledState()}
                     startIcon={<AddIcon />}
                 >
                     Booking
@@ -118,13 +150,17 @@ function CalendarOverview(props: CalendarOverviewProps) {
             return (
                 <div className={'actions'}>
                     <Button
-                        onClick={() => setDisplayAddNewBooking(false)}
+                        onClick={() => {
+                            setBookingData(InitialNewBooking);
+                            setDisplayAddNewBooking(false)
+                        }}
                         variant="contained"
                     >
                         Cancel
                     </Button>
                     <Button
                         onClick={() => addBooking()}
+                        disabled={validateBookingForm()}
                         variant="contained"
                         startIcon={<SaveIcon />}
                     >
@@ -139,12 +175,17 @@ function CalendarOverview(props: CalendarOverviewProps) {
         <CalendarOverviewWrapper>
             <div className={'co-header'}>
                 <Typography variant={'h5'}>
-                    {format(selectedDate, 'MMMM dd')}
+                    Selected Date: {format(selectedDate, 'MMMM dd')}
                 </Typography>
                 {displayActionButtons()}
-
             </div>
-            {displayAddNewBooking ? renderNewBooking() : renderEachBooking()}
+            <div>
+                {
+                    !loadingOverview ? (
+                        displayAddNewBooking ? <NewBooking /> : renderEachBooking()
+                    ): <>Loading...</>
+                }
+            </div>
         </CalendarOverviewWrapper>
     )
 }

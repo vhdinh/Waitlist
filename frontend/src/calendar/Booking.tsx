@@ -1,11 +1,9 @@
 import React from 'react';
 import { Booking } from './Calendar.type';
 import styled from '@emotion/styled';
-import {Card, CardContent, Button, CardActions, Typography} from "@mui/material";
-import PeopleIcon from '@mui/icons-material/People';
-import AddIcon from "@mui/icons-material/Add";
-import ScheduleIcon from '@mui/icons-material/Schedule';
+import {Card, CardContent, Button, Typography} from "@mui/material";
 import {phoneNumberAutoFormat} from "../waitlist/PhoneNumberColumn";
+import {StartOfToday, useCalendarState} from "../context/Calendar.provider";
 
 const BookingComponentWrapper = styled.div`
     display: block;
@@ -14,7 +12,7 @@ const BookingComponentWrapper = styled.div`
     display: flex;
     width: 100%;
     justify-content: space-evenly;
-    padding: 16px !important;
+    padding: 0px !important;
     .bc-item {
       display: flex;
       
@@ -22,8 +20,29 @@ const BookingComponentWrapper = styled.div`
         width: 75px;
       }
     }
+    .bc-left {
+      padding-left: 18px !important;
+    }
     .bc-left, .bc-right {
+      padding: 18px 0;
       flex: 1;
+    }
+  }
+  .bc-actions {
+    flex-basis: 100px;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid gray;
+    .bc-edit {
+      border-bottom: 1px solid gray;
+    }
+    .bc-delete, .bc-edit {
+      flex-grow: 1;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
   //.bc-actions {
@@ -41,6 +60,24 @@ const BookingComponentWrapper = styled.div`
 `
 
 function BookingComponent(props: Booking) {
+    const { setReloadCalendar, selectedDate } = useCalendarState();
+    const handleBookingEdit = () => {
+        console.log('EDIT', props._id);
+    }
+    const handleBookingDelete = () => {
+        // Simple POST request with a JSON body using fetch
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: props._id, delete: props.deleted ? false : true })
+        };
+        fetch(`${process.env.REACT_APP_BRICK_API}/booking/delete/${props._id}`, requestOptions)
+            .then(res => res.json())
+            .then((r) => {
+                setReloadCalendar(true);
+            });
+    };
+
     return (
         <BookingComponentWrapper>
             <Card>
@@ -96,6 +133,21 @@ function BookingComponent(props: Booking) {
                                 {props.note}
                             </div>
                         </Typography>
+                    </div>
+                    <div className={'bc-actions'}>
+                        {/*<Button*/}
+                        {/*    className={'bc-edit'}*/}
+                        {/*    onClick={() => handleBookingEdit()}*/}
+                        {/*    disabled={props.deleted || StartOfToday > props.startTime}*/}
+                        {/*>*/}
+                        {/*    EDIT*/}
+                        {/*</Button>*/}
+                        <Button
+                            className={`bc-delete ${props.deleted ? 'un-delete' : 'deleted'}`}
+                            onClick={() => handleBookingDelete()}
+                        >
+                            {props.deleted ? 'UN-DELETE' : 'DELETE'}
+                        </Button>
                     </div>
                 </CardContent>
                 {/*<CardActions className={'bc-actions'}>*/}

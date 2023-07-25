@@ -11,12 +11,12 @@ import {
     endOfMonth,
     isSameMonth,
     isSameDay,
+    isToday,
 } from "date-fns";
 import { CalendarWrapper } from './Calendar.style';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {StartOfToday, Today, useCalendarState} from "../context/Calendar.provider";
-import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import {Booking} from "./Calendar.type";
 
@@ -31,7 +31,6 @@ function Calendar() {
         setReloadCalendar
     } = useCalendarState();
     const [ currentMonthBookings, setCurrentMonthBookings ] = useState<Booking[]>([]);
-    console.log('current Month', currentMonth);
 
     useEffect(() => {
         getCurrentMonthBooking()
@@ -49,7 +48,6 @@ function Calendar() {
         fetch(`${process.env.REACT_APP_BRICK_API}/booking/getMonth/${currentMonth.getTime()}`)
             .then(res => res.json())
             .then((r) => {
-                console.log('GOT MONTH BOOKING', r);
                 setCurrentMonthBookings(r);
             });
     }
@@ -61,7 +59,6 @@ function Calendar() {
                 <div className="col col-start" onClick={prevMonth}>
                     <ChevronLeftIcon className="icon"/>
                 </div>
-                {/*<button onClick={() => setCurrentMonth(new Date())}>Today</button>*/}
                 <div className="col col-center">
                     <span
                         onClick={() => {
@@ -117,7 +114,9 @@ function Calendar() {
                 })
                 days.push(
                     <div
-                        className={`col cell ${
+                        className={`col cell
+                        ${isToday(day) ? "today" : ""}
+                         ${
                             !isSameMonth(day, monthStart)
                                 ? "disabled"
                                 : isSameDay(day, selectedDate) ? "selected" : ""

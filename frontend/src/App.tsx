@@ -1,29 +1,19 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import {
-    Box,
-    AppBar,
-    Toolbar,
-    Button,
-    Container,
-    Typography,
-    IconButton,
-    Snackbar,
-    Alert
-} from '@mui/material';
-import { AppWrapper } from './App.style';
+import {Alert, AppBar, Box, Button, Container, IconButton, Snackbar, Toolbar, Typography} from '@mui/material';
+import {AppWrapper} from './App.style';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Tooltip from '@mui/material/Tooltip';
 import img from './assets/BrickTransparent.png';
-import { Outlet } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
-import { useAppState } from './context/App.provider';
+import {Outlet, useNavigate} from "react-router-dom";
+import {Role, useAppState} from './context/App.provider';
 import AdminPasscodeModal from './AdminPasscodeModal';
 import io from 'socket.io-client';
-import { useWaitlistState } from './context/Waitlist.provider';
+import {useWaitlistState} from './context/Waitlist.provider';
+import {useCalendarState} from "./context/Calendar.provider";
 
 // @ts-ignore
 const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
@@ -32,17 +22,17 @@ const pages = [
     {
         label: 'Waitlist',
         url: '/',
-        role: ['employee', 'admin']
+        role: [Role.EMPLOYEE, Role.ADMIN]
     },
     {
         label: 'Reservations',
         url: '/reservations',
-        role: ['admin'],
+        role: [Role.EMPLOYEE, Role.ADMIN],
     },
     {
         label: 'Logs',
         url: '/logs',
-        role: ['admin'],
+        role: [Role.ADMIN],
     }
 ];
 
@@ -58,6 +48,7 @@ function App() {
         setRole
     } = useAppState();
     const { setReloadList } = useWaitlistState();
+    const { setReloadCalendar } = useCalendarState();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -76,7 +67,9 @@ function App() {
             return setDisplayAdminDialog(true);
         } else {
             setIsAdmin(false);
-            setRole('');
+            setReloadList(true);
+            setReloadCalendar(true);
+            setRole(Role.EMPLOYEE);
         }
     };
 
