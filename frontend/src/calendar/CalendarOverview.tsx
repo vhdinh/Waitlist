@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Booking } from './Calendar.type';
-import NewBooking from "./NewBooking";
+import NewBooking from './NewBooking';
 import { addHours, getMinutes, getHours, getSeconds, format } from 'date-fns';
 import BookingComponent from './Booking';
 import {InitialNewBooking, useCalendarState} from "../context/Calendar.provider";

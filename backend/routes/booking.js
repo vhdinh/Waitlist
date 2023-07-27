@@ -30,6 +30,7 @@ router.route('/getDay/:day/:isAdmin').get((req, res) => {
     const start = new Date(parseInt(req.params.day)).setHours(0,0,0,0);
     let end = new Date(start);
     end.setHours(23,59,59,999);
+    console.log('___API_GETTING_DAY___', start, end.getTime());
     let filters = {
         startTime: {
             $gt: start
