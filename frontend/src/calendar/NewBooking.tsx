@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import styled from "@emotion/styled";
 import {
     FormControl,
@@ -8,7 +8,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {getTodayTimeMapping, NewBookingType} from "./util";
+import {getTodayTimeMapping, NearClosingTime, NewBookingType, TimeMapping, TimeSlot} from "./util";
 import {useCalendarState} from "../context/Calendar.provider";
 
 const NewBookingWrapper = styled.div`
@@ -36,6 +36,31 @@ function NewBooking() {
             [`${e.target.name}`]: e.target.value,
         }))
     }
+
+    useEffect(() => {
+        if (bookingData.startTime) {
+            const endT = memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
+                .find((t) => t.value === (bookingData.startTime + 7200000));
+            if (endT) {
+                setBookingData((oldState: NewBookingType) => ({
+                    ...oldState,
+                    endTime: endT.value,
+                }))
+            } else {
+                const newEndT = memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
+                    .find((t) => t.value === memoizedGetTodayTimeMapping[memoizedGetTodayTimeMapping.length - 1].value);
+                setBookingData((oldState: NewBookingType) => ({
+                    ...oldState, //@ts-ignore
+                    endTime: newEndT.value,
+                }))
+            }
+        };
+    }, [bookingData.startTime])
+
+    const memoizedGetTodayTimeMapping = useMemo((): TimeSlot[] =>
+        getTodayTimeMapping(selectedDate),
+        [selectedDate]
+    );
 
     return (
         <NewBookingWrapper>
@@ -122,7 +147,7 @@ function NewBooking() {
                                     name={'startTime'}
                                     onChange={(e) => handleSelectChange(e)}
                                 >
-                                    {getTodayTimeMapping(selectedDate).map((t) => {
+                                    {memoizedGetTodayTimeMapping.map((t: TimeSlot) => {
                                         return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
                                     })}
                                 </Select>
@@ -144,8 +169,17 @@ function NewBooking() {
                                     name={'endTime'}
                                     onChange={handleSelectChange}
                                 >
-                                    {getTodayTimeMapping(selectedDate).filter((t) => t.value > bookingData.startTime).map((t) => {
-                                        return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
+                                    {memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
+                                        .filter((t) => {
+                                            const twoHrsLater = bookingData.startTime + 7200000;
+                                            if (t.value >= twoHrsLater) {
+                                                return t.value >= twoHrsLater;
+                                            } else {
+                                                return t.label === '11:00 PM'
+                                            }
+                                        })
+                                        .map((t) => {
+                                            return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
                                     })}
                                 </Select>
                             </FormControl>

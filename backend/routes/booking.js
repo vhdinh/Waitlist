@@ -43,7 +43,10 @@ router.route('/getDay/:day/:isAdmin').get((req, res) => {
         filters.deleted = false;
     };
     Booking.find(filters)
-        .then(c => res.json(c))
+        .then(c => {
+            console.log('FOUND BOOKINGS FOR DAY:', c);
+            return res.json(c);
+        })
         .catch(err => res.status(400).json('Error: ' + err));
 });
 

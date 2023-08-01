@@ -1,4 +1,5 @@
 import moment from "moment";
+import {useMemo} from "react";
 
 export interface NewBookingType {
     name: string;
@@ -11,7 +12,7 @@ export interface NewBookingType {
     notified?: boolean;
 }
 
-interface TimeSlot {
+export interface TimeSlot {
     label: string;
     value: number
 }
@@ -123,11 +124,13 @@ export const TimeMapping: TimeSlot[] = [
     },
 ];
 
+export const NearClosingTime = ['9:00 PM', '9:30 PM', '10:00 PM', '10:30PM', '11:00PM'];
+
 export const getFormattedTime = (time: number) => {
     const d = new Date(time);
     return moment(d).format('h:mm A');
 }
-function getFormattedDate(date: Date) {
+export function getFormattedDate(date: Date) {
     let year = date.getFullYear();
     let month = (1 + date.getMonth()).toString().padStart(2, '0');
     let day = date.getDate().toString().padStart(2, '0');
@@ -137,6 +140,6 @@ function getFormattedDate(date: Date) {
 
 export const getTodayTimeMapping = (today: any): TimeSlot[] => {
     const t = getFormattedDate(new Date(today));
-    TimeMapping.map((time) => time.value = new Date(`${t} ${time.label}`).getTime())
+    TimeMapping.map((time) => time.value = new Date(`${t} ${time.label}`).getTime());
     return TimeMapping
 }
