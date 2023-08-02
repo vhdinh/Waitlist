@@ -33,10 +33,10 @@ router.route('/getDay/:day/:isAdmin').get((req, res) => {
     console.log('___API_GETTING_DAY___', start, end.getTime());
     let filters = {
         startTime: {
-            $gt: start
+            $gt: start - 25200000
         },
         endTime: {
-            $lt: end.getTime()
+            $lt: end.getTime() - 25200000
         },
     };
     if (!isAdmin) {
