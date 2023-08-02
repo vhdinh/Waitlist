@@ -28,19 +28,21 @@ router.route('/getMonth/:month').get((req, res) => {
 router.route('/getDay/:day/:isAdmin').get((req, res) => {
     const isAdmin = req.params.isAdmin === 'true' ? true : false;
     const start = new Date(parseInt(req.params.day)).setHours(0,0,0,0);
+    const endTime = Number(req.params.day) + 86400000;
     let end = new Date(start);
     end.setHours(23,59,59,999);
     console.log('___API_GETTING_DAY___', {
         requestParameter: req.params.day,
         startTime: start,
-        endTime: end.getTime()
+        endTime: endTime,
+        end: end.getTime()
     });
     let filters = {
         startTime: {
-            $gt: start
+            $gt: Number(req.params.day)
         },
         endTime: {
-            $lt: end.getTime()
+            $lt: endTime
         },
     };
     if (!isAdmin) {
