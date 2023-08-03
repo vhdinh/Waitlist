@@ -11,6 +11,12 @@ router.route('/getMonth/:month').get((req, res) => {
     const date = new Date(Number(req.params.month)), y = date.getFullYear(), m = date.getMonth();
     let firstDay = new Date(y, m, 1);
     let lastDay = new Date(y, m + 1, 1);
+    console.log('___API_GETTING_MONTH___', {
+        firstDay,
+        firstDayTime: firstDay.getTime(),
+        lastDay,
+        lastDayTime: lastDay.getTime(),
+    })
     let filters = {
         startTime: {
             $gt: firstDay.getTime()
@@ -21,7 +27,10 @@ router.route('/getMonth/:month').get((req, res) => {
         deleted: false
     };
     Booking.find(filters)
-        .then(c => res.json(c))
+        .then(c => {
+            console.log('___FOUND_BOOKINGS_FOR_MONTH___', c);
+            return res.json(c)
+        })
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
