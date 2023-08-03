@@ -10,16 +10,24 @@ router.route('/').get((req, res) => {
 router.route('/getMonth/:month').get((req, res) => {
     const date = new Date(Number(req.params.month)), y = date.getFullYear(), m = date.getMonth();
     let firstDay = new Date(y, m, 1);
+    let pstFirstDay = firstDay.toLocaleString("en-US", {
+        timeZone: "America/Los_Angeles"
+    });
+    let firstDayTime = new Date(pstFirstDay);
     let lastDay = new Date(y, m + 1, 1);
+    let pstLastDay = lastDay.toLocaleString("en-US", {
+        timeZone: "America/Los_Angeles"
+    });
+    let lastDayTime = new Date(pstLastDay);
     console.log('___API_GETTING_MONTH___', {
-        firstDay,
-        firstDayTime: firstDay.getTime(),
-        lastDay,
-        lastDayTime: lastDay.getTime(),
+        firstDayTime,
+        firstDayTime: firstDayTime.getTime(),
+        lastDayTime,
+        lastDayTime: lastDayTime.getTime(),
     })
     let filters = {
         startTime: {
-            $gt: firstDay.getTime()
+            $gt: firstDayTime.getTime(),
         },
         endTime: {
             $lt: lastDay.getTime()
@@ -36,15 +44,14 @@ router.route('/getMonth/:month').get((req, res) => {
 
 router.route('/getDay/:day/:isAdmin').get((req, res) => {
     const isAdmin = req.params.isAdmin === 'true' ? true : false;
-    const start = new Date(parseInt(req.params.day)).setHours(0,0,0,0);
+    // const start = new Date(parseInt(req.params.day)).setHours(0,0,0,0);
+    // 24hr = 86400000ms
     const endTime = Number(req.params.day) + 86400000;
-    let end = new Date(start);
-    end.setHours(23,59,59,999);
+    // let end = new Date(start);
+    // end.setHours(23,59,59,999);
     console.log('___API_GETTING_DAY___', {
         requestParameter: req.params.day,
-        startTime: start,
         endTime: endTime,
-        end: end.getTime()
     });
     let filters = {
         startTime: {
