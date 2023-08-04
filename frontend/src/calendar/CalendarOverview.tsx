@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Booking } from './Calendar.type';
 import NewBooking from './NewBooking';
-import { addHours, getMinutes, getHours, getSeconds, format } from 'date-fns';
+import { addHours, getMinutes, getHours, getSeconds, startOfDay, endOfDay, format } from 'date-fns';
 import BookingComponent from './Booking';
 import {InitialNewBooking, useCalendarState} from "../context/Calendar.provider";
 import { Typography, Button } from "@mui/material";
@@ -55,8 +55,14 @@ function CalendarOverview(props: CalendarOverviewProps) {
 
     const getBooking = () => {
         setLoadingOverview(true);
+        console.log('GET_DAY_BOOKING', {
+            startOfDay: startOfDay(selectedDate),
+            startOfDayTime: startOfDay(selectedDate).getTime(),
+            endOfDay: endOfDay(selectedDate),
+            endOfDayTime: endOfDay(selectedDate).getTime(),
+        });
         // Simple GET request with a JSON body using fetch
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${selectedDate}/${isAdmin}`)
+        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${startOfDay(selectedDate).getTime()}/${endOfDay(selectedDate).getTime()}/${isAdmin}`)
             .then(res => res.json())
             .then((r) => {
                 const f = new Intl.DateTimeFormat('en-us', {
