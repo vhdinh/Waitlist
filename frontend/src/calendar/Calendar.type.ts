@@ -1,5 +1,5 @@
 export interface Booking {
-    _id: string;
+    _id?: string;
     name: string;
     phoneNumber: number;
     partySize: number;

@@ -36,9 +36,9 @@ const CalendarOverviewWrapper = styled.div`
 
 function CalendarOverview(props: CalendarOverviewProps) {
     const { isAdmin } = useAppState();
-    const {selectedDate, setReloadCalendar, reloadCalendar, bookingData, setBookingData } = useCalendarState();
+    const {selectedDate, setReloadCalendar, reloadCalendar, bookingData, setBookingData, displayAddNewBooking, setDisplayAddNewBooking, isEditing } = useCalendarState();
     const [bookings, setBookings] = useState<Booking[]>([]);
-    const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
+    // const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
     const [loadingOverview, setLoadingOverview] = useState(false);
 
     useEffect(() => {
@@ -55,12 +55,6 @@ function CalendarOverview(props: CalendarOverviewProps) {
 
     const getBooking = () => {
         setLoadingOverview(true);
-        console.log('GET_DAY_BOOKING', {
-            startOfDay: startOfDay(selectedDate),
-            startOfDayTime: startOfDay(selectedDate).getTime(),
-            endOfDay: endOfDay(selectedDate),
-            endOfDayTime: endOfDay(selectedDate).getTime(),
-        });
         // Simple GET request with a JSON body using fetch
         fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${startOfDay(selectedDate).getTime()}/${endOfDay(selectedDate).getTime()}/${isAdmin}`)
             .then(res => res.json())
@@ -100,7 +94,24 @@ function CalendarOverview(props: CalendarOverviewProps) {
             }).catch((e) => {
             console.log('caughtttt RESERVATIN', e);
         });
-
+    };
+    const updateBooking = () => {
+        // Simple POST request with a JSON body using fetch
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookingData)
+        };
+        console.log('UPDATING', bookingData);
+        fetch(`${process.env.REACT_APP_BRICK_API}/booking/update/${bookingData._id}`, requestOptions)
+            .then(res => res.json())
+            .then((r) => {
+                setReloadCalendar(true);
+                setDisplayAddNewBooking(false);
+                setBookingData(InitialNewBooking);
+            }).catch((e) => {
+            console.log('Error updating reservation', e);
+        });
     };
 
     const renderEachBooking = () => {
@@ -165,12 +176,12 @@ function CalendarOverview(props: CalendarOverviewProps) {
                         Cancel
                     </Button>
                     <Button
-                        onClick={() => addBooking()}
+                        onClick={() => isEditing ? updateBooking() : addBooking()}
                         disabled={validateBookingForm()}
                         variant="contained"
                         startIcon={<SaveIcon />}
                     >
-                        Save
+                        { isEditing ? 'Update' : 'Save' }
                     </Button>
                 </div>
             )

@@ -2,6 +2,7 @@ import moment from "moment";
 import {useMemo} from "react";
 
 export interface NewBookingType {
+    _id?: string;
     name: string;
     phoneNumber?: number;
     startTime: number;

@@ -20,6 +20,10 @@ export type CalendarState = {
     setSelectedDate: Dispatch<SetStateAction<number>>;
     bookingData: NewBookingType;
     setBookingData: Dispatch<SetStateAction<NewBookingType>>;
+    displayAddNewBooking: boolean;
+    setDisplayAddNewBooking: Dispatch<SetStateAction<boolean>>;
+    isEditing: boolean;
+    setIsEditing: Dispatch<SetStateAction<boolean>>;
 };
 
 const CalendarContext = createContext<CalendarState>(
@@ -49,6 +53,8 @@ export const CalendarProvider = ({
     const [selectedDate, setSelectedDate] = useState(StartOfToday);
     const [reloadCalendar, setReloadCalendar] = useState(false);
     const [bookingData, setBookingData] = useState<NewBookingType>(InitialNewBooking);
+    const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     return (
         <CalendarContext.Provider
@@ -64,6 +70,10 @@ export const CalendarProvider = ({
                 setReloadCalendar,
                 bookingData,
                 setBookingData,
+                displayAddNewBooking,
+                setDisplayAddNewBooking,
+                isEditing,
+                setIsEditing
             }}
         >
             {children}

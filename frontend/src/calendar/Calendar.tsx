@@ -37,6 +37,7 @@ function Calendar() {
             console.log('This will run every 24 hours!');
             setReloadCalendar(true);
             setSelectedDate(StartOfToday);
+            window.location.reload();
         }, 86400000);
         return () => clearInterval(interval);
     }, []);
@@ -53,12 +54,12 @@ function Calendar() {
     }, [reloadCalendar])
 
     const getCurrentMonthBooking = () => {
-        console.log('GET_CURRENT_MONTH_BOOKING', {
-            startOfMonth: startOfMonth(currentMonth),
-            startOfMonthTime: startOfMonth(currentMonth).getTime(),
-            endOfMonth: endOfMonth(currentMonth),
-            endOfMonthTime: endOfMonth(currentMonth).getTime(),
-        });
+        // console.log('GET_CURRENT_MONTH_BOOKING', {
+        //     startOfMonth: startOfMonth(currentMonth),
+        //     startOfMonthTime: startOfMonth(currentMonth).getTime(),
+        //     endOfMonth: endOfMonth(currentMonth),
+        //     endOfMonthTime: endOfMonth(currentMonth).getTime(),
+        // });
         // Simple GET request with a JSON body using fetch
         fetch(`${process.env.REACT_APP_BRICK_API}/booking/getMonth/${startOfMonth(currentMonth).getTime()}/${endOfMonth(currentMonth).getTime()}`)
             .then(res => res.json())

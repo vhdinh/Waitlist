@@ -21,7 +21,7 @@ const NewBookingWrapper = styled.div`
 `;
 
 function NewBooking() {
-    const { selectedDate, setBookingData, bookingData } = useCalendarState();
+    const { selectedDate, setBookingData, bookingData, isEditing } = useCalendarState();
 
     const handleChange = (e: any) => {
         setBookingData((oldState: NewBookingType) => ({
@@ -66,7 +66,10 @@ function NewBooking() {
         <NewBookingWrapper>
             <form>
                 <Typography variant={'h6'}>
-                    Adding a new reservation:
+                    {
+                        isEditing ? 'Editing ' : 'Adding new '
+                    }
+                    reservation:
                 </Typography>
                 <Grid container spacing={6}>
                     <Grid item xs={4} md={4} lg={4}>

@@ -60,8 +60,11 @@ const BookingComponentWrapper = styled.div`
 `
 
 function BookingComponent(props: Booking) {
-    const { setReloadCalendar, selectedDate } = useCalendarState();
+    const { setReloadCalendar, selectedDate ,setBookingData, setDisplayAddNewBooking, setIsEditing } = useCalendarState();
     const handleBookingEdit = () => {
+        setBookingData(props);
+        setIsEditing(true);
+        setDisplayAddNewBooking(true);
         console.log('EDIT', props._id);
     }
     const handleBookingDelete = () => {
@@ -135,13 +138,13 @@ function BookingComponent(props: Booking) {
                         </Typography>
                     </div>
                     <div className={'bc-actions'}>
-                        {/*<Button*/}
-                        {/*    className={'bc-edit'}*/}
-                        {/*    onClick={() => handleBookingEdit()}*/}
-                        {/*    disabled={props.deleted || StartOfToday > props.startTime}*/}
-                        {/*>*/}
-                        {/*    EDIT*/}
-                        {/*</Button>*/}
+                        <Button
+                            className={'bc-edit'}
+                            onClick={() => handleBookingEdit()}
+                            disabled={props.deleted || StartOfToday > props.startTime}
+                        >
+                            EDIT
+                        </Button>
                         <Button
                             className={`bc-delete ${props.deleted ? 'un-delete' : 'deleted'}`}
                             onClick={() => handleBookingDelete()}
