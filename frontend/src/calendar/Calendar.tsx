@@ -126,7 +126,7 @@ function Calendar() {
                 tomorrow.setDate(day.getDate() + 1);
 
                 const numOfBookingForDay = currentMonthBookings?.filter((b) => {
-                    return b.startTime > cloneDay.getTime() && b.endTime < tomorrow.getTime();
+                    return b.start > cloneDay.getTime() && b.end < tomorrow.getTime();
                 })
                 days.push(
                     <div

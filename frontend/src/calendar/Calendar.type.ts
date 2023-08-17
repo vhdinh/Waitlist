@@ -1,14 +1,15 @@
 export interface Booking {
     _id?: string;
+    title?: string;
     name: string;
     phoneNumber: number;
     partySize: number;
     notified: boolean;
     msg: string;
     deleted: boolean;
-    startTime: number;
+    start: number;
     formatStart?: string;
-    endTime: number;
+    end: number;
     formatEnd?: string;
     note: string;
     createdAt: string;

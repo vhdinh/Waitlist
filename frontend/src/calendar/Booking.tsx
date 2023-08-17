@@ -141,7 +141,7 @@ function BookingComponent(props: Booking) {
                         <Button
                             className={'bc-edit'}
                             onClick={() => handleBookingEdit()}
-                            disabled={props.deleted || StartOfToday > props.startTime}
+                            disabled={props.deleted || StartOfToday > props.start}
                         >
                             EDIT
                         </Button>

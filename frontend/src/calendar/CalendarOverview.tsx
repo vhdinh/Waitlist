@@ -62,9 +62,9 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 const f = new Intl.DateTimeFormat('en-us', {
                     timeStyle: 'short'
                 })
-                const results = r.sort((a: Booking, b: Booking) => a.startTime - b.startTime).map((booking: Booking) => {
-                    const s = new Date(booking.startTime);
-                    const e = new Date(booking.endTime);
+                const results = r.sort((a: Booking, b: Booking) => a.start - b.start).map((booking: Booking) => {
+                    const s = new Date(booking.start);
+                    const e = new Date(booking.end);
                     return {
                         ...booking,
                         formatStart: f.format(s),
@@ -148,7 +148,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
     }
 
     const validateBookingForm = () => {
-        return !bookingData.name || !bookingData.phoneNumber || !bookingData.startTime  || !bookingData.endTime || !bookingData.partySize;
+        return !bookingData.name || !bookingData.phoneNumber || !bookingData.start  || !bookingData.end || !bookingData.partySize;
     }
 
     const displayActionButtons = () => {

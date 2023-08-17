@@ -36,10 +36,11 @@ export const StartOfToday = new Date().setHours(0,0,0,0);
 export const Today = new Date();
 
 export const InitialNewBooking = {
+    title: '',
     name: '',
     phoneNumber: undefined,
-    startTime: 0,
-    endTime: 0,
+    start: 0,
+    end: 0,
     partySize: 0,
     note: ''
 };

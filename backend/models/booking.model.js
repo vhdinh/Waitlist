@@ -9,6 +9,10 @@ const bookingSchema = new Schema({
         trim: true,
         minlength: 1
     },
+    title: {
+        type: String,
+        trim: true,
+    },
     phoneNumber: {
         type: Number,
         required: true,
@@ -17,11 +21,11 @@ const bookingSchema = new Schema({
         type: Boolean,
         required: true,
     },
-    startTime: {
+    start: {
         type: Number,
         required:true
     },
-    endTime: {
+    end: {
         type: Number,
         required:true
     },
