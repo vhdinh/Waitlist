@@ -10,10 +10,10 @@ router.route('/').get((req, res) => {
 router.route('/getMonth/:startOfMonth/:endOfMonth').get((req, res) => {
     console.log('---route--- /getMonth/', req.params.startOfMonth, req.params.endOfMonth);
     let filters = {
-        startTime: {
+        start: {
             $gt: req.params.startOfMonth,
         },
-        endTime: {
+        end: {
             $lt: req.params.endOfMonth,
         },
         deleted: false
@@ -30,10 +30,10 @@ router.route('/getDay/:startOfDay/:endOfDay/:isAdmin').get((req, res) => {
     console.log('---route--- /getDay/', req.params.startOfDay, req.params.endOfDay, req.params.isAdmin);
     const isAdmin = req.params.isAdmin === 'true' ? true : false;
     let filters = {
-        startTime: {
+        start: {
             $gt: Number(req.params.startOfDay),
         },
-        endTime: {
+        end: {
             $lt: Number(req.params.endOfDay),
         },
     };
@@ -57,8 +57,8 @@ router.route('/add').post((req, res) => {
         notified: false,
         msg: '',
         deleted: false,
-        startTime: req.body.startTime,
-        endTime: req.body.endTime,
+        start: req.body.start,
+        end: req.body.end,
         note: req.body.note
     });
     newBooking.save()
@@ -78,18 +78,11 @@ router.route('/delete/:id').post((req, res) => {
 
 router.route('/update/:id').post((req, res) => {
     console.log(`---route--- /update/`, req.params.id, req.body);
-    Booking.findByIdAndUpdate(req.params.id, {
-        name: req.body.name,
-        phoneNumber: req.body.phoneNumber,
-        partySize: req.body.partySize,
-        notified: req.body.notified,
-        msg: '',
-        deleted: req.body.deleted,
-        startTime: req.body.startTime,
-        endTime: req.body.endTime,
-        note: req.body.note
-    }).then((r) => res.json(`${req.params.id} updated`))
-        .catch((e) => res.json(`${e}`));
+    Booking.findByIdAndUpdate(req.params.id, req.body).then((r) => res.json(`${req.params.id} updated`))
+        .catch((e) => {
+            console.log('---route--- /update/ FAILED', e);
+            return res.json(`${e}`)
+        });
 
 });
 

@@ -16,7 +16,7 @@ import {
 import { CalendarWrapper } from './Calendar.style';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {StartOfToday, Today, useCalendarState} from "../context/Calendar.provider";
+import {InitialNewBooking, StartOfToday, Today, useCalendarState} from "../context/Calendar.provider";
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import {Booking} from "./Calendar.type";
 
@@ -104,8 +104,27 @@ function Calendar() {
             );
         }
         return <div className="days row">{days}</div>;
-
     }
+
+    const updateBooking = (id: string, startTime: number, endTime: number) => {
+        // Simple POST request with a JSON body using fetch
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                start: startTime,
+                end: endTime
+            })
+        };
+        fetch(`${process.env.REACT_APP_BRICK_API}/booking/update/${id}`, requestOptions)
+            .then(res => res.json())
+            .then((r) => {
+                setReloadCalendar(true);
+            }).catch((e) => {
+            console.log('Error updating reservation', e);
+        });
+    };
+
 
     const renderCells = () => {
         const monthStart = startOfMonth(currentMonth);
@@ -126,8 +145,8 @@ function Calendar() {
                 tomorrow.setDate(day.getDate() + 1);
 
                 const numOfBookingForDay = currentMonthBookings?.filter((b) => {
-                    return b.startTime > cloneDay.getTime() && b.endTime < tomorrow.getTime();
-                })
+                    return b.start > cloneDay.getTime() && b.end < tomorrow.getTime();
+                });
                 days.push(
                     <div
                         className={`col cell
@@ -138,9 +157,24 @@ function Calendar() {
                                 : isSameDay(day, selectedDate) ? "selected" : ""
                         }`}
                         key={day.toDateString()}
+                        data-key={day.toDateString()}
                         onClick={() => onDateClick(cloneDay)}
+                        onDragOver={(e) => {
+                            e.preventDefault();
+                        }}
+                        onDrop={(e) => {
+                            const data = e.dataTransfer.getData("text");
+                            // @ts-ignore
+                            const d = new Date(e.target.getAttribute('data-key'));
+                            const id =data.split('-')[0];
+                            const startTime = data.split('-')[1];
+                            const endTime = data.split('-')[2];
+                            const startTimeAsDate = new Date(`${format(d, 'MM/dd/yyyy')} ${startTime}`)
+                            const endTimeAsDate = new Date(`${format(d, 'MM/dd/yyyy')} ${endTime}`)
+                            updateBooking(id, startTimeAsDate.getTime(), endTimeAsDate.getTime());
+                        }}
                     >
-                        <span className="number">{formattedDate}</span>
+                        <div className="number">{formattedDate}</div>
                         {/*<span className="bg">{formattedDate}</span>*/}
                         {
                             numOfBookingForDay.length > 0 && (

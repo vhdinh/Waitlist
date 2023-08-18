@@ -6,9 +6,9 @@ export interface Booking {
     notified: boolean;
     msg: string;
     deleted: boolean;
-    startTime: number;
+    start: number;
     formatStart?: string;
-    endTime: number;
+    end: number;
     formatEnd?: string;
     note: string;
     createdAt: string;
