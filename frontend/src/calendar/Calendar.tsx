@@ -116,6 +116,7 @@ function Calendar() {
                 end: endTime
             })
         };
+        console.log('Drag_and_drop_update_booking', requestOptions.body);
         fetch(`${process.env.REACT_APP_BRICK_API}/booking/update/${id}`, requestOptions)
             .then(res => res.json())
             .then((r) => {
@@ -169,9 +170,11 @@ function Calendar() {
                             const id =data.split('-')[0];
                             const startTime = data.split('-')[1];
                             const endTime = data.split('-')[2];
-                            const startTimeAsDate = new Date(`${format(d, 'MM/dd/yyyy')} ${startTime}`)
-                            const endTimeAsDate = new Date(`${format(d, 'MM/dd/yyyy')} ${endTime}`)
-                            updateBooking(id, startTimeAsDate.getTime(), endTimeAsDate.getTime());
+                            const startTimeAsDate = new Date(`${format(d, 'MM/dd/yyyy')} ${startTime}`).getTime();
+                            const endTimeAsDate = new Date(`${format(d, 'MM/dd/yyyy')} ${endTime}`).getTime();
+                            setTimeout(() => {
+                                updateBooking(id, startTimeAsDate, endTimeAsDate);
+                            }, 750)
                         }}
                     >
                         <div className="number">{formattedDate}</div>
