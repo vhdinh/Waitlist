@@ -18,6 +18,9 @@ const NewBookingWrapper = styled.div`
         padding-right: 12px;
       }
     }
+    .MuiGrid-item {
+      padding-top: 8px !important;
+    }
 `;
 
 function NewBooking() {
@@ -65,14 +68,14 @@ function NewBooking() {
     return (
         <NewBookingWrapper>
             <form>
-                <Typography variant={'h6'}>
+                <Typography variant={'h6'} style={{paddingBottom: '40px'}}>
                     {
                         isEditing ? 'Editing ' : 'Adding new '
                     }
                     reservation:
                 </Typography>
                 <Grid container spacing={6}>
-                    <Grid item xs={4} md={4} lg={4}>
+                    <Grid item xs={6} md={4} lg={4}>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <Typography
@@ -93,7 +96,7 @@ function NewBooking() {
                             </FormControl>
                         </Grid>
                     </Grid>
-                    <Grid item xs={4} md={4} lg={4}>
+                    <Grid item xs={6} md={4} lg={4}>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <Typography
@@ -114,28 +117,7 @@ function NewBooking() {
                             </FormControl>
                         </Grid>
                     </Grid>
-                    <Grid item xs={4} md={4} lg={4}>
-                        <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <Typography
-                                    variant="h6"
-                                    className={'input-label'}
-                                >
-                                    Party Size:
-                                </Typography>
-                                <TextField
-                                    required
-                                    id="size-input"
-                                    type="tel"
-                                    name={'partySize'}
-                                    value={bookingData.partySize}
-                                    onChange={(e) => handleChange(e)}
-                                    autoComplete={'off'}
-                                />
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={4} md={4} lg={4}>
+                    <Grid item xs={6} md={4} lg={4}>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <Typography
@@ -157,7 +139,7 @@ function NewBooking() {
                             </FormControl>
                         </Grid>
                     </Grid>
-                    <Grid item xs={4} md={4} lg={4}>
+                    <Grid item xs={6} md={4} lg={4}>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <Typography
@@ -188,7 +170,28 @@ function NewBooking() {
                             </FormControl>
                         </Grid>
                     </Grid>
-                    <Grid item xs={4} md={4} lg={4}>
+                    <Grid item xs={6} md={4} lg={4}>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <Typography
+                                    variant="h6"
+                                    className={'input-label'}
+                                >
+                                    Party Size:
+                                </Typography>
+                                <TextField
+                                    required
+                                    id="size-input"
+                                    type="tel"
+                                    name={'partySize'}
+                                    value={bookingData.partySize}
+                                    onChange={(e) => handleChange(e)}
+                                    autoComplete={'off'}
+                                />
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={6} md={4} lg={4}>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <Typography
