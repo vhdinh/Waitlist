@@ -81,8 +81,27 @@ function BookingComponent(props: Booking) {
             });
     };
 
+    const onDrag = (ev: any) => {
+        const elem = document.createElement("div");
+        elem.id = "drag-ghost";
+        elem.style.position = "absolute";
+        elem.style.background = 'teal';
+        elem.style.color = 'white';
+        elem.style.padding = '10px 30px';
+        elem.style.borderRadius = '12px';
+        elem.style.top = "-1000px";
+        elem.textContent = `${props.name} (${props.partySize})`;
+        document.body.appendChild(elem);
+        ev.dataTransfer.setDragImage(elem, 0, 0);
+        ev.dataTransfer.setData("text", `${ev.target.id}-${props.formatStart}-${props.formatEnd}`);
+    }
+
     return (
-        <BookingComponentWrapper>
+        <BookingComponentWrapper
+            draggable={true}
+            onDragStart={onDrag}
+            id={props._id}
+        >
             <Card>
                 <CardContent className={'bc-content'}>
                     <div className={'bc-left'}>
@@ -141,7 +160,7 @@ function BookingComponent(props: Booking) {
                         <Button
                             className={'bc-edit'}
                             onClick={() => handleBookingEdit()}
-                            disabled={props.deleted || StartOfToday > props.startTime}
+                            disabled={props.deleted || StartOfToday > props.start}
                         >
                             EDIT
                         </Button>

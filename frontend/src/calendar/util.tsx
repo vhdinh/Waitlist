@@ -5,8 +5,8 @@ export interface NewBookingType {
     _id?: string;
     name: string;
     phoneNumber?: number;
-    startTime: number;
-    endTime: number;
+    start: number;
+    end: number;
     partySize: number;
     note?: string;
     msg?: string;

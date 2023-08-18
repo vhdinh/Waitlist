@@ -38,24 +38,24 @@ function NewBooking() {
     }
 
     useEffect(() => {
-        if (bookingData.startTime) {
+        if (bookingData.start) {
             const endT = memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
-                .find((t) => t.value === (bookingData.startTime + 7200000));
+                .find((t) => t.value === (bookingData.start + 7200000));
             if (endT) {
                 setBookingData((oldState: NewBookingType) => ({
                     ...oldState,
-                    endTime: endT.value,
+                    end: endT.value,
                 }))
             } else {
                 const newEndT = memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
                     .find((t) => t.value === memoizedGetTodayTimeMapping[memoizedGetTodayTimeMapping.length - 1].value);
                 setBookingData((oldState: NewBookingType) => ({
                     ...oldState, //@ts-ignore
-                    endTime: newEndT.value,
+                    end: newEndT.value,
                 }))
             }
         };
-    }, [bookingData.startTime])
+    }, [bookingData.start])
 
     const memoizedGetTodayTimeMapping = useMemo((): TimeSlot[] =>
         getTodayTimeMapping(selectedDate),
@@ -145,9 +145,9 @@ function NewBooking() {
                                     Start Time:
                                 </Typography>
                                 <Select
-                                    id="startTime"
-                                    value={bookingData.startTime}
-                                    name={'startTime'}
+                                    id="start"
+                                    value={bookingData.start}
+                                    name={'start'}
                                     onChange={(e) => handleSelectChange(e)}
                                 >
                                     {memoizedGetTodayTimeMapping.map((t: TimeSlot) => {
@@ -167,14 +167,14 @@ function NewBooking() {
                                     End Time:
                                 </Typography>
                                 <Select
-                                    id="endTime"
-                                    value={bookingData.endTime}
-                                    name={'endTime'}
+                                    id="end"
+                                    value={bookingData.end}
+                                    name={'end'}
                                     onChange={handleSelectChange}
                                 >
                                     {memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
                                         .filter((t) => {
-                                            const twoHrsLater = bookingData.startTime + 7200000;
+                                            const twoHrsLater = bookingData.start + 7200000;
                                             if (t.value >= twoHrsLater) {
                                                 return t.value >= twoHrsLater;
                                             } else {
