@@ -177,12 +177,17 @@ function Calendar() {
                             }, 750)
                         }}
                     >
-                        <div className="number">{formattedDate}</div>
+                        <div
+                            className="number"
+                            data-key={day.toDateString()}
+                        >
+                            {formattedDate}
+                        </div>
                         {/*<span className="bg">{formattedDate}</span>*/}
                         {
                             numOfBookingForDay.length > 0 && (
-                                <span className='res'>
-                                    {numOfBookingForDay.length} <DinnerDiningIcon />
+                                <span className='res' data-key={day.toDateString()}>
+                                    {numOfBookingForDay.length} <DinnerDiningIcon data-key={day.toDateString()}/>
                                 </span>
                             )
                         }
