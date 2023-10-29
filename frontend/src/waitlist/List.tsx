@@ -6,6 +6,8 @@ import styled from '@emotion/styled';
 import { useAppState } from '../context/App.provider';
 import CircleIcon from '@mui/icons-material/Circle';
 import PhoneNumberColumn from './PhoneNumberColumn';
+import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
+import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
 
 const getColumns = (isAdmin: boolean): GridColDef[] => {
     const arr: GridColDef[] = [
@@ -77,16 +79,18 @@ const ListWrapper = styled.div`
         background: #FCFCFC;
     }
     .accepts {
-        background: #D8EEE1;
+        // background: #1b5e20;
     }
     .accepts-icon {
-        color: #D8EEE1;
+        // color: #D8EEE1;
+        color: #4caf50;
     }
     .decline {
-        background: #FBDBC1;
+        background: #dd2c00;
     }
     .decline-icon {
-        color: #FBDBC1;
+        // color: #FBDBC1;
+        color: #dd2c00;
     }
     input {
       font-size: 24px;
@@ -102,10 +106,10 @@ function List(props: ListProps) {
                 isAdmin ? (
                     <div style={{fontSize: '20px', display: 'flex', gap: 24, paddingBottom: 8, position: 'absolute', marginTop: '-28px'}}>
                         <span style={{display: 'flex', justifyItems: 'center', gap: 12}}>
-                            <CircleIcon className={'accepts-icon'}/> Accepted
+                            <MobileFriendlyIcon className={'accepts-icon'}/> Accepted
                         </span>
                         <span style={{display: 'flex', justifyItems: 'center', gap: 12}}>
-                            <CircleIcon className={'decline-icon'}/> Declined
+                            <PhonelinkEraseIcon className={'decline-icon'}/> Declined
                         </span>
                     </div>
                 ) : <></>

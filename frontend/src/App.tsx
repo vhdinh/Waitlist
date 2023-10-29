@@ -30,8 +30,13 @@ const pages = [
         role: [Role.EMPLOYEE, Role.ADMIN],
     },
     {
-        label: 'Logs',
-        url: '/logs',
+        label: 'Logs (W)',
+        url: '/logs-waitlist',
+        role: [Role.ADMIN],
+    },
+    {
+        label: 'Logs (R)',
+        url: '/logs-reservations',
         role: [Role.ADMIN],
     }
 ];

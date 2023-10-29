@@ -5,6 +5,8 @@ import SmsIcon from '@mui/icons-material/Sms';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useWaitlistState } from '../context/Waitlist.provider';
 import { useAppState } from '../context/App.provider';
+import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
+import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
 
 interface ActionColumnProps {
     _id: number;
@@ -18,6 +20,7 @@ interface ActionColumnProps {
 const ActionColumnWrapper = styled.div`
     display: flex;
     gap: 8px;
+    align-items: center;
     .sms {
         color: #1976d2;
         cursor: pointer;
@@ -75,21 +78,31 @@ function ActionColumn(props: ActionColumnProps) {
             });
     }
 
+    const renderPhoneIcons = () => {
+        if (props.notified && props.msg === '1') return <MobileFriendlyIcon fontSize={'large'} style={{color: '#4caf50', width: '59px'}} />
+        if (props.notified && props.msg === '6') return <PhonelinkEraseIcon fontSize={'large'} style={{color: "#dd2c00", width: '59px'}}/>
+        return (
+            <>
+                <IconButton
+                    onClick={(e: any) => notifyCustomer()}
+                    size={'large'}
+                    disabled={props.notified}
+                >
+                    <SmsIcon
+                        style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
+                        className={'sms'}
+                        fontSize={'large'}
+                    />
+                </IconButton>
+            </>
+        )
+    }
+
     return (
         <ActionColumnWrapper>
             { isAdmin ? (
                 <>
-                    <IconButton
-                        onClick={(e: any) => notifyCustomer()}
-                        size={'large'}
-                        disabled={props.notified}
-                    >
-                        <SmsIcon
-                            style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
-                            className={'sms'}
-                            fontSize={'large'}
-                        />
-                    </IconButton>
+                    {renderPhoneIcons()}
                     <IconButton
                         onClick={(e: any) => removeCustomer()}
                         size={'large'}

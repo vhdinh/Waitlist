@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
     Button,
     Dialog,
@@ -16,10 +16,15 @@ function AdminPasscodeModal() {
     const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin, setRole, } = useAppState();
     const { setReloadCalendar } = useCalendarState();
     const [adminPasscode, setAdminPasscode] = useState('');
+    const inputElement = useRef<HTMLInputElement>(null);
+
 
     const handleChange = (e: any) => {
         setAdminPasscode(e.target.value);
     }
+    useEffect(() => {
+        inputElement.current?.focus();
+    }, []);
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
@@ -46,6 +51,7 @@ function AdminPasscodeModal() {
             open={displayAdminDialog}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
+            disableRestoreFocus
         >
             <DialogTitle id="alert-dialog-title">
                 <Typography
@@ -58,6 +64,7 @@ function AdminPasscodeModal() {
             <DialogContent>
                 <FormControl fullWidth>
                     <TextField
+                        ref={inputElement}
                         required
                         autoFocus
                         id="outlined-required"
@@ -79,7 +86,10 @@ function AdminPasscodeModal() {
                 <Button
                     size='large'
                     variant="contained"
-                    onClick={() => setDisplayAdminDialog(false)}
+                    onClick={() => {
+                        setAdminPasscode('');
+                        setDisplayAdminDialog(false);
+                    }}
                     style={{
                         background: 'black',
                         color: 'white',

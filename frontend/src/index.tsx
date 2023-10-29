@@ -40,8 +40,12 @@ const router = createBrowserRouter([
                 element: <CalendarPage />,
             },
             {
-                path: '/logs',
+                path: '/logs-waitlist',
                 element: <LogsPage />,
+            },
+            {
+                path: '/logs-reservations',
+                element: <>Reservations Logs</>,
             }
         ],
     },

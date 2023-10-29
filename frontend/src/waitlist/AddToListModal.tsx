@@ -186,6 +186,7 @@ function AddToListModal(props: AddToListModalProps) {
                 open={open}
                 onClose={() => handleClose()}
                 TransitionComponent={Transition}
+                disableRestoreFocus
             >
                 { loading && <Loader />}
                 <DialogTitle>

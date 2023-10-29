@@ -68,7 +68,13 @@ function WaitlistPage() {
                         <Container className={'body-content'}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <Typography variant="h1" className={'title'}>Waitlist</Typography>
+                                    <Typography
+                                        variant="h1"
+                                        className={'title'}
+                                        onClick={() => window.location.reload()}
+                                    >
+                                        Waitlist
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={12} className={'join-waitlist'}>
                                     <Button

@@ -33,3 +33,7 @@ code {
     right: 0;
     width: 100%;
 }
+
+.MuiDialog-scrollPaper {
+    align-items: flex-start !important;
+}
