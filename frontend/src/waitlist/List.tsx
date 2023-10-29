@@ -86,7 +86,7 @@ const ListWrapper = styled.div`
         color: #4caf50;
     }
     .decline {
-        background: #dd2c00;
+        // background: #dd2c00;
     }
     .decline-icon {
         // color: #FBDBC1;
