@@ -73,8 +73,8 @@ router.route('/add').post((req, res) => {
     newBooking.save()
         .then((r) => {
             console.log('booking-saved:', r);
-            let s = new Date(req.body.start).toLocaleString('en-US',{timeZone:'PST', hour12:true}).replace(',','')
-            let e = new Date(req.body.end).toLocaleString('en-US',{timeZone:'PST', hour12:true}).replace(',','')
+            let s = new Date(req.body.start).toLocaleString('en-US',{timeZone:'America/Los_Angeles', hour12:true}).replace(',','')
+            let e = new Date(req.body.end).toLocaleString('en-US',{timeZone:'America/Los_Angeles', hour12:true}).replace(',','')
             let mailDetails = {
                 from: process.env.VU_EMAIL,
                 to: process.env.BRICK_EMAIL,
