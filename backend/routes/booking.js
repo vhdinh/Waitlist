@@ -89,6 +89,7 @@ router.route('/add').post((req, res) => {
                     "<p>Note: " + req.body.note + "</p>" +
                     "</div>"
             };
+            console.log('----- GOING TO SEND EMAIL -----', mailDetails);
 
             mailTransporter.sendMail(mailDetails, function(err, data) {
                 if(err) {
