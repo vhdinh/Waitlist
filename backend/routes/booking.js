@@ -1,5 +1,14 @@
+const nodemailer = require("nodemailer");
 const router = require('express').Router();
 let Booking = require('../models/booking.model');
+
+let mailTransporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: process.env.VU_EMAIL,
+        pass: process.env.VU_EMAIL_APP_PW
+    }
+});
 
 router.route('/').get((req, res) => {
     Booking.find()
@@ -64,6 +73,30 @@ router.route('/add').post((req, res) => {
     newBooking.save()
         .then((r) => {
             console.log('booking-saved:', r);
+            let s = new Date(req.body.start).toLocaleString('en-US',{timeZone:'PST', hour12:true}).replace(',','')
+            let e = new Date(req.body.end).toLocaleString('en-US',{timeZone:'PST', hour12:true}).replace(',','')
+            let mailDetails = {
+                from: process.env.VU_EMAIL,
+                to: process.env.BRICK_EMAIL,
+                subject: 'New Reservation',
+                html: "<div>" +
+                    "New Reservation has been added to the calendar:" +
+                    "<p>Name: " + req.body.name + "</p>" +
+                    "<p>Phone: " + req.body.phoneNumber + "</p>" +
+                    "<p>Party Size: " + req.body.partySize + "</p>" +
+                    "<p>Start Time: " + s + "</p>" +
+                    "<p>End Time: " + e + "</p>" +
+                    "<p>Note: " + req.body.note + "</p>" +
+                    "</div>"
+            };
+
+            mailTransporter.sendMail(mailDetails, function(err, data) {
+                if(err) {
+                    console.log('Error Occurs', err);
+                } else {
+                    console.log('Email sent successfully');
+                }
+            });
             res.json(`you has been added to the reservation`);
         })
         .catch(err => res.status(400).json('error-saving-user: ' + err));
