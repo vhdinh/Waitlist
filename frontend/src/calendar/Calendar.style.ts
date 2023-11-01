@@ -211,7 +211,7 @@ export const CalendarWrapper = styled.div`
     }
   
     .calendar .body .cell.today {
-      background: #80cbc4;
+      background: #90caf9;
     }
   
     .calendar .body .cell .res {
