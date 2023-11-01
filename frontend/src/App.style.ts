@@ -14,6 +14,9 @@ export const AppWrapper = styled.div`
                 margin: 0 !important;
             }
         }
+        .admin {
+            color: lightgray;
+        }
     }
     @media (max-width: 660px) {
         .app-bar {

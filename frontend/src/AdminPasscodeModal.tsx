@@ -17,13 +17,15 @@ function AdminPasscodeModal() {
     const { setReloadCalendar } = useCalendarState();
     const [adminPasscode, setAdminPasscode] = useState('');
     const inputElement = useRef<HTMLInputElement>(null);
-
+    const [helperText, setHelperText] = useState<string>('');
 
     const handleChange = (e: any) => {
         setAdminPasscode(e.target.value);
+        setHelperText('');
     }
     useEffect(() => {
         inputElement.current?.focus();
+        setHelperText('');
     }, []);
 
     const handleSubmit = (e: any) => {
@@ -31,13 +33,21 @@ function AdminPasscodeModal() {
         if (adminPasscode === process.env.REACT_APP_EMPLOYEE_PASSCODE) {
             setRole(Role.EMPLOYEE);
             setIsAdmin(true);
+
+            setAdminPasscode('');
+            setDisplayAdminDialog(false);
         } else if (adminPasscode === process.env.REACT_APP_ADMIN_PASSCODE) {
             setRole(Role.ADMIN);
             setIsAdmin(true);
             setReloadCalendar(true);
+
+            setAdminPasscode('');
+            setDisplayAdminDialog(false);
+        } else {
+            setRole(Role.USER);
+            setAdminPasscode('');
+            setHelperText('Invalid Code');
         }
-        setAdminPasscode('');
-        setDisplayAdminDialog(false);
     }
 
     const handleKeyPress = (e: any) => {
@@ -79,6 +89,7 @@ function AdminPasscodeModal() {
                             pattern: "[0-9]*"
                         }} // font size of input text
                         InputLabelProps={{style: {fontSize: 24}}} // font size of input label
+                        helperText={helperText}
                     />
                 </FormControl>
             </DialogContent>
@@ -89,6 +100,7 @@ function AdminPasscodeModal() {
                     onClick={() => {
                         setAdminPasscode('');
                         setDisplayAdminDialog(false);
+                        setHelperText('');
                     }}
                     style={{
                         background: 'black',

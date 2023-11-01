@@ -14,6 +14,7 @@ import AdminPasscodeModal from './AdminPasscodeModal';
 import io from 'socket.io-client';
 import {useWaitlistState} from './context/Waitlist.provider';
 import {useCalendarState} from "./context/Calendar.provider";
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 // @ts-ignore
 const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
@@ -22,12 +23,12 @@ const pages = [
     {
         label: 'Waitlist',
         url: '/',
-        role: [Role.EMPLOYEE, Role.ADMIN]
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN]
     },
     {
         label: 'Reservations',
         url: '/reservations',
-        role: [Role.EMPLOYEE, Role.ADMIN],
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
     },
     {
         label: 'Logs (W)',
@@ -74,7 +75,7 @@ function App() {
             setIsAdmin(false);
             setReloadList(true);
             setReloadCalendar(true);
-            setRole(Role.EMPLOYEE);
+            setRole(Role.USER);
         }
     };
 
@@ -117,10 +118,15 @@ function App() {
                                 }
                             })}
                         </Box>
-                        <Box sx={{ flexGrow: 0 }}>
+                        <Box sx={{ flexGrow: 0 }} style={{display: 'flex', gap: '12px'}}>
+                            {
+                                role === Role.EMPLOYEE || role === Role.ADMIN ? (
+                                    <ManageAccountsIcon className='admin' fontSize={'large'}/>
+                                ): <></>
+                            }
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
-                                    <SettingsIcon fontSize={'large'} />
+                                    <SettingsIcon fontSize={'large'} style={{color: 'black'}}/>
                                 </IconButton>
                             </Tooltip>
                         </Box>

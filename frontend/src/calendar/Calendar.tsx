@@ -19,6 +19,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {InitialNewBooking, StartOfToday, Today, useCalendarState} from "../context/Calendar.provider";
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import {Booking} from "./Calendar.type";
+import { Button } from "@mui/material";
 
 function Calendar() {
     const {
@@ -72,8 +73,8 @@ function Calendar() {
         const dateFormat = "MMMM yyyy";
         return (
             <div className="header row flex-middle">
-                <div className="col col-start" onClick={prevMonth}>
-                    <ChevronLeftIcon className="icon"/>
+                <div className="col col-start" >
+                    <ChevronLeftIcon onClick={prevMonth} className="icon"/>
                 </div>
                 <div className="col col-center">
                     <span
@@ -85,8 +86,16 @@ function Calendar() {
                       {format(currentMonth, dateFormat)}
                     </span>
                 </div>
-                <div className="col col-end" onClick={nextMonth}>
-                    <ChevronRightIcon className="icon"/>
+                <div className="col col-end" >
+                    <Button
+                        style={{color: 'black', borderColor: 'black'}}
+                        variant="outlined"
+                        onClick={() => {
+                            setCurrentMonth(Today);
+                            setSelectedDate(StartOfToday);
+                        }}
+                    >Go To Today</Button>
+                    <ChevronRightIcon onClick={nextMonth} className="icon"/>
                 </div>
             </div>
         );

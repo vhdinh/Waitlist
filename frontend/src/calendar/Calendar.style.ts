@@ -101,16 +101,23 @@ export const CalendarWrapper = styled.div`
     .col-start {
         justify-content: flex-start;
         text-align: left;
+        display: flex;
+        align-items: center;
     }
 
     .col-center {
         justify-content: center;
         text-align: center;
+        display: flex;
+        align-items: center;
     }
 
     .col-end {
         justify-content: flex-end;
         text-align: right;
+        display: flex;
+        gap: 22px;
+        align-items: center;
     }
 
 
@@ -204,7 +211,7 @@ export const CalendarWrapper = styled.div`
     }
   
     .calendar .body .cell.today {
-      background: yellow;
+      background: #80cbc4;
     }
   
     .calendar .body .cell .res {

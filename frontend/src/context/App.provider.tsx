@@ -9,6 +9,7 @@ import React, {
 import { AlertColor } from '@mui/material/Alert/Alert';
 
 export enum Role {
+    'USER'= 'user',
     'EMPLOYEE' = 'employee',
     'ADMIN' = 'admin',
 }
@@ -41,7 +42,7 @@ AppContext.displayName = 'AppContext';
 export const AppProvider = ({
     children,
 }: PropsWithChildren<Record<string, unknown>>) => {
-    const [role, setRole] = useState<Role>(Role.EMPLOYEE);
+    const [role, setRole] = useState<Role>(Role.USER);
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(false);
     const [displaySnack, setDisplaySnack] = useState(false);

@@ -37,3 +37,9 @@ code {
 .MuiDialog-scrollPaper {
     align-items: flex-start !important;
 }
+
+.MuiFormHelperText-contained {
+    color: red !important;
+    font-size: 24px !important;
+
+}
