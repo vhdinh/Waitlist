@@ -360,6 +360,12 @@ function AddToListModal(props: AddToListModalProps) {
                             )
                         }
                     </Grid>
+                    <Typography
+                        variant="inherit"
+                        style={{marginBottom: '12px', marginTop: '12px', fontSize: '12px', textAlign: 'center'}}
+                    >
+                        * message and data rates may apply *
+                    </Typography>
                 </DialogContent>
             </Dialog>
         </AddToListModalWrapper>
