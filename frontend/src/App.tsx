@@ -14,7 +14,6 @@ import AdminPasscodeModal from './AdminPasscodeModal';
 import io from 'socket.io-client';
 import {useWaitlistState} from './context/Waitlist.provider';
 import {useCalendarState} from "./context/Calendar.provider";
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 // @ts-ignore
 const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
@@ -80,7 +79,7 @@ function App() {
     };
 
   return (
-    <AppWrapper>
+    <AppWrapper isAdmin={isAdmin}>
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" className={'app-bar'}>
                 <Container maxWidth="xl">
@@ -119,11 +118,6 @@ function App() {
                             })}
                         </Box>
                         <Box sx={{ flexGrow: 0 }} style={{display: 'flex', gap: '12px'}}>
-                            {
-                                role === Role.EMPLOYEE || role === Role.ADMIN ? (
-                                    <ManageAccountsIcon className='admin' fontSize={'large'}/>
-                                ): <></>
-                            }
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
                                     <SettingsIcon fontSize={'large'} style={{color: 'black'}}/>

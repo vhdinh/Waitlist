@@ -1,8 +1,12 @@
 import styled from '@emotion/styled';
 
-export const AppWrapper = styled.div`
+interface AppWrapperProps {
+    isAdmin: boolean;
+}
+
+export const AppWrapper = styled.div<AppWrapperProps>`
     .app-bar {
-        background: #F7F7F8;
+        background: ${(props) => props.isAdmin ? '#ff7961' : '#F7F7F8'};
         img {
             width: 100px;
         }
