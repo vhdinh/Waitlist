@@ -40,6 +40,10 @@ const router = createBrowserRouter([
                 element: <CalendarPage />,
             },
             {
+                path: "/reservations/:date",
+                element: <CalendarPage />,
+            },
+            {
                 path: '/logs-waitlist',
                 element: <LogsPage />,
             },

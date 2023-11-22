@@ -3,10 +3,13 @@ import React, {
     Dispatch,
     PropsWithChildren,
     SetStateAction,
-    useContext,
+    useContext, useEffect,
     useState,
 } from 'react';
 import {NewBookingType} from "../calendar/util";
+import {
+    useParams
+} from "react-router-dom";
 
 export type CalendarState = {
     reloadCalendar: boolean;
@@ -33,6 +36,7 @@ const CalendarContext = createContext<CalendarState>(
 CalendarContext.displayName = 'CalendarContext';
 
 export const StartOfToday = new Date().setHours(0,0,0,0);
+const setSpecificDate = (date: number) => new Date(date).setHours(0,0,0,0);
 export const Today = new Date();
 
 export const InitialNewBooking = {
@@ -55,7 +59,16 @@ export const CalendarProvider = ({
     const [bookingData, setBookingData] = useState<NewBookingType>(InitialNewBooking);
     const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-
+    // We can use the `useParams` hook here to access
+    // the dynamic pieces of the URL.
+    let { date } = useParams();
+    
+    useEffect(() => {
+        if (date) {
+            setSelectedDate(setSpecificDate(Number(date)));
+        }
+    }, []);
+    
     return (
         <CalendarContext.Provider
             value={{

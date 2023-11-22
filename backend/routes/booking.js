@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const router = require('express').Router();
 let Booking = require('../models/booking.model');
+const fns = require('date-fns')
 
 let mailTransporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -74,6 +75,7 @@ router.route('/add').post((req, res) => {
         .then((r) => {
             console.log('booking-saved:', r);
             let s = new Date(req.body.start).toLocaleString('en-US',{timeZone:'America/Los_Angeles', hour12:true}).replace(',','')
+            let sDay = fns.format(new Date(req.body.start), 'eeee');
             let e = new Date(req.body.end).toLocaleString('en-US',{timeZone:'America/Los_Angeles', hour12:true}).replace(',','')
             let mailDetails = {
                 from: process.env.VU_EMAIL,
@@ -84,9 +86,10 @@ router.route('/add').post((req, res) => {
                     "<p>Name: " + req.body.name + "</p>" +
                     "<p>Phone: " + req.body.phoneNumber + "</p>" +
                     "<p>Party Size: " + req.body.partySize + "</p>" +
-                    "<p>Start Time: " + s + "</p>" +
-                    "<p>End Time: " + e + "</p>" +
+                    "<p>Start Time: " + s + " ("  + sDay + ")</p>" +
+                    "<p>End Time: " + e + " ("  + sDay + ")</p>" +
                     "<p>Note: " + req.body.note + "</p>" +
+                    "<p><a href='" + process.env.UI_URL + "/reservations/" + req.body.start + "'>See Calendar</a></p>" +
                     "</div>"
             };
             console.log('----- GOING TO SEND EMAIL -----', mailDetails);

@@ -20,6 +20,7 @@ import {InitialNewBooking, StartOfToday, Today, useCalendarState} from "../conte
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import {Booking} from "./Calendar.type";
 import { Button } from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 function Calendar() {
     const {
@@ -32,6 +33,7 @@ function Calendar() {
         setReloadCalendar
     } = useCalendarState();
     const [ currentMonthBookings, setCurrentMonthBookings ] = useState<Booking[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -93,6 +95,7 @@ function Calendar() {
                         onClick={() => {
                             setCurrentMonth(Today);
                             setSelectedDate(StartOfToday);
+                            navigate('/reservations');
                         }}
                     >Go To Today</Button>
                     <ChevronRightIcon onClick={nextMonth} className="icon"/>
