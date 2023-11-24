@@ -75,7 +75,7 @@ router.route('/add').post((req, res) => {
         .then((r) => {
             console.log('booking-saved:', r);
             let s = new Date(req.body.start).toLocaleString('en-US',{timeZone:'America/Los_Angeles', hour12:true}).replace(',','')
-            let sDay = fns.format(new Date(req.body.start), 'eeee');
+            let sDay = fns.format(new Date(req.body.start).setHours(0, 0, 0, 0), 'eeee');
             let e = new Date(req.body.end).toLocaleString('en-US',{timeZone:'America/Los_Angeles', hour12:true}).replace(',','')
             let mailDetails = {
                 from: process.env.VU_EMAIL,
@@ -89,7 +89,7 @@ router.route('/add').post((req, res) => {
                     "<p>Start Time: " + s + " ("  + sDay + ")</p>" +
                     "<p>End Time: " + e + " ("  + sDay + ")</p>" +
                     "<p>Note: " + req.body.note + "</p>" +
-                    "<p><a href='" + process.env.UI_URL + "/reservations/" + req.body.start + "'>See Calendar</a></p>" +
+                    "<p><a href='" + process.env.UI_URL + "/reservations/" +  new Date(fns.startOfDay(req.body.start)).getTime() + "'>See Calendar</a></p>" +
                     "</div>"
             };
             console.log('----- GOING TO SEND EMAIL -----', mailDetails);

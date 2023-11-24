@@ -51,20 +51,23 @@ export const InitialNewBooking = {
 export const CalendarProvider = ({
      children,
 }: PropsWithChildren<Record<string, unknown>>) => {
+    // We can use the `useParams` hook here to access
+    // the dynamic pieces of the URL.
+    let { date } = useParams();
+
     const [openCalendarOverview, setOpenCalendarOverview] = useState(false);
-    const [currentMonth, setCurrentMonth] = useState(Today);
+    const [currentMonth, setCurrentMonth] = useState(date ? new Date(Number(date)) : Today);
     const [displayMonth ] = useState(Today);
-    const [selectedDate, setSelectedDate] = useState(StartOfToday);
+    const [selectedDate, setSelectedDate] = useState(date ? setSpecificDate(Number(date)) : StartOfToday);
     const [reloadCalendar, setReloadCalendar] = useState(false);
     const [bookingData, setBookingData] = useState<NewBookingType>(InitialNewBooking);
     const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    // We can use the `useParams` hook here to access
-    // the dynamic pieces of the URL.
-    let { date } = useParams();
+
     
     useEffect(() => {
         if (date) {
+            setCurrentMonth(new Date(Number(date)));
             setSelectedDate(setSpecificDate(Number(date)));
         }
     }, []);
