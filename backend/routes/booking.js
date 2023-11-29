@@ -2,6 +2,9 @@ const nodemailer = require("nodemailer");
 const router = require('express').Router();
 let Booking = require('../models/booking.model');
 const fns = require('date-fns')
+const timeZone = 'America/Los_Angeles';
+const locale = 'en-US';
+const dateFormat = 'eeee';
 
 let mailTransporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -74,9 +77,10 @@ router.route('/add').post((req, res) => {
     newBooking.save()
         .then((r) => {
             console.log('booking-saved:', r);
-            let s = new Date(req.body.start).toLocaleString('en-US',{timeZone:'America/Los_Angeles', hour12:true}).replace(',','')
-            let sDay = fns.format(new Date(req.body.start).setHours(0, 0, 0, 0), 'eeee');
-            let e = new Date(req.body.end).toLocaleString('en-US',{timeZone:'America/Los_Angeles', hour12:true}).replace(',','')
+            let s = new Date(req.body.start).toLocaleString(locale,{timeZone: timeZone, hour12:true}).replace(',','');
+            let sDay = fns.format(fns.startOfDay(new Date(req.body.start)), dateFormat);
+            let sDayUnix = new Date(fns.startOfDay(req.body.start)).getTime();
+            let e = new Date(req.body.end).toLocaleString(locale,{timeZone: timeZone, hour12:true}).replace(',','');
             let mailDetails = {
                 from: process.env.VU_EMAIL,
                 to: process.env.BRICK_EMAIL,
@@ -89,7 +93,7 @@ router.route('/add').post((req, res) => {
                     "<p>Start Time: " + s + " ("  + sDay + ")</p>" +
                     "<p>End Time: " + e + " ("  + sDay + ")</p>" +
                     "<p>Note: " + req.body.note + "</p>" +
-                    "<p><a href='" + process.env.UI_URL + "/reservations/" +  new Date(fns.startOfDay(req.body.start)).getTime() + "'>See Calendar</a></p>" +
+                    "<p><a href='" + process.env.UI_URL + "/reservations/" +  sDayUnix + "'>See Calendar</a></p>" +
                     "</div>"
             };
             console.log('----- GOING TO SEND EMAIL -----', mailDetails);
