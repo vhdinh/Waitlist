@@ -10,6 +10,7 @@ import {NewBookingType} from "../calendar/util";
 import {
     useParams
 } from "react-router-dom";
+import {format} from 'date-fns';
 
 export type CalendarState = {
     reloadCalendar: boolean;
@@ -42,6 +43,7 @@ export const Today = new Date();
 export const InitialNewBooking = {
     name: '',
     phoneNumber: undefined,
+    startDay: '',
     start: 0,
     end: 0,
     partySize: 0,
@@ -71,6 +73,13 @@ export const CalendarProvider = ({
             setSelectedDate(setSpecificDate(Number(date)));
         }
     }, []);
+
+    useEffect(() => {
+        setBookingData((oldState: NewBookingType) => ({
+            ...oldState,
+            startDay: format(new Date(selectedDate), 'EEEE'),
+        }))
+    }, [selectedDate])
     
     return (
         <CalendarContext.Provider

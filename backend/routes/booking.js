@@ -78,7 +78,6 @@ router.route('/add').post((req, res) => {
         .then((r) => {
             console.log('booking-saved:', r);
             let s = new Date(req.body.start).toLocaleString(locale,{timeZone: timeZone, hour12:true}).replace(',','');
-            let sDay = fns.format(fns.startOfDay(new Date(req.body.start)), dateFormat);
             let sDayUnix = new Date(fns.startOfDay(req.body.start)).getTime();
             let e = new Date(req.body.end).toLocaleString(locale,{timeZone: timeZone, hour12:true}).replace(',','');
             let mailDetails = {
@@ -90,8 +89,8 @@ router.route('/add').post((req, res) => {
                     "<p>Name: " + req.body.name + "</p>" +
                     "<p>Phone: " + req.body.phoneNumber + "</p>" +
                     "<p>Party Size: " + req.body.partySize + "</p>" +
-                    "<p>Start Time: " + s + " ("  + sDay + ")</p>" +
-                    "<p>End Time: " + e + " ("  + sDay + ")</p>" +
+                    "<p>Start Time: " + s + " ("  + req.body.startDay + ")</p>" +
+                    "<p>End Time: " + e + " ("  + req.body.startDay + ")</p>" +
                     "<p>Note: " + req.body.note + "</p>" +
                     "<p><a href='" + process.env.UI_URL + "/reservations/" +  sDayUnix + "'>See Calendar</a></p>" +
                     "</div>"
