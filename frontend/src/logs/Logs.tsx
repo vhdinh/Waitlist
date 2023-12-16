@@ -13,6 +13,7 @@ const getColumns = (): GridColDef[] => {
             editable: false,
             sortable: false,
             flex: 1,
+            minWidth: 150,
         },
         {
             field: 'partySize',
@@ -23,6 +24,7 @@ const getColumns = (): GridColDef[] => {
             sortable: false,
             flex: 1,
             align: 'left',
+            minWidth: 150,
         },
         {
             field: 'phoneNumber',
@@ -33,6 +35,7 @@ const getColumns = (): GridColDef[] => {
             sortable: false,
             flex: 1,
             align: 'left',
+            minWidth: 150,
         },
         {
             field: 'createdAt',
@@ -47,7 +50,8 @@ const getColumns = (): GridColDef[] => {
                 if (params.value) {
                     return moment(params?.value).format('MM-DD-YY h:mm a');
                 }
-            }
+            },
+            minWidth: 150,
         },
         {
             field: 'notified',
@@ -58,6 +62,7 @@ const getColumns = (): GridColDef[] => {
             sortable: false,
             flex: 1,
             align: 'left',
+            minWidth: 150,
         },
         {
             field: 'notifiedAt',
@@ -72,7 +77,8 @@ const getColumns = (): GridColDef[] => {
                 if (params.value) {
                     return moment(params?.value).format('MM-DD-YY h:mm a');
                 }
-            }
+            },
+            minWidth: 150,
         },
         {
             field: 'msg',
@@ -90,7 +96,8 @@ const getColumns = (): GridColDef[] => {
                     }
                     return 'Declined';
                 }
-            }
+            },
+            minWidth: 150,
         },
         {
             field: 'msgAt',
@@ -105,7 +112,8 @@ const getColumns = (): GridColDef[] => {
                 if (params.value) {
                     return moment(params?.value).format('MM-DD-YY h:mm a');
                 }
-            }
+            },
+            minWidth: 150,
         },
         {
             field: 'deleted',
@@ -116,6 +124,7 @@ const getColumns = (): GridColDef[] => {
             sortable: false,
             flex: 1,
             align: 'left',
+            minWidth: 150,
         },
     ];
 
@@ -138,6 +147,7 @@ interface LogsProps {
 
 const LogsWrapper = styled.div`
     width: 100%;
+    height: calc(100vh - 226px);
     .Mui-odd {
         background: #FCFCFC;
     }
@@ -147,7 +157,7 @@ function Logs(props: LogsProps) {
 
     return (
         <LogsWrapper>
-            <Box sx={{ height: 'calc(100vh - 400px)', width: '100%' }}>
+            <Box sx={{ height: 'inherit', width: '100%' }}>
                 <DataGrid
                     rows={props.list}
                     columns={getColumns()}
