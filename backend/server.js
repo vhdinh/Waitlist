@@ -56,6 +56,6 @@ const bookingRouter = require('./routes/booking');
 app.use('/customers', customersRouter);
 app.use('/booking', bookingRouter);
 
-server.listen(process.env.PORT || 5000, () => {
-    console.log(`Server is running on port: ${process.env.PORT || 5000}`);
+server.listen(process.env.PORT || 3001, () => {
+    console.log(`Server is running on port: ${process.env.PORT || 3001}`);
 });
