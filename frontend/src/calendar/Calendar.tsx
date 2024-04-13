@@ -21,6 +21,7 @@ import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import {Booking} from "./Calendar.type";
 import { Button } from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import useIsMobile from "../hook/useIsMobile";
 
 function Calendar() {
     const {
@@ -34,6 +35,7 @@ function Calendar() {
     } = useCalendarState();
     const [ currentMonthBookings, setCurrentMonthBookings ] = useState<Booking[]>([]);
     const navigate = useNavigate();
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -105,7 +107,7 @@ function Calendar() {
     }
 
     const renderDays = () => {
-        const dateFormat = "EEEE";
+        const dateFormat = isMobile ? "EE" : "EEEE";
         const days = [];
         let startDate = startOfWeek(currentMonth);
         for (let i = 0; i < 7; i++) {

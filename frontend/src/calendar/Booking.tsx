@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import {Card, CardContent, Button, Typography} from "@mui/material";
 import {phoneNumberAutoFormat} from "../waitlist/PhoneNumberColumn";
 import {StartOfToday, useCalendarState} from "../context/Calendar.provider";
+import useIsMobile from "../hook/useIsMobile";
 
 const BookingComponentWrapper = styled.div`
     display: block;
@@ -61,6 +62,8 @@ const BookingComponentWrapper = styled.div`
 
 function BookingComponent(props: Booking) {
     const { setReloadCalendar, selectedDate ,setBookingData, setDisplayAddNewBooking, setIsEditing } = useCalendarState();
+    const isMobile = useIsMobile();
+
     const handleBookingEdit = () => {
         setBookingData(props);
         setIsEditing(true);
@@ -105,7 +108,7 @@ function BookingComponent(props: Booking) {
             <Card>
                 <CardContent className={'bc-content'}>
                     <div className={'bc-left'}>
-                        <Typography variant={'h6'} className={'bc-item'}>
+                        <Typography variant={isMobile ? 'body1' : 'h6'} className={'bc-item'}>
                             <div className={'header'}>
                                 Name:
                             </div>
@@ -113,7 +116,7 @@ function BookingComponent(props: Booking) {
                                 {props.name}
                             </div>
                         </Typography>
-                        <Typography variant={'h6'} className={'bc-item'}>
+                        <Typography variant={isMobile ? 'body1' : 'h6'} className={'bc-item'}>
                             <div className={'header'}>
                                 Phone:
                             </div>
@@ -121,7 +124,7 @@ function BookingComponent(props: Booking) {
                                 {phoneNumberAutoFormat(props.phoneNumber.toString())}
                             </div>
                         </Typography>
-                        <Typography variant={'h6'} className={'bc-item'}>
+                        <Typography variant={isMobile ? 'body1' : 'h6'} className={'bc-item'}>
                             <div className={'header'}>
                                 Party:
                             </div>
@@ -131,7 +134,7 @@ function BookingComponent(props: Booking) {
                         </Typography>
                     </div>
                     <div className={'bc-right'}>
-                        <Typography variant={'h6'} className={'bc-item'}>
+                        <Typography variant={isMobile ? 'body1' : 'h6'} className={'bc-item'}>
                             <div className={'header'}>
                                 Start:
                             </div>
@@ -139,7 +142,7 @@ function BookingComponent(props: Booking) {
                                 {props.formatStart}
                             </div>
                         </Typography>
-                        <Typography variant={'h6'} className={'bc-item'}>
+                        <Typography variant={isMobile ? 'body1' : 'h6'} className={'bc-item'}>
                             <div className={'header'}>
                                 End:
                             </div>
@@ -147,7 +150,7 @@ function BookingComponent(props: Booking) {
                                 {props.formatEnd}
                             </div>
                         </Typography>
-                        <Typography variant={'h6'} className={'bc-item'}>
+                        <Typography variant={isMobile ? 'body1' : 'h6'} className={'bc-item'}>
                             <div className={'header'}>
                                 Note:
                             </div>
@@ -166,6 +169,7 @@ function BookingComponent(props: Booking) {
                         </Button>
                         <Button
                             className={`bc-delete ${props.deleted ? 'un-delete' : 'deleted'}`}
+                            disabled={StartOfToday > props.start}
                             onClick={() => handleBookingDelete()}
                         >
                             {props.deleted ? 'UN-DELETE' : 'DELETE'}

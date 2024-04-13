@@ -9,6 +9,7 @@ import { Typography, Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import {useAppState} from "../context/App.provider";
+import useIsMobile from "../hook/useIsMobile";
 interface CalendarOverviewProps {
 }
 
@@ -35,6 +36,7 @@ const CalendarOverviewWrapper = styled.div`
 `;
 
 function CalendarOverview(props: CalendarOverviewProps) {
+    const isMobile = useIsMobile();
     const { isAdmin } = useAppState();
     const {selectedDate, setReloadCalendar, reloadCalendar, bookingData, setBookingData, displayAddNewBooking, setDisplayAddNewBooking, isEditing } = useCalendarState();
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -191,7 +193,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
     return (
         <CalendarOverviewWrapper>
             <div className={'co-header'}>
-                <Typography variant={'h5'}>
+                <Typography variant={isMobile ? 'h6' : 'h5'}>
                     Selected Date: {format(selectedDate, 'MMMM dd')}
                 </Typography>
                 {displayActionButtons()}
