@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -6,14 +6,18 @@ import '@fontsource/roboto/700.css';
 import {Alert, AppBar, Box, Button, Container, IconButton, Snackbar, Toolbar, Typography} from '@mui/material';
 import {AppWrapper} from './App.style';
 import SettingsIcon from '@mui/icons-material/Settings';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import Tooltip from '@mui/material/Tooltip';
-import img from './assets/BrickTransparent.png';
-import {Outlet, useNavigate} from "react-router-dom";
+
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {Role, useAppState} from './context/App.provider';
 import AdminPasscodeModal from './AdminPasscodeModal';
 import io from 'socket.io-client';
 import {useWaitlistState} from './context/Waitlist.provider';
 import {useCalendarState} from "./context/Calendar.provider";
+import brickLogo from './assets/BrickTransparent.png';
+import eightLogo from './assets/1988Transparent.png';
+import kumaLogo from './assets/KUMABlackTransparent.png';
 
 // @ts-ignore
 const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
@@ -21,24 +25,47 @@ const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
 const pages = [
     {
         label: 'Waitlist',
-        url: '/',
-        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN]
+        url: '/brick/waitlist',
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+        restaurant: 'brick',
     },
     {
         label: 'Reservations',
-        url: '/reservations',
+        url: '/brick/reservations',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+        restaurant: 'brick',
     },
     {
         label: 'Logs (W)',
-        url: '/logs-waitlist',
+        url: '/brick/logs-waitlist',
         role: [Role.ADMIN],
+        restaurant: 'brick',
     },
     {
         label: 'Logs (R)',
-        url: '/logs-reservations',
+        url: '/brick/logs-reservations',
         role: [Role.ADMIN],
-    }
+        restaurant: 'brick',
+    },
+    // KUMA
+    {
+        label: 'Waitlist',
+        url: '/kuma/waitlist',
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+        restaurant: 'kuma',
+    },
+    {
+        label: 'Reservations',
+        url: '/kuma/reservations',
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+        restaurant: 'kuma',
+    },
+    {
+        label: 'Waitlist',
+        url: '/1988/waitlist',
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+        restaurant: '1988',
+    },
 ];
 
 function App() {
@@ -54,7 +81,16 @@ function App() {
     } = useAppState();
     const { setReloadList } = useWaitlistState();
     const { setReloadCalendar } = useCalendarState();
+    let location = useLocation();
+    const basePath = location.pathname.split('/');
+    const [url, setUrl] = useState(basePath[1]);
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        console.log('---url---', basePath[1]);
+        setUrl(basePath[1]);
+    }, [basePath])
 
     useEffect(() => {
         socket.on('user_replied', (data: any) => {
@@ -78,6 +114,17 @@ function App() {
         }
     };
 
+    const renderLogo = () => {
+        if (basePath[1] === 'brick') {
+            return brickLogo
+        } else if (basePath[1] === 'kuma') {
+            return kumaLogo
+        } else if (basePath[1] === '1988') {
+            return eightLogo
+        }
+        return '';
+    };
+
   return (
     <AppWrapper isAdmin={isAdmin}>
         <Box sx={{ flexGrow: 1 }}>
@@ -99,11 +146,11 @@ function App() {
                                 textDecoration: 'none',
                             }}
                         >
-                            <img src={img} />
+                            <img src={renderLogo()} className={url === '1988' ? 'eight-eight' : url === 'kuma' ? 'kuma' : ''} />
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }} style={{justifyContent: 'center'}}>
                             {pages.map((page, index) => {
-                                if (page.role.includes(role)) {
+                                if (page.role.includes(role) && location.pathname.split('/')[1] === page.restaurant) {
                                     return (
                                         <Button
                                             key={index}
@@ -117,13 +164,22 @@ function App() {
                                 }
                             })}
                         </Box>
-                        <Box sx={{ flexGrow: 0 }} style={{display: 'flex', gap: '12px'}}>
-                            <Tooltip title="Open settings">
-                                <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
-                                    <SettingsIcon fontSize={'large'} style={{color: 'black'}}/>
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
+                        {
+                            url !== '' ? (
+                                <Box sx={{ flexGrow: 0 }} style={{display: 'flex', gap: '24px'}}>
+                                    <Tooltip title="Refresh Page">
+                                        <IconButton onClick={() => window.location.reload()} sx={{ p: 0 }}>
+                                            <RefreshIcon fontSize={'large'} style={{color: 'black'}}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Open settings">
+                                        <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
+                                            <SettingsIcon fontSize={'large'} style={{color: 'black'}}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                            ) : <></>
+                        }
                     </Toolbar>
                 </Container>
             </AppBar>

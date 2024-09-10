@@ -17,7 +17,11 @@ import TapToBegin from '../TapToBegin';
 import AddToListModal from './AddToListModal';
 import { useWaitlistState } from '../context/Waitlist.provider';
 
-function WaitlistPage() {
+interface WaitlistPageProps {
+    location: string;
+}
+
+function WaitlistPage(props: WaitlistPageProps) {
     const timer = useAutoTimer(120); // 120 seconds
     const [list, setList] = useState([]);
     const [timedOut, setTimedOut] = useState(false);
@@ -44,7 +48,7 @@ function WaitlistPage() {
 
     const getWaitList = () => {
         // Simple GET request with a JSON body using fetch
-        fetch(`${process.env.REACT_APP_BRICK_API}/customers/getCurrent`)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/getCurrent`)
             .then(res => res.json())
             .then((r) => {
                 setList(r);
@@ -87,10 +91,10 @@ function WaitlistPage() {
                                 </Grid>
                             </Grid>
                             <Grid container spacing={2} className={'customer-list'}>
-                                <List list={list} />
+                                <List list={list} location={props.location} />
                             </Grid>
                         </Container>
-                        <AddToListModal open={openAddToListModal} close={() => setOpenAddToListModal(false)} />
+                        <AddToListModal location={props.location} open={openAddToListModal} close={() => setOpenAddToListModal(false)} />
                     </>
                 )
             }

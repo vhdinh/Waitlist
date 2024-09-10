@@ -22,16 +22,49 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 const router = express.Router();
 
-mongoose.connect(process.env.MONGODB_URL, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-});
-const connection = mongoose.connection;
-connection.once('open', () => {
-    console.log("MongoDB database connection established successfully");
-})
+// mongoose.connect(process.env.BRICK_MONGODB_URL, {
+//     useNewUrlParser: true,
+//     useCreateIndex: true,
+//     useUnifiedTopology: true,
+//     useFindAndModify: false
+// });
+// const connection = mongoose.connection;
+// connection.once('open', () => {
+//     console.log("MongoDB database connection established successfully");
+// })
+
+
+
+/**
+ *  FIRST DB CONNECTION
+ *  ===================
+ * */
+
+// UPDATE YOUR DEFAULTS
+const firstDB = {
+    name: "Brick", // for demo
+    connStr: process.env.BRICK_MONGODB_URL,
+    db: "brick",
+    coll: "brick"
+};
+// connect to brick db
+require("./connectDbs")(firstDB.name, firstDB.connStr);
+
+/**
+ *  SECOND DB CONNECTION
+ *  ===================
+ * */
+
+// UPDATE YOUR DEFAULTS
+const secondDB = {
+    name: "Kuma", // for demo
+    connStr: process.env.KUMA_MONGODB_URL,
+    db: "kuma",
+    coll: "kuma"
+};
+// connect to brick db
+require("./connectDbs")(secondDB.name, secondDB.connStr);
+
 
 const io = new Server(server, {
     cors: {
@@ -50,11 +83,17 @@ io.on('connection', (socket) => {
 const socketIoObject = io;
 module.exports.ioObject = socketIoObject;
 
-const customersRouter = require('./routes/customers');
-const bookingRouter = require('./routes/booking');
+const customersBrickRouter = require('./routes/customers.brick');
+const bookingBrickRouter = require('./routes/booking.brick');
 
-app.use('/customers', customersRouter);
-app.use('/booking', bookingRouter);
+app.use('/brick/customers', customersBrickRouter);
+app.use('/brick/booking', bookingBrickRouter);
+
+const customersKumaRouter = require('./routes/customers.kuma');
+const bookingKumaRouter = require('./routes/booking.kuma');
+
+app.use('/kuma/customers', customersKumaRouter);
+app.use('/kuma/booking', bookingKumaRouter);
 
 server.listen(process.env.PORT || 3001, () => {
     console.log(`Server is running on port: ${process.env.PORT || 3001}`);

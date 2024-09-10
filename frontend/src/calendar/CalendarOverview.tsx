@@ -11,6 +11,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import {useAppState} from "../context/App.provider";
 import useIsMobile from "../hook/useIsMobile";
 interface CalendarOverviewProps {
+    location: string;
 }
 
 const CalendarOverviewWrapper = styled.div`
@@ -58,7 +59,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
     const getBooking = () => {
         setLoadingOverview(true);
         // Simple GET request with a JSON body using fetch
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getDay/${startOfDay(selectedDate).getTime()}/${endOfDay(selectedDate).getTime()}/${isAdmin}`)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/booking/getDay/${startOfDay(selectedDate).getTime()}/${endOfDay(selectedDate).getTime()}/${isAdmin}`)
             .then(res => res.json())
             .then((r) => {
                 const f = new Intl.DateTimeFormat('en-us', {
@@ -86,7 +87,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
             body: JSON.stringify(bookingData)
         };
 
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/add`, requestOptions)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/booking/add`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 console.log('RRR', r.includes('error-invalid-phone'));
@@ -105,7 +106,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
             body: JSON.stringify(bookingData)
         };
         console.log('UPDATING', bookingData);
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/update/${bookingData._id}`, requestOptions)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/booking/update/${bookingData._id}`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 setReloadCalendar(true);
@@ -133,7 +134,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
         return (
             <div className={'bookings'}>
                 {
-                    bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} />)
+                    bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} location={props.location} />)
                 }
             </div>
         )

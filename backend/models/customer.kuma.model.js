@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 
+// connect to brick db
+const kumaDb = require("../connectDbs")('Kuma', process.env.KUMA_MONGODB_URL);
+
 const Schema = mongoose.Schema;
 
-const bookingSchema = new Schema({
+const customerSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -17,17 +20,15 @@ const bookingSchema = new Schema({
         type: Boolean,
         required: true,
     },
-    start: {
-        type: Number,
-        required:true
-    },
-    end: {
-        type: Number,
-        required:true
+    notifiedAt: {
+        type: Date,
     },
     msg: { // 1: accept 6: decline
         type: String,
         required: false,
+    },
+    msgAt: {
+        type: Date,
     },
     partySize: {
         type: Number,
@@ -36,15 +37,11 @@ const bookingSchema = new Schema({
     deleted: {
         type: Boolean,
         required: false,
-    },
-    note: {
-        type: String,
-        required: false,
     }
 }, {
     timestamps: true,
 });
 
-const Booking = mongoose.model('Booking', bookingSchema);
+const CustomerKuma = kumaDb.model('Customer', customerSchema);
 
-module.exports = Booking;
+module.exports = CustomerKuma;

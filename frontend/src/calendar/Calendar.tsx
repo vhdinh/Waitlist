@@ -23,7 +23,11 @@ import { Button } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import useIsMobile from "../hook/useIsMobile";
 
-function Calendar() {
+interface CalendarProps {
+    location: string;
+}
+
+function Calendar(props: CalendarProps) {
     const {
         displayMonth,
         currentMonth,
@@ -66,7 +70,7 @@ function Calendar() {
         //     endOfMonthTime: endOfMonth(currentMonth).getTime(),
         // });
         // Simple GET request with a JSON body using fetch
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/getMonth/${startOfMonth(currentMonth).getTime()}/${endOfMonth(currentMonth).getTime()}`)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/booking/getMonth/${startOfMonth(currentMonth).getTime()}/${endOfMonth(currentMonth).getTime()}`)
             .then(res => res.json())
             .then((r) => {
                 setCurrentMonthBookings(r);
@@ -131,7 +135,7 @@ function Calendar() {
             })
         };
         console.log('Drag_and_drop_update_booking', requestOptions.body);
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/update/${id}`, requestOptions)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/booking/update/${id}`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 setReloadCalendar(true);
