@@ -9,6 +9,12 @@ export const AppWrapper = styled.div<AppWrapperProps>`
         background: ${(props) => props.isAdmin ? '#ff7961' : '#F7F7F8'};
         img {
             width: 100px;
+            &.eight-eight {
+                width: 50px;
+            }
+            &.kuma {
+                width: 75px;
+            }
         }
         #menu-appbar {
             color: black;

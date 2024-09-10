@@ -16,6 +16,7 @@ interface ActionColumnProps {
     notifiedAt?: any;
     phoneNumber: string;
     msg: string;
+    location: string;
 }
 
 const ActionColumnWrapper = styled.div`
@@ -54,6 +55,7 @@ function ActionColumn(props: ActionColumnProps) {
         const lapsed = ((n - notified.getTime()) / 1000) / 60;
         return Math.floor(lapsed);
     }
+    console.log('----notified---', getInitialNotifiedTimeframe());
 
     const [timeSinceNotified, setTimeSinceNotified] = useState(getInitialNotifiedTimeframe);
 
@@ -79,7 +81,7 @@ function ActionColumn(props: ActionColumnProps) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: props._id, phoneNumber: props.phoneNumber, name: props.name })
         };
-        fetch(`${process.env.REACT_APP_BRICK_API}/customers/${props._id}/notify`, requestOptions)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/${props._id}/notify`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 setSnackMsg({ msg: `${props.name} has been notified`, severity: 'success' });
@@ -96,7 +98,7 @@ function ActionColumn(props: ActionColumnProps) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: props._id })
         };
-        fetch(`${process.env.REACT_APP_BRICK_API}/customers/${props._id}/delete`, requestOptions)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/${props._id}/delete`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 console.log('Deleted', r);
@@ -145,7 +147,7 @@ function ActionColumn(props: ActionColumnProps) {
                     </div>
                     { props.notified ? (
                         <div>
-                            Notified {timeSinceNotified} min ago
+                            Notified {timeSinceNotified || 0} min ago
                         </div>
                     ) : <></>
                     }

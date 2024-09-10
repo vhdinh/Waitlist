@@ -77,7 +77,7 @@ function BookingComponent(props: Booking) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: props._id, delete: props.deleted ? false : true })
         };
-        fetch(`${process.env.REACT_APP_BRICK_API}/booking/delete/${props._id}`, requestOptions)
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/booking/delete/${props._id}`, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 setReloadCalendar(true);

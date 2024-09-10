@@ -19,6 +19,7 @@ import { useWaitlistState } from '../context/Waitlist.provider';
 import Loader from "../common/Loader";
 
 interface AddToListModalProps {
+    location: string;
     open: boolean;
     close: () => void;
 }
@@ -130,7 +131,7 @@ function AddToListModal(props: AddToListModalProps) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phoneNumber: state.phoneNumber, name: state.name, partySize: state.party})
             };
-            fetch(`${process.env.REACT_APP_BRICK_API}/customers/add`, requestOptions)
+            fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/add`, requestOptions)
                 .then(res => res.json())
                 .then((r) => {
                     console.log('RRR', r.includes('error-invalid-phone'));

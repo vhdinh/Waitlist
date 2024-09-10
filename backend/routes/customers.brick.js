@@ -1,11 +1,11 @@
 const router = require('express').Router();
-let Customer = require('../models/customer.model');
+let CustomerBrick = require('../models/customer.brick.model');
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const socket = require('../server');
 const fns = require('date-fns')
 
 router.route('/').get((req, res) => {
-    Customer.find()
+    CustomerBrick.find()
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -13,7 +13,7 @@ router.route('/').get((req, res) => {
 router.route('/logs/:start/:end').get((req, res) => {
     const start = new Date(parseInt(req.params.start));
     let end = new Date(parseInt(req.params.end));
-    Customer.find({
+    CustomerBrick.find({
         createdAt: {
             $gt: fns.startOfDay(start),
             $lt: fns.endOfDay(end),
@@ -25,7 +25,7 @@ router.route('/logs/:start/:end').get((req, res) => {
 
 
 router.route('/getCurrent').get((req, res) => {
-    Customer.find({
+    CustomerBrick.find({
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         },
@@ -41,7 +41,7 @@ router.route('/add').post((req, res) => {
     const phoneNumber = req.body.phoneNumber;
     const partySize = req.body.partySize;
 
-    const newCustomer = new Customer({
+    const newCustomer = new CustomerBrick({
         name: name,
         phoneNumber: phoneNumber,
         partySize: partySize,
@@ -61,7 +61,7 @@ router.route('/add').post((req, res) => {
                 })
                 .then((message) => {
                     console.log('user-added:', message);
-                    Customer.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() => {
+                    CustomerBrick.findByIdAndUpdate(r._id, { phoneNumber: message.to }).then(() => {
                         socket.ioObject.sockets.emit('user_replied', {
                             message: 'reload'
                         });
@@ -69,7 +69,7 @@ router.route('/add').post((req, res) => {
                     })
                 })
                 .catch((e) => {
-                    Customer.findByIdAndRemove(r._id).then((r) => res.status(400).json('error-invalid-phone: ' + e));
+                    CustomerBrick.findByIdAndRemove(r._id).then((r) => res.status(400).json('error-invalid-phone: ' + e));
                 });
         })
         .catch(err => res.status(400).json('error-saving-user: ' + err));
@@ -77,7 +77,7 @@ router.route('/add').post((req, res) => {
 
 router.route('/:id/notify').post((req, res) => {
     console.log('route /notify:', req.body);
-    Customer.findById(req.body.id).then((c) => {
+    CustomerBrick.findById(req.body.id).then((c) => {
         client.messages
             .create({
                 // body: `We're ready for you at the Brick, please check in with the host or call us at 425-264-5220`,
@@ -87,7 +87,7 @@ router.route('/:id/notify').post((req, res) => {
             })
             .then((message) => {
                 console.log('notify-success: ', message);
-                Customer.findByIdAndUpdate(req.body.id, { notified: true, notifiedAt: new Date() })
+                CustomerBrick.findByIdAndUpdate(req.body.id, { notified: true, notifiedAt: new Date() })
                     .then((r) => res.json(`${req.body.id} notified`))
                     .catch((e) => res.status(400).json(`error-update-notified: ${req.body.id} notified updated failed`));
             }).catch((e) => res.status(400).json('error-notifying-user: ' + e));
@@ -96,7 +96,7 @@ router.route('/:id/notify').post((req, res) => {
 router.route('/:id/delete').post((req, res) => {
     console.log('delete:', req.body);
     // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAIT LIST
-    Customer.findByIdAndUpdate(req.body.id, {deleted: true})
+    CustomerBrick.findByIdAndUpdate(req.body.id, {deleted: true})
         .then((r) => res.json(`${req.body.id} deleted`))
         .catch((e) => res.status(400).json('error-deleting-user: ' + e))
     // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAITLIST
@@ -110,7 +110,7 @@ router.route('/reply').post((req, res) => {
     const msgBody = req.body.Body;
     const num = msgFrom.substring(1);
     console.log(`webhook user replied from: ${msgFrom}, number: ${num}, msg: ${msgBody}`);
-    Customer.findOneAndUpdate(
+    CustomerBrick.findOneAndUpdate(
         {
             phoneNumber: num,
             deleted: false,
@@ -127,7 +127,7 @@ router.route('/reply').post((req, res) => {
                 rspMsg = `Thank you, please check in to be seated promptly.`
             } else if (msgBody == '6') {
                 console.log('notification: user rejected ', msgBody);
-                rspMsg = `Thank you, you have been removed from the waitlist.`
+                rspMsg = `Thank you, you have been removed from the Brick's waitlist.`
             }
             // // if we want to respond to user with another msg
             res.send(`

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// connect to brick db
+const brickDb = require("../connectDbs")('Brick', process.env.BRICK_MONGODB_URL);
+
 const Schema = mongoose.Schema;
 
 const customerSchema = new Schema({
@@ -39,6 +42,6 @@ const customerSchema = new Schema({
     timestamps: true,
 });
 
-const Customer = mongoose.model('Customer', customerSchema);
+const CustomerBrick = brickDb.model('Customer', customerSchema);
 
-module.exports = Customer;
+module.exports = CustomerBrick;

@@ -14,4 +14,5 @@ export interface Booking {
     createdAt: string;
     updatedAt: string;
     key?: number;
+    location: string;
 }

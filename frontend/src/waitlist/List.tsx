@@ -9,7 +9,7 @@ import PhoneNumberColumn from './PhoneNumberColumn';
 import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
 
-const getColumns = (isAdmin: boolean): GridColDef[] => {
+const getColumns = (isAdmin: boolean, location: string): GridColDef[] => {
     const arr: GridColDef[] = [
         {
             field: 'name',
@@ -48,7 +48,7 @@ const getColumns = (isAdmin: boolean): GridColDef[] => {
                 field: 'action',
                 headerName: '', // @ts-ignore
                 renderCell: (params: GridRenderCellParams) => {
-                    return <ActionColumn {...params.row} />
+                    return <ActionColumn { ...params.row} location={location} />
                 },
                 sortable: false,
                 align: 'right',
@@ -70,6 +70,7 @@ interface Customer {
 }
 
 interface ListProps {
+    location: string;
     list: Customer[];
 }
 
@@ -117,7 +118,7 @@ function List(props: ListProps) {
             <Box sx={{ height: 'calc(100vh - 400px)', width: '100%' }}>
                 <DataGrid
                     rows={props.list}
-                    columns={getColumns(isAdmin)}
+                    columns={getColumns(isAdmin, props.location)}
                     disableRowSelectionOnClick
                     disableColumnMenu
                     hideFooterPagination

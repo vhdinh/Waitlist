@@ -9,13 +9,15 @@ const CalendarPageWrapper = styled.div`
   flex-direction: column;
   justify-content: stretch;
 `
+interface CalendarPageProps {
+    location: string;
+}
 
-
-function CalendarPage() {
+function CalendarPage(props: CalendarPageProps) {
     return (
         <CalendarPageWrapper className={'calendar-page'}>
-            <Calendar />
-            <CalendarOverview />
+            <Calendar location={props.location} />
+            <CalendarOverview location={props.location} />
         </CalendarPageWrapper>
     )
 }

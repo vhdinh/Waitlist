@@ -13,6 +13,7 @@ import { WaitlistProvider } from './context/Waitlist.provider';
 import CalendarPage from './calendar/CalendarPage';
 import { CalendarProvider } from './context/Calendar.provider';
 import LogsPage from "./logs/LogsPage";
+import Entry from "./Entry";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -32,25 +33,47 @@ const router = createBrowserRouter([
         ),
         children: [
             {
-                path: "/",
-                element: <WaitlistPage />,
+                path: '/',
+                element: <Entry />,
             },
             {
-                path: "/reservations",
-                element: <CalendarPage />,
+                path: "/brick/waitlist",
+                element: <WaitlistPage location={'brick'} />,
             },
             {
-                path: "/reservations/:date",
-                element: <CalendarPage />,
+                path: "/brick/reservations",
+                element: <CalendarPage location={'brick'} />,
             },
             {
-                path: '/logs-waitlist',
+                path: "/brick/reservations/:date",
+                element: <CalendarPage location={'brick'} />,
+            },
+            {
+                path: '/brick/logs-waitlist',
                 element: <LogsPage />,
             },
             {
-                path: '/logs-reservations',
+                path: '/brick/logs-reservations',
                 element: <>Reservations Logs</>,
-            }
+            },
+            // KUMA,
+            {
+                path: "/kuma/waitlist",
+                element: <WaitlistPage location={'kuma'} />,
+            },
+            {
+                path: "/kuma/reservations",
+                element: <CalendarPage location={'kuma'} />,
+            },
+            {
+                path: "/kuma/reservations/:date",
+                element: <CalendarPage location={'kuma'} />,
+            },
+            // 1988,
+            {
+                path: "/1988/waitlist",
+                element: <WaitlistPage location={'1988'} />,
+            },
         ],
     },
 ]);

@@ -59,7 +59,7 @@ function LogsPage() {
 
     const handleLogsSearch = () => {
         // Simple GET request with a JSON body using fetch
-        fetch(`${process.env.REACT_APP_BRICK_API}/customers/logs/${start?.valueOf()}/${end?.valueOf()}`)
+        fetch(`${process.env.REACT_APP_BRICK_API}/brick/customers/logs/${start?.valueOf()}/${end?.valueOf()}`)
             .then(res => res.json())
             .then((r) => {
                 console.log('GOT LOGS', r);
