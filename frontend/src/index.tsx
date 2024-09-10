@@ -14,6 +14,7 @@ import CalendarPage from './calendar/CalendarPage';
 import { CalendarProvider } from './context/Calendar.provider';
 import LogsPage from "./logs/LogsPage";
 import Entry from "./Entry";
+import TillCounter from "./till-counter/TillCounter";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -76,6 +77,11 @@ const router = createBrowserRouter([
             },
         ],
     },
+    // TILL COUNTER
+    {
+        path: '/till-counter',
+        element: <TillCounter />
+    }
 ]);
 
 root.render(
