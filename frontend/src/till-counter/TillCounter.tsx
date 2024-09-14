@@ -50,9 +50,8 @@ function TillCounter() {
         <TillCounterWrapper>
             <Box
                 display="flex"
-                justifyContent="center"
+                sx={{marginTop: '15px'}}
                 alignItems="center"
-                minHeight="100vh"
             >
                 <TableContainer sx={{display: 'flex', justifyContent: 'center'}}>
                     <Table sx={{ border: 1, borderRadius: 20, maxWidth: '300px'}}>
