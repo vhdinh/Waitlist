@@ -27,7 +27,7 @@ function Entry() {
             <>SELECT RESTAURANT</>
             <img src={brickLogo} alt="brickKitchenLoungeLogo" onClick={() => navigate('/brick/waitlist')}/>
             <img src={kumaLogo} alt="kumaLogo" onClick={() => navigate('/kuma/waitlist')}/>
-            <img src={eightLogo} alt="1988LoungeLogo" onClick={() => navigate('/1988/waitlist')}/>
+            <img src={eightLogo} alt="1988LoungeLogo" onClick={() => navigate('/eight/waitlist')}/>
         </EntryWrapper>
     )
 }

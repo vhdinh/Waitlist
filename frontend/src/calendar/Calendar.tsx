@@ -101,7 +101,7 @@ function Calendar(props: CalendarProps) {
                         onClick={() => {
                             setCurrentMonth(Today);
                             setSelectedDate(StartOfToday);
-                            navigate('/reservations');
+                            navigate(`/${props.location}/reservations`);
                         }}
                     >Go To Today</Button>
                     <ChevronRightIcon onClick={nextMonth} className="icon"/>
