@@ -122,7 +122,7 @@ function CalendarOverview(props: CalendarOverviewProps) {
             bookings.length > 0 ? (
                 <div className={'bookings'}>
                     {
-                        bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} />)
+                        bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} location={props.location} />)
                     }
                 </div>
             ) : (
