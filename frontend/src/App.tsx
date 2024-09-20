@@ -60,11 +60,18 @@ const pages = [
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: 'kuma',
     },
+    // 1988
     {
         label: 'Waitlist',
         url: '/1988/waitlist',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: '1988',
+        restaurant: 'eight',
+    },
+    {
+        label: 'Reservations',
+        url: '/1988/reservations',
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+        restaurant: 'eight',
     },
 ];
 

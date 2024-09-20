@@ -73,7 +73,15 @@ const router = createBrowserRouter([
             // 1988,
             {
                 path: "/1988/waitlist",
-                element: <WaitlistPage location={'1988'} />,
+                element: <WaitlistPage location={'eight'} />,
+            },
+            {
+                path: "/1988/reservations",
+                element: <CalendarPage location={'eight'} />,
+            },
+            {
+                path: "/1988/reservations/:date",
+                element: <CalendarPage location={'eight'} />,
             },
         ],
     },

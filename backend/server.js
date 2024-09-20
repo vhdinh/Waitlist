@@ -47,8 +47,25 @@ const secondDB = {
     db: "kuma",
     coll: "kuma"
 };
-// connect to brick db
+
+// connect to kuma db
 require("./connectDbs")(secondDB.name, secondDB.connStr);
+
+/**
+ *  THIRD DB CONNECTION
+ *  ===================
+ * */
+
+// UPDATE YOUR DEFAULTS
+const thirdDB = {
+    name: "1988", // for demo
+    connStr: process.env.EIGHT_MONGODB_URL,
+    db: "1988",
+    coll: "1988"
+};
+
+// connect to 1988 db
+require("./connectDbs")(thirdDB.name, thirdDB.connStr);
 
 const customersBrickRouter = require('./routes/customers.brick');
 const bookingBrickRouter = require('./routes/booking.brick');
@@ -61,6 +78,13 @@ const bookingKumaRouter = require('./routes/booking.kuma');
 
 app.use('/kuma/customers', customersKumaRouter);
 app.use('/kuma/booking', bookingKumaRouter);
+
+const customersEightRouter = require('./routes/customers.eight');
+const bookingEightRouter = require('./routes/booking.eight');
+
+app.use('/eight/customers', customersEightRouter);
+app.use('/eight/booking', bookingEightRouter);
+
 
 const io = new Server(server, {
     cors: {

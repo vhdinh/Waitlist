@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const router = require('express').Router();
-let BookingBrick = require('../models/booking.brick.model');
+let BookingEight = require('../models/booking.eight.model');
 const fns = require('date-fns')
 const timeZone = 'America/Los_Angeles';
 const locale = 'en-US';
@@ -15,7 +15,7 @@ let mailTransporter = nodemailer.createTransport({
 });
 
 router.route('/').get((req, res) => {
-    BookingBrick.find()
+    BookingEight.find()
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -31,7 +31,7 @@ router.route('/getMonth/:startOfMonth/:endOfMonth').get((req, res) => {
         },
         deleted: false
     };
-    BookingBrick.find(filters)
+    BookingEight.find(filters)
         .then(c => {
             console.log('___FOUND_BOOKINGS_FOR_MONTH___', c);
             return res.json(c)
@@ -53,7 +53,7 @@ router.route('/getDay/:startOfDay/:endOfDay/:isAdmin').get((req, res) => {
     if (!isAdmin) {
         filters.deleted = false;
     };
-    BookingBrick.find(filters)
+    BookingEight.find(filters)
         .then(c => {
             console.log('FOUND BOOKINGS FOR DAY:', c);
             return res.json(c);
@@ -63,7 +63,7 @@ router.route('/getDay/:startOfDay/:endOfDay/:isAdmin').get((req, res) => {
 
 router.route('/add').post((req, res) => {
     console.log('---route--- /add')
-    const newBooking = new BookingBrick({
+    const newBooking = new BookingEight({
         name: req.body.name,
         phoneNumber: req.body.phoneNumber,
         partySize: req.body.partySize,
@@ -76,16 +76,16 @@ router.route('/add').post((req, res) => {
     });
     newBooking.save()
         .then((r) => {
-            console.log('booking-saved:', r);
+            console.log('booking-saved-kuma:', r);
             let s = new Date(req.body.start).toLocaleString(locale,{timeZone: timeZone, hour12:true}).replace(',','');
             let sDayUnix = new Date(fns.startOfDay(req.body.start)).getTime();
             let e = new Date(req.body.end).toLocaleString(locale,{timeZone: timeZone, hour12:true}).replace(',','');
             let mailDetails = {
                 from: process.env.VU_EMAIL,
-                to: process.env.BRICK_EMAIL,
-                subject: 'New Reservation Brick Kitchen and Lounge',
+                to: process.env.KUMA_EMAIL,
+                subject: 'New Reservation 1988 Lounge and Bar',
                 html: "<div>" +
-                    "<p>" + "Brick Kitchen + Lounge" + "</p>" +
+                    "<p>" + "1988 Lounge + Bar" + "</p>" +
                     "New Reservation has been added to the calendar:" +
                     "<p>Name: " + req.body.name + "</p>" +
                     "<p>Phone: " + req.body.phoneNumber + "</p>" +
@@ -93,18 +93,18 @@ router.route('/add').post((req, res) => {
                     "<p>Start Time: " + s + " ("  + req.body.startDay + ")</p>" +
                     "<p>End Time: " + e + " ("  + req.body.startDay + ")</p>" +
                     "<p>Note: " + req.body.note + "</p>" +
-                    "<p><a href='" + process.env.UI_URL + "/brick/reservations/" +  sDayUnix + "'>See Calendar</a></p>" +
+                    "<p><a href='" + process.env.UI_URL + "/1988/reservations/" +  sDayUnix + "'>See Calendar</a></p>" +
                     "</div>"
             };
             console.log('----- GOING TO SEND EMAIL -----', mailDetails);
             // EMAIL NOTIFICATION FOR NEW RESERVATION
-            mailTransporter.sendMail(mailDetails, function(err, data) {
-                if(err) {
-                    console.log('Error Occurs', err);
-                } else {
-                    console.log('Email sent successfully');
-                }
-            });
+            // mailTransporter.sendMail(mailDetails, function(err, data) {
+            //     if(err) {
+            //         console.log('Error Occurs', err);
+            //     } else {
+            //         console.log('Email sent successfully');
+            //     }
+            // });
             res.json(`you has been added to the reservation`);
         })
         .catch(err => res.status(400).json('error-saving-user: ' + err));
@@ -112,14 +112,14 @@ router.route('/add').post((req, res) => {
 
 router.route('/delete/:id').post((req, res) => {
     console.log('---route--- /delete/', req.params.id, req.body.delete);
-    BookingBrick.findByIdAndUpdate(req.params.id, { deleted: req.body.delete || false })
+    BookingEight.findByIdAndUpdate(req.params.id, { deleted: req.body.delete || false })
         .then((r) => res.json(`${req.params.id} deleted`))
         .catch((e) => res.json(`${e}`));
 })
 
 router.route('/update/:id').post((req, res) => {
     console.log(`---route--- /update/`, req.params.id, req.body);
-    BookingBrick.findByIdAndUpdate(req.params.id, req.body).then((r) => res.json(`${req.params.id} updated`))
+    BookingEight.findByIdAndUpdate(req.params.id, req.body).then((r) => res.json(`${req.params.id} updated`))
         .catch((e) => {
             console.log('---route--- /update/ FAILED', e);
             return res.json(`${e}`)
