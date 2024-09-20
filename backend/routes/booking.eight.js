@@ -93,7 +93,7 @@ router.route('/add').post((req, res) => {
                     "<p>Start Time: " + s + " ("  + req.body.startDay + ")</p>" +
                     "<p>End Time: " + e + " ("  + req.body.startDay + ")</p>" +
                     "<p>Note: " + req.body.note + "</p>" +
-                    "<p><a href='" + process.env.UI_URL + "/1988/reservations/" +  sDayUnix + "'>See Calendar</a></p>" +
+                    "<p><a href='" + process.env.UI_URL + "/eight/reservations/" +  sDayUnix + "'>See Calendar</a></p>" +
                     "</div>"
             };
             console.log('----- GOING TO SEND EMAIL -----', mailDetails);

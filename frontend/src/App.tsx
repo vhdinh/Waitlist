@@ -63,13 +63,13 @@ const pages = [
     // 1988
     {
         label: 'Waitlist',
-        url: '/1988/waitlist',
+        url: '/eight/waitlist',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: 'eight',
     },
     {
         label: 'Reservations',
-        url: '/1988/reservations',
+        url: '/eight/reservations',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: 'eight',
     },
@@ -95,7 +95,6 @@ function App() {
 
 
     useEffect(() => {
-        console.log('---url---', basePath[1]);
         setUrl(basePath[1]);
     }, [basePath])
 
@@ -126,7 +125,7 @@ function App() {
             return brickLogo
         } else if (basePath[1] === 'kuma') {
             return kumaLogo
-        } else if (basePath[1] === '1988') {
+        } else if (basePath[1] === 'eight') {
             return eightLogo
         }
         return '';
@@ -153,7 +152,7 @@ function App() {
                                 textDecoration: 'none',
                             }}
                         >
-                            <img src={renderLogo()} className={url === '1988' ? 'eight-eight' : url === 'kuma' ? 'kuma' : ''} />
+                            <img src={renderLogo()} className={url === 'eight' ? 'eight-eight' : url === 'kuma' ? 'kuma' : ''} />
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }} style={{justifyContent: 'center'}}>
                             {pages.map((page, index) => {
