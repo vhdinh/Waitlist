@@ -59,10 +59,10 @@ function TillCounter() {
             >
                 <TableContainer sx={{display: 'flex', justifyContent: 'center', width: 'unset !important', flexGrow: 1}}>
                     <Table sx={{ border: 1, maxWidth: '300px', borderCollapse: 'unset !important', borderRadius: '0 !important'}}>
-                        <TableHead>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Count</TableCell>
-                        </TableHead>
+                        {/*<TableHead>*/}
+                        {/*    <TableCell>Type</TableCell>*/}
+                        {/*    <TableCell>Count</TableCell>*/}
+                        {/*</TableHead>*/}
                         <TableBody>
                             <TableRow>
                                 <TableCell>$100</TableCell>
@@ -409,9 +409,11 @@ function TillCounter() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <div style={{flexGrow: 3, margin: '0 24px', display: 'flex', flexDirection: 'column', gap: '48px'}}>
-                    <Button variant="contained" size={'large'} onClick={() => setTill(initialTillState)}>Clear Till</Button>
-                    <div style={{fontSize: '96px', textAlign: 'center'}}>
+                <div style={{flexGrow: 2, margin: '0 24px', display: 'flex', flexDirection: 'column', gap: '48px'}}>
+                    <div>
+                        <Button variant="contained" size={'large'} style={{width: '100%'}} onClick={() => setTill(initialTillState)}>Clear Till</Button>
+                    </div>
+                    <div style={{fontSize: '96px', textAlign: 'center', display: 'flex', justifyContent: 'center', flexGrow: 1, alignItems: 'center'}}>
                         Total: ${getTotal().toFixed(2)}
                     </div>
                     {/*<div>*/}
