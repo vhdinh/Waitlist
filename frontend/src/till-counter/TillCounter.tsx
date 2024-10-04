@@ -1,7 +1,7 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
-import {Button, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, FormControl, TextField} from "@mui/material";
+import {Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormControl, TextField} from "@mui/material";
 
 const TillCounterWrapper = styled.div`
     tfoot > td {
@@ -31,8 +31,6 @@ const initialTillState = {
 function TillCounter() {
     const [till, setTill] = useState(initialTillState);
     const inputRefs: any[] = [];
-
-
     const getTotal = () => {
         return (Number(till.hundreds) * 100) +
             (Number(till.fifties) * 50) +
@@ -46,15 +44,21 @@ function TillCounter() {
             (Number(till.pennies) * .01)
     }
 
+    const [differences, setDifferences] = useState(300);
+
+    useEffect(() => {
+        setDifferences(300 - getTotal());
+    }, [getTotal()])
+
     return (
         <TillCounterWrapper>
             <Box
-                display="flex"
-                sx={{marginTop: '15px'}}
-                alignItems="center"
+                sx={{marginTop: '15px', display: 'inline-flex', width: '100%'}}
+                justifyContent={'space-around'}
+                gap={'36px'}
             >
-                <TableContainer sx={{display: 'flex', justifyContent: 'center'}}>
-                    <Table sx={{ border: 1, borderRadius: 20, maxWidth: '300px'}}>
+                <TableContainer sx={{display: 'flex', justifyContent: 'center', width: 'unset !important', flexGrow: 1}}>
+                    <Table sx={{ border: 1, maxWidth: '300px', borderCollapse: 'unset !important', borderRadius: '0 !important'}}>
                         <TableHead>
                             <TableCell>Type</TableCell>
                             <TableCell>Count</TableCell>
@@ -375,7 +379,7 @@ function TillCounter() {
                                     </FormControl>
                                 </TableCell>
                             </TableRow>
-                            <TableRow>
+                            <TableRow style={{borderBottom: '1px solid black'}}>
                                 <TableCell>Pennies</TableCell>
                                 <TableCell sx={{
                                     padding: '0',
@@ -403,15 +407,17 @@ function TillCounter() {
                                 </TableCell>
                             </TableRow>
                         </TableBody>
-                        <TableFooter>
-                            <TableCell sx={{fontWeight: 'bold', fontSize: '24px'}}>Total</TableCell>
-                            <TableCell sx={{fontWeight: 'bold', fontSize: '24px'}}>${getTotal().toFixed(2)}</TableCell>
-                        </TableFooter>
                     </Table>
-                    <div>
-                        <Button variant="outlined" sx={{marginLeft: '10px'}} onClick={() => setTill(initialTillState)}>Clear Till</Button>
-                    </div>
                 </TableContainer>
+                <div style={{flexGrow: 3, margin: '0 24px', display: 'flex', flexDirection: 'column', gap: '48px'}}>
+                    <Button variant="contained" size={'large'} onClick={() => setTill(initialTillState)}>Clear Till</Button>
+                    <div style={{fontSize: '96px', textAlign: 'center'}}>
+                        Total: ${getTotal().toFixed(2)}
+                    </div>
+                    {/*<div>*/}
+                    {/*    differences: (300 - ${getTotal().toFixed(2)} = ${differences.toFixed(2)})*/}
+                    {/*</div>*/}
+                </div>
             </Box>
         </TillCounterWrapper>
     );
