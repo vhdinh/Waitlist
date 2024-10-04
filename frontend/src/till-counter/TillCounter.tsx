@@ -57,7 +57,7 @@ function TillCounter() {
                 justifyContent={'space-around'}
                 gap={'36px'}
             >
-                <TableContainer sx={{display: 'flex', justifyContent: 'center', width: 'unset !important', flexGrow: 1}}>
+                <TableContainer sx={{display: 'flex', justifyContent: 'center', width: 'unset !important', flexGrow: 1, minWidth: '400px'}}>
                     <Table sx={{ border: 1, maxWidth: '300px', borderCollapse: 'unset !important', borderRadius: '0 !important'}}>
                         {/*<TableHead>*/}
                         {/*    <TableCell>Type</TableCell>*/}
