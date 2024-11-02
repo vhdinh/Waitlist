@@ -1,5 +1,7 @@
 const router = require('express').Router();
 let CustomerBrick = require('../models/customer.brick.model');
+let CustomerKuma = require('../models/customer.kuma.model');
+let Customer1988 = require('../models/customer.eight.model');
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const socket = require('../server');
 const fns = require('date-fns')
@@ -131,6 +133,62 @@ router.route('/reply').post((req, res) => {
             }
             // // if we want to respond to user with another msg
             res.send(`
+                    <Response>
+                        <Message>
+                            ${rspMsg}
+                        </Message>
+                    </Response>
+                `);
+    })
+    CustomerKuma.findOneAndUpdate(
+        {
+            phoneNumber: num,
+            deleted: false,
+            createdAt: {
+                $gte: fns.startOfDay(new Date()),
+            },
+        },{ msg: msgBody, msgAt: new Date() }).then(() => {
+        socket.ioObject.sockets.emit('user_replied', {
+            message: 'reload'
+        });
+        let rspMsg = '';
+        if(msgBody == '1') {
+            console.log('notification: user accepted ', msgBody);
+            rspMsg = `Thank you, please check in to be seated promptly.`
+        } else if (msgBody == '6') {
+            console.log('notification: user rejected ', msgBody);
+            rspMsg = `Thank you, you have been removed from the Kuma's waitlist.`
+        }
+        // // if we want to respond to user with another msg
+        res.send(`
+                    <Response>
+                        <Message>
+                            ${rspMsg}
+                        </Message>
+                    </Response>
+                `);
+    })
+    Customer1988.findOneAndUpdate(
+        {
+            phoneNumber: num,
+            deleted: false,
+            createdAt: {
+                $gte: fns.startOfDay(new Date()),
+            },
+        },{ msg: msgBody, msgAt: new Date() }).then(() => {
+        socket.ioObject.sockets.emit('user_replied', {
+            message: 'reload'
+        });
+        let rspMsg = '';
+        if(msgBody == '1') {
+            console.log('notification: user accepted ', msgBody);
+            rspMsg = `Thank you, please check in to be seated promptly.`
+        } else if (msgBody == '6') {
+            console.log('notification: user rejected ', msgBody);
+            rspMsg = `Thank you, you have been removed from the 1988's waitlist.`
+        }
+        // // if we want to respond to user with another msg
+        res.send(`
                     <Response>
                         <Message>
                             ${rspMsg}
