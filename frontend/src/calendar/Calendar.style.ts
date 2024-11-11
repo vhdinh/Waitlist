@@ -266,4 +266,15 @@ export const CalendarWrapper = styled.div`
         flex-basis: calc(100%/7);
         width: calc(100%/7);
     }
+    @media (max-width: 660px) {
+        .calendar .body .cell .closed {
+            display: flex;
+            justify-content: center;
+            width: calc(100% - 25px);
+            height: 100%;
+            align-items: center;
+            font-size: 10px;
+            color: gray;
+        }
+    }
 `;
