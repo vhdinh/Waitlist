@@ -27,6 +27,11 @@ export const AppWrapper = styled.div<AppWrapperProps>`
         .admin {
             color: lightgray;
         }
+        .select-restaurant {
+            width: 100%;
+            color: black;
+            text-align: center;
+        }
     }
     @media (max-width: 660px) {
         .app-bar {

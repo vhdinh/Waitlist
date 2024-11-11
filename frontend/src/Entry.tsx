@@ -9,23 +9,18 @@ import styled from "@emotion/styled";
 const EntryWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
-    margin-bottom: 24px;
-    .restaurant-selector {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        align-items: flex-start;
-        gap: 24px;
-        img {
-            width: 200px;
-            height: 200px;
-            border: 15px solid #E5E5E5;
-            //background-color: #E5E5E5;
-            border-radius: 36px;
-            cursor: pointer;
-            padding: 10px;
-        }
+    margin: 24px 0;
+    gap: 24px;
+    img {
+        width: 175px;
+        height: 175px;
+        border: 15px solid #E5E5E5;
+        //background-color: #E5E5E5;
+        border-radius: 36px;
+        cursor: pointer;
+        padding: 10px;
     }
 `;
 
@@ -34,12 +29,9 @@ function Entry() {
 
     return (
         <EntryWrapper>
-            <h1>SELECT RESTAURANT</h1>
-            <div className={'restaurant-selector'}>
-                <img src={brickLogo} alt="brickKitchenLoungeLogo" onClick={() => navigate('/brick/waitlist')}/>
-                <img src={kumaLogo} alt="kumaLogo" onClick={() => navigate('/kuma/waitlist')}/>
-                <img src={eightLogo} alt="1988LoungeLogo" onClick={() => navigate('/eight/waitlist')}/>
-            </div>
+            <img src={brickLogo} alt="brickKitchenLoungeLogo" onClick={() => navigate('/brick/waitlist')}/>
+            <img src={kumaLogo} alt="kumaLogo" onClick={() => navigate('/kuma/waitlist')}/>
+            <img src={eightLogo} alt="1988LoungeLogo" onClick={() => navigate('/eight/waitlist')}/>
         </EntryWrapper>
     )
 }

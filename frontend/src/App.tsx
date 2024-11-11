@@ -137,23 +137,27 @@ function App() {
             <AppBar position="static" className={'app-bar'}>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="a"
-                            href="/"
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'flex', md: 'flex' },
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
-                            <img src={renderLogo()} className={url === 'eight' ? 'eight-eight' : url === 'kuma' ? 'kuma' : ''} />
-                        </Typography>
+                        {
+                            url === '' ? <></> : (
+                                <Typography
+                                    variant="h6"
+                                    noWrap
+                                    component="a"
+                                    href="/"
+                                    sx={{
+                                        mr: 2,
+                                        display: { xs: 'flex', md: 'flex' },
+                                        fontFamily: 'monospace',
+                                        fontWeight: 700,
+                                        letterSpacing: '.3rem',
+                                        color: 'inherit',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    <img src={renderLogo()} className={url === 'eight' ? 'eight-eight' : url === 'kuma' ? 'kuma' : ''} />
+                                </Typography>
+                            )
+                        }
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }} style={{justifyContent: 'center'}}>
                             {pages.map((page, index) => {
                                 if (page.role.includes(role) && location.pathname.split('/')[1] === page.restaurant) {
@@ -172,19 +176,19 @@ function App() {
                         </Box>
                         {
                             url !== '' ? (
-                                <Box sx={{ flexGrow: 0 }} style={{display: 'flex', gap: '24px'}}>
+                                <Box sx={{flexGrow: 0}} style={{display: 'flex', gap: '24px'}}>
                                     <Tooltip title="Refresh Page">
-                                        <IconButton onClick={() => window.location.reload()} sx={{ p: 0 }}>
+                                        <IconButton onClick={() => window.location.reload()} sx={{p: 0}}>
                                             <RefreshIcon fontSize={'large'} style={{color: 'black'}}/>
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title="Open settings">
-                                        <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
+                                        <IconButton onClick={handleCloseUserMenu} sx={{p: 0}}>
                                             <SettingsIcon fontSize={'large'} style={{color: 'black'}}/>
                                         </IconButton>
                                     </Tooltip>
                                 </Box>
-                            ) : <></>
+                            ) : <h1 className={'select-restaurant'}>SELECT RESTAURANT</h1>
                         }
                     </Toolbar>
                 </Container>
