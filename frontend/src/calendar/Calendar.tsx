@@ -22,6 +22,7 @@ import {Booking} from "./Calendar.type";
 import { Button } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import useIsMobile from "../hook/useIsMobile";
+import {getDayFromTimestamp} from "../utils/date";
 
 interface CalendarProps {
     location: string;
@@ -38,6 +39,7 @@ function Calendar(props: CalendarProps) {
         setReloadCalendar
     } = useCalendarState();
     const [ currentMonthBookings, setCurrentMonthBookings ] = useState<Booking[]>([]);
+
     const navigate = useNavigate();
     const isMobile = useIsMobile();
 
@@ -201,6 +203,7 @@ function Calendar(props: CalendarProps) {
                         >
                             {formattedDate}
                         </div>
+                        {renderCloseStatus(day)}
                         {/*<span className="bg">{formattedDate}</span>*/}
                         {
                             numOfBookingForDay.length > 0 && (
@@ -224,6 +227,20 @@ function Calendar(props: CalendarProps) {
             days = [];
         }
         return <div className="body">{rows}</div>;
+    }
+
+    const renderCloseStatus = (day: Date) => {
+        const dayInteger = day.getDay();
+        // kuma closed for Sunday
+        // [0 = sunday, 1 = monday...]
+        if (props.location === 'kuma' && dayInteger === 0) {
+            return <span className={'closed'}>Closed</span>;
+        }
+        // // 1988 closed for Sunday-Tuesday
+        if (props.location === 'eight' && (dayInteger === 0 || dayInteger === 1 || dayInteger === 2)) {
+            return <span className={'closed'}>Closed</span>;
+        }
+        return <></>;
     }
 
     const onDateClick = (day: any) => {
