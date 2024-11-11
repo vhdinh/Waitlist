@@ -209,6 +209,14 @@ export const CalendarWrapper = styled.div`
         right: .75em;
         font-weight: 700;
     }
+    
+    .calendar .body .cell .closed {
+        display: flex;
+        justify-content: center;
+        width: calc(100% - 25px);
+        margin-top: 5px;
+        color: gray;
+    }
   
     .calendar .body .cell.today {
       background: #90caf9;

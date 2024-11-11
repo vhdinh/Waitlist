@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import {useAppState} from "../context/App.provider";
 import useIsMobile from "../hook/useIsMobile";
+import {getDayFromTimestamp} from "../utils/date";
 interface CalendarOverviewProps {
     location: string;
 }
@@ -43,6 +44,11 @@ function CalendarOverview(props: CalendarOverviewProps) {
     const [bookings, setBookings] = useState<Booking[]>([]);
     // const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
     const [loadingOverview, setLoadingOverview] = useState(false);
+    const [day, setDay] = useState(getDayFromTimestamp(selectedDate));
+
+    useEffect(() => {
+        setDay(getDayFromTimestamp(selectedDate));
+    }, [selectedDate]);
 
     useEffect(() => {
         getBooking();
@@ -154,13 +160,28 @@ function CalendarOverview(props: CalendarOverviewProps) {
         return !bookingData.name || !bookingData.phoneNumber || !bookingData.start  || !bookingData.end || !bookingData.partySize;
     }
 
+    const disableButtonStateWhenClosed = (): boolean => {
+        // Disable reservation for Kuma and 1988 on Sunday, not Open
+        console.log('------disabling stuff---', props.location, day);
+
+        // kuma closed for Sunday
+        if (props.location === 'kuma' && day === 'Sunday') {
+            return true;
+        }
+        // 1988 closed for Sunday-Tuesday
+        if (props.location === 'eight' && (day === 'Sunday' || day === 'Monday' || day === 'Tuesday')) {
+            return true;
+        }
+        return false
+    }
+
     const displayActionButtons = () => {
         if (!displayAddNewBooking) {
             return (
                 <Button
                     onClick={() => setDisplayAddNewBooking(true)}
                     variant="contained"
-                    disabled={getActionButtonDisabledState()}
+                    disabled={getActionButtonDisabledState() || disableButtonStateWhenClosed()}
                     startIcon={<AddIcon />}
                 >
                     Booking
