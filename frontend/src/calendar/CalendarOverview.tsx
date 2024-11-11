@@ -35,6 +35,10 @@ const CalendarOverviewWrapper = styled.div`
       gap: 16px;
     }
   }
+    @media (max-width: 660px) {
+        margin: 16px;
+        width: unset;
+    }
 `;
 
 function CalendarOverview(props: CalendarOverviewProps) {
