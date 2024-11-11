@@ -39,6 +39,10 @@ export const AppWrapper = styled.div<AppWrapperProps>`
                 height: 50px;
             }
         }
+        #body-content {
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
     .snackbar {
         margin-top: 55px;
