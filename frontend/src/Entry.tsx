@@ -10,15 +10,16 @@ const EntryWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 24px;
     .restaurant-selector {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-evenly;
         align-items: flex-start;
-        gap: 48px;
+        gap: 24px;
         img {
-            width: 300px;
-            height: 300px;
+            width: 200px;
+            height: 200px;
             border: 15px solid #E5E5E5;
             //background-color: #E5E5E5;
             border-radius: 36px;
