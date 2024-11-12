@@ -79,13 +79,13 @@ const pages = [
     {
         label: 'Count Till',
         url: '/till-counter',
-        role: [Role.EMPLOYEE, Role.ADMIN],
+        role: [Role.ADMIN],
         restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
     },
     {
         label: 'Count Tips',
         url: '/tip-counter',
-        role: [Role.EMPLOYEE, Role.ADMIN],
+        role: [Role.ADMIN],
         restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
     }
 ];

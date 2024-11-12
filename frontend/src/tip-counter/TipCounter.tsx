@@ -7,6 +7,7 @@ const TipCounterWrapper = styled.div`
     margin: 12px;
     .total-tip-clear-btn {
         width: 100%;
+        height: 40px;
     }
 `;
 
