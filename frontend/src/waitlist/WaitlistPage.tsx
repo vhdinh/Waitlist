@@ -16,6 +16,7 @@ import { useAppState } from '../context/App.provider';
 import TapToBegin from '../TapToBegin';
 import AddToListModal from './AddToListModal';
 import { useWaitlistState } from '../context/Waitlist.provider';
+import {RestaurantKey, setLocalStorageData} from "../utils/general";
 
 interface WaitlistPageProps {
     location: string;
@@ -58,6 +59,8 @@ function WaitlistPage(props: WaitlistPageProps) {
     }
 
     useEffect(() => {
+        // set restaurant
+        setLocalStorageData(RestaurantKey, props.location);
         getWaitList();
     }, []);
 

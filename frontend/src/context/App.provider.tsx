@@ -3,10 +3,11 @@ import React, {
     Dispatch,
     PropsWithChildren,
     SetStateAction,
-    useContext,
+    useContext, useEffect,
     useState,
 } from 'react';
 import { AlertColor } from '@mui/material/Alert/Alert';
+import {getLocalStorageData, RoleKey} from "../utils/general";
 
 export enum Role {
     'USER'= 'user',
@@ -48,6 +49,18 @@ export const AppProvider = ({
     const [displaySnack, setDisplaySnack] = useState(false);
     const [displayAdminDialog, setDisplayAdminDialog] = useState(false);
     const [snackMsg, setSnackMsg] = useState<SnackMsg>({msg: '', severity: 'success'});
+
+    useEffect(() => {
+        const storedRole = getLocalStorageData(RoleKey);
+        console.log('-----', storedRole);
+        if (storedRole === 'admin') {
+            setRole(Role.ADMIN);
+        } else if (storedRole === 'employee') {
+            setRole(Role.EMPLOYEE);
+        } else {
+            setRole(Role.USER);
+        }
+    }, []);
 
     return (
         <AppContext.Provider

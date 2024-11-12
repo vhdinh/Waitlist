@@ -1,12 +1,14 @@
 import styled from '@emotion/styled';
+import {Role} from "./context/App.provider";
 
 interface AppWrapperProps {
     isAdmin: boolean;
+    role: Role;
 }
 
 export const AppWrapper = styled.div<AppWrapperProps>`
     .app-bar {
-        background: ${(props) => props.isAdmin ? '#ff7961' : '#F7F7F8'};
+        background: ${(props) => props.role === Role.USER ? '#F7F7F8' : props.role === Role.EMPLOYEE ? '#ff7961' : '#DFFFB9'};
         img {
             width: 100px;
             &.eight-eight {

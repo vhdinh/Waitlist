@@ -1,18 +1,17 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
-import {Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormControl, TextField} from "@mui/material";
+import {Button, FormControl, Table, TableBody, TableCell, TableContainer, TableRow, TextField} from "@mui/material";
+import {RestaurantKey, RoleKey, setLocalStorageData} from "../utils/general";
+import {Role, useAppState} from "../context/App.provider";
 
 const TillCounterWrapper = styled.div`
     tfoot > td {
         border-bottom: 1px solid black;
     }
-    // tbody > tr > td {
-    //     padding: 4px;
-    //     fieldset {
-    //         top: 0 !important;
-    //     }
-    // }
+    .MuiTableRow-root > .MuiTableCell-root:first-of-type {
+        padding: 12px;
+    }
 `;
 
 const initialTillState = {
@@ -49,6 +48,10 @@ function TillCounter() {
     useEffect(() => {
         setDifferences(300 - getTotal());
     }, [getTotal()])
+
+    useEffect(() => {
+        setLocalStorageData(RestaurantKey, '');
+    }, []);
 
     return (
         <TillCounterWrapper>

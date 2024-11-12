@@ -7,6 +7,7 @@ import {Alert, AppBar, Box, Button, Container, IconButton, Snackbar, Toolbar, Ty
 import {AppWrapper} from './App.style';
 import SettingsIcon from '@mui/icons-material/Settings';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import HomeIcon from '@mui/icons-material/Home';
 import Tooltip from '@mui/material/Tooltip';
 
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
@@ -18,6 +19,7 @@ import {useCalendarState} from "./context/Calendar.provider";
 import brickLogo from './assets/BrickTransparent.png';
 import eightLogo from './assets/1988Transparent.png';
 import kumaLogo from './assets/KUMABlackTransparent.png';
+import {RestaurantKey, RoleKey, setLocalStorageData} from "./utils/general";
 
 // @ts-ignore
 const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
@@ -27,52 +29,65 @@ const pages = [
         label: 'Waitlist',
         url: '/brick/waitlist',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: 'brick',
+        restaurant: ['brick'],
     },
     {
         label: 'Reservations',
         url: '/brick/reservations',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: 'brick',
+        restaurant: ['brick'],
     },
     {
         label: 'Logs (W)',
         url: '/brick/logs-waitlist',
         role: [Role.ADMIN],
-        restaurant: 'brick',
+        restaurant: ['brick'],
     },
     {
         label: 'Logs (R)',
         url: '/brick/logs-reservations',
         role: [Role.ADMIN],
-        restaurant: 'brick',
+        restaurant: ['brick'],
     },
     // KUMA
     {
         label: 'Waitlist',
         url: '/kuma/waitlist',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: 'kuma',
+        restaurant: ['kuma'],
     },
     {
         label: 'Reservations',
         url: '/kuma/reservations',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: 'kuma',
+        restaurant: ['kuma'],
     },
     // 1988
     {
         label: 'Waitlist',
         url: '/eight/waitlist',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: 'eight',
+        restaurant: ['eight'],
     },
     {
         label: 'Reservations',
         url: '/eight/reservations',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: 'eight',
+        restaurant: ['eight'],
     },
+    // Tip Calculator
+    {
+        label: 'Count Till',
+        url: '/till-counter',
+        role: [Role.EMPLOYEE, Role.ADMIN],
+        restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
+    },
+    {
+        label: 'Count Tips',
+        url: '/tip-counter',
+        role: [Role.EMPLOYEE, Role.ADMIN],
+        restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
+    }
 ];
 
 function App() {
@@ -110,12 +125,13 @@ function App() {
     };
 
     const handleCloseUserMenu = () => {
-        if (!isAdmin) {
+        if (role === Role.USER) {
             return setDisplayAdminDialog(true);
         } else {
             setIsAdmin(false);
             setReloadList(true);
             setReloadCalendar(true);
+            setLocalStorageData(RoleKey, Role.USER);
             setRole(Role.USER);
         }
     };
@@ -132,13 +148,24 @@ function App() {
     };
 
   return (
-    <AppWrapper isAdmin={isAdmin}>
+    <AppWrapper isAdmin={isAdmin} role={role}>
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" className={'app-bar'}>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         {
-                            url === '' ? <></> : (
+                            url === '' ? <></> : url.includes('till-counter') || url.includes('tip-counter') ? (
+                                <IconButton>
+                                    <HomeIcon
+                                        onClick={() => {
+                                            setLocalStorageData(RoleKey, Role.USER);
+                                            setRole(Role.USER);
+                                            setLocalStorageData(RestaurantKey, '');
+                                            navigate('/')
+                                        }}
+                                    />
+                                </IconButton>
+                                ) : (
                                 <Typography
                                     variant="h6"
                                     noWrap
@@ -153,14 +180,19 @@ function App() {
                                         color: 'inherit',
                                         textDecoration: 'none',
                                     }}
+                                    onClick={() => {
+                                        setRole(Role.USER);
+                                        setLocalStorageData(RoleKey, '');
+                                        setLocalStorageData(RestaurantKey, '');
+                                    }}
                                 >
                                     <img src={renderLogo()} className={url === 'eight' ? 'eight-eight' : url === 'kuma' ? 'kuma' : ''} />
                                 </Typography>
                             )
                         }
-                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }} style={{justifyContent: 'center'}}>
+                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' }, gap: '18px' }} style={{justifyContent: 'center'}}>
                             {pages.map((page, index) => {
-                                if (page.role.includes(role) && location.pathname.split('/')[1] === page.restaurant) {
+                                if (page.role.includes(role) && page.restaurant.includes(location.pathname.split('/')[1])) {
                                     return (
                                         <Button
                                             key={index}
@@ -175,8 +207,8 @@ function App() {
                             })}
                         </Box>
                         {
-                            url !== '' ? (
-                                <Box sx={{flexGrow: 0}} style={{display: 'flex', gap: '24px'}}>
+                            url.includes('brick') || url.includes('kuma') || url.includes('eight') ? (
+                                <Box sx={{flexGrow: 0}} style={{display: 'flex', gap: '32px'}}>
                                     <Tooltip title="Refresh Page">
                                         <IconButton onClick={() => window.location.reload()} sx={{p: 0}}>
                                             <RefreshIcon fontSize={'large'} style={{color: 'black'}}/>
@@ -188,7 +220,7 @@ function App() {
                                         </IconButton>
                                     </Tooltip>
                                 </Box>
-                            ) : <h1 className={'select-restaurant'}>SELECT RESTAURANT</h1>
+                            ) : url.includes('till-counter') || url.includes('tip-counter') ? <></> : <h1 className={'select-restaurant'}>SELECT RESTAURANT</h1>
                         }
                     </Toolbar>
                 </Container>

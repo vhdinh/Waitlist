@@ -15,6 +15,7 @@ import { CalendarProvider } from './context/Calendar.provider';
 import LogsPage from "./logs/LogsPage";
 import Entry from "./Entry";
 import TillCounter from "./till-counter/TillCounter";
+import TipCounter from "./tip-counter/TipCounter";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -83,13 +84,18 @@ const router = createBrowserRouter([
                 path: "/eight/reservations/:date",
                 element: <CalendarPage location={'eight'} />,
             },
+            // TILL COUNTER
+            {
+                path: '/till-counter',
+                element: <TillCounter />
+            },
+            // TIP COUNTER
+            {
+                path: '/tip-counter',
+                element: <TipCounter />
+            }
         ],
     },
-    // TILL COUNTER
-    {
-        path: '/till-counter',
-        element: <TillCounter />
-    }
 ]);
 
 root.render(

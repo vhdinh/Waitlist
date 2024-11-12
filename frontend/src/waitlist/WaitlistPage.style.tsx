@@ -76,7 +76,7 @@ export const WaitlistPageWrapper = styled.div`
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
-                align-content: 
+                align-content: center;
                 font-size: 24px !important;
                 align-items: center;
                 border-bottom: 1px solid gray;
@@ -87,7 +87,7 @@ export const WaitlistPageWrapper = styled.div`
                 .party {
                     display: flex;
                     align-items: center;
-                    align-content: left;
+                    align-content: flex-start;
                     gap: 12px;
                     width: 20%;
                 }

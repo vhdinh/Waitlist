@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import {Role, useAppState} from './context/App.provider';
 import {useCalendarState} from "./context/Calendar.provider";
+import {RoleKey, setLocalStorageData} from "./utils/general";
 
 function AdminPasscodeModal() {
     const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin, setRole, } = useAppState();
@@ -32,12 +33,14 @@ function AdminPasscodeModal() {
         e.preventDefault();
         if (adminPasscode === process.env.REACT_APP_EMPLOYEE_PASSCODE) {
             setRole(Role.EMPLOYEE);
+            setLocalStorageData(RoleKey, Role.EMPLOYEE);
             setIsAdmin(true);
 
             setAdminPasscode('');
             setDisplayAdminDialog(false);
         } else if (adminPasscode === process.env.REACT_APP_ADMIN_PASSCODE) {
             setRole(Role.ADMIN);
+            setLocalStorageData(RoleKey, Role.ADMIN);
             setIsAdmin(true);
             setReloadCalendar(true);
 
@@ -45,6 +48,7 @@ function AdminPasscodeModal() {
             setDisplayAdminDialog(false);
         } else {
             setRole(Role.USER);
+            setLocalStorageData(RoleKey, Role.USER);
             setAdminPasscode('');
             setHelperText('Invalid Code');
         }

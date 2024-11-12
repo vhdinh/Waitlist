@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Calendar from './Calendar';
 import CalendarOverview from './CalendarOverview';
 import styled from "@emotion/styled";
+import {RestaurantKey, setLocalStorageData} from "../utils/general";
 
 const CalendarPageWrapper = styled.div`
   height: 100%;
@@ -14,6 +15,11 @@ interface CalendarPageProps {
 }
 
 function CalendarPage(props: CalendarPageProps) {
+
+    useEffect(() => {
+        setLocalStorageData(RestaurantKey, props.location);
+    }, []);
+
     return (
         <CalendarPageWrapper className={'calendar-page'}>
             <Calendar location={props.location} />
