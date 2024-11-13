@@ -141,13 +141,6 @@ function CalendarOverview(props: CalendarOverviewProps) {
                 </div>
             )
         )
-        return (
-            <div className={'bookings'}>
-                {
-                    bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} location={props.location} />)
-                }
-            </div>
-        )
     };
 
     const getActionButtonDisabledState = (): boolean => {

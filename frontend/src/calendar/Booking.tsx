@@ -121,7 +121,7 @@ function BookingComponent(props: Booking) {
                                 Phone:
                             </div>
                             <div>
-                                {phoneNumberAutoFormat(props.phoneNumber.toString())}
+                                {props.phoneNumber}
                             </div>
                         </Typography>
                         <Typography variant={isMobile ? 'body1' : 'h6'} className={'bc-item'}>
