@@ -28,7 +28,7 @@ function NewBooking() {
 
     const handleChange = (e: any) => {
         if (e.target.name === 'phoneNumber') {
-            const regex = /^[0-9\.\-\/\(\)\\ ]+$/;
+            const regex = /^[0-9\.\-\/\(\)\+\\\ ]+$/;
             const validPhoneNumber = e.target.value.match(regex) || !e.target.value;
             if (!validPhoneNumber) return;
         }
