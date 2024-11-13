@@ -13,7 +13,7 @@ const bookingSchema = new Schema({
         minlength: 1
     },
     phoneNumber: {
-        type: Number,
+        type: String,
         required: true,
     },
     notified: {

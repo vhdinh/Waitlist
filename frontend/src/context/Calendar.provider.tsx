@@ -42,11 +42,11 @@ export const Today = new Date();
 
 export const InitialNewBooking = {
     name: '',
-    phoneNumber: undefined,
+    phoneNumber: '',
     startDay: '',
     start: 0,
     end: 0,
-    partySize: 0,
+    partySize: undefined,
     note: ''
 };
 

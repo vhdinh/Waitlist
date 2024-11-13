@@ -27,9 +27,14 @@ function NewBooking() {
     const { selectedDate, setBookingData, bookingData, isEditing } = useCalendarState();
 
     const handleChange = (e: any) => {
+        if (e.target.name === 'phoneNumber') {
+            const regex = /^[0-9\.\-\/\(\)\\ ]+$/;
+            const validPhoneNumber = e.target.value.match(regex) || !e.target.value;
+            if (!validPhoneNumber) return;
+        }
         setBookingData((oldState: NewBookingType) => ({
             ...oldState,
-            [e.target.name]: e.target.name === 'partySize' || e.target.name === 'phoneNumber' ? Number(e.target.value) || '' : e.target.value,
+            [e.target.name]: e.target.name === 'partySize' ? Number(e.target.value) || '' : e.target.value,
         }))
     };
 
@@ -108,7 +113,7 @@ function NewBooking() {
                                 <TextField
                                     required
                                     id="phoneNumber-input"
-                                    type="tel"
+                                    type="text"
                                     name={'phoneNumber'}
                                     value={bookingData.phoneNumber}
                                     onChange={(e) => handleChange(e)}

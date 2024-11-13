@@ -1,7 +1,7 @@
 export interface Booking {
     _id?: string;
     name: string;
-    phoneNumber: number;
+    phoneNumber: string;
     partySize: number;
     notified: boolean;
     msg: string;

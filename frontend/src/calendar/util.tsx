@@ -4,11 +4,11 @@ import {useMemo} from "react";
 export interface NewBookingType {
     _id?: string;
     name: string;
-    phoneNumber?: number;
+    phoneNumber?: string;
     startDay?: string;
     start: number;
     end: number;
-    partySize: number;
+    partySize: number | undefined;
     note?: string;
     msg?: string;
     notified?: boolean;
