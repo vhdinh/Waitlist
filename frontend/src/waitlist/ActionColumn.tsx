@@ -4,7 +4,7 @@ import { IconButton } from '@mui/material';
 import SmsIcon from '@mui/icons-material/Sms';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useWaitlistState } from '../context/Waitlist.provider';
-import { useAppState } from '../context/App.provider';
+import {Role, useAppState} from '../context/App.provider';
 import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
 
@@ -26,6 +26,10 @@ const ActionColumnWrapper = styled.div`
     .actions {
         display: flex;
         flex-direction: column;
+        .__icons {
+            display: flex;
+            align-items: center;
+        }
     }
     .sms {
         color: #1976d2;
@@ -48,7 +52,7 @@ const ActionColumnWrapper = styled.div`
 
 function ActionColumn(props: ActionColumnProps) {
     const { setReloadList } = useWaitlistState();
-    const { isAdmin, setDisplaySnack, setSnackMsg } = useAppState();
+    const { isAdmin, setDisplaySnack, setSnackMsg, role } = useAppState();
     const getInitialNotifiedTimeframe = (): number => {
         const n = Date.now();
         const notified = new Date(props.notifiedAt);
@@ -128,12 +132,12 @@ function ActionColumn(props: ActionColumnProps) {
             </>
         )
     }
-
+    console.log('---Role', role);
     return (
         <ActionColumnWrapper>
-            { isAdmin ? (
+            { role === Role.EMPLOYEE || role === Role.ADMIN ? (
                 <div className={'actions'}>
-                    <div>
+                    <div className={'__icons'}>
                         {renderPhoneIcons()}
                         <IconButton
                             onClick={(e: any) => removeCustomer()}
@@ -158,4 +162,4 @@ function ActionColumn(props: ActionColumnProps) {
     )
 }
 
-export default React.memo(ActionColumn);
+export default ActionColumn;

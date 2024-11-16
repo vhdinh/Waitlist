@@ -1,10 +1,9 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import {Box} from '@mui/material';
+import {DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
 import ActionColumn from './ActionColumn';
 import styled from '@emotion/styled';
-import { useAppState } from '../context/App.provider';
-import CircleIcon from '@mui/icons-material/Circle';
+import {Role, useAppState} from '../context/App.provider';
 import PhoneNumberColumn from './PhoneNumberColumn';
 import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
@@ -99,12 +98,12 @@ const ListWrapper = styled.div`
 `;
 
 function List(props: ListProps) {
-    const {isAdmin} = useAppState();
+    const {isAdmin, role} = useAppState();
 
     return (
         <ListWrapper>
             {
-                isAdmin ? (
+                role === Role.EMPLOYEE || role === Role.ADMIN ? (
                     <div style={{fontSize: '20px', display: 'flex', gap: 24, paddingBottom: 8, position: 'absolute', marginTop: '-28px'}}>
                         <span style={{display: 'flex', justifyItems: 'center', gap: 12}}>
                             <MobileFriendlyIcon className={'accepts-icon'}/> Accepted
@@ -118,7 +117,7 @@ function List(props: ListProps) {
             <Box sx={{ height: 'calc(100vh - 400px)', width: '100%' }}>
                 <DataGrid
                     rows={props.list}
-                    columns={getColumns(isAdmin, props.location)}
+                    columns={getColumns(role === Role.EMPLOYEE || role === Role.ADMIN, props.location)}
                     disableRowSelectionOnClick
                     disableColumnMenu
                     hideFooterPagination
@@ -129,9 +128,9 @@ function List(props: ListProps) {
                     getRowClassName={(params) => {
                         let c = '';
                         // user accepts
-                        if (params.row.msg === '1' && isAdmin) {
+                        if (params.row.msg === '1' && (role === Role.EMPLOYEE || role === Role.ADMIN)) {
                             c += 'accepts';
-                        } else if (params.row.msg === '6' && isAdmin) {
+                        } else if (params.row.msg === '6' && (role === Role.EMPLOYEE || role === Role.ADMIN)) {
                             c += 'decline';
                         }
                         c += params.indexRelativeToCurrentPage % 2 === 0 ? ' Mui-even' : ' Mui-odd'
