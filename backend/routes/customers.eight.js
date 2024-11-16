@@ -125,18 +125,27 @@ router.route('/reply').post((req, res) => {
         if(msgBody == '1') {
             console.log('notification: user accepted ', msgBody);
             rspMsg = `Thank you, please check in to be seated promptly.`
+            // // if we want to respond to user with another msg
+            return res.send(`
+            <Response>
+                <Message>
+                    ${rspMsg}
+                </Message>
+            </Response>
+        `);
         } else if (msgBody == '6') {
             console.log('notification: user rejected ', msgBody);
             rspMsg = `Thank you, you have been removed from 1988's waitlist.`
+            // // if we want to respond to user with another msg
+            return res.send(`
+            <Response>
+                <Message>
+                    ${rspMsg}
+                </Message>
+            </Response>
+        `);
         }
-        // // if we want to respond to user with another msg
-        return res.send(`
-                    <Response>
-                        <Message>
-                            ${rspMsg}
-                        </Message>
-                    </Response>
-                `);
+
     })
 })
 
