@@ -118,9 +118,9 @@ router.route('/reply').post((req, res) => {
                 $gte: fns.startOfDay(new Date()),
             },
         },{ msg: msgBody, msgAt: new Date() }).then(() => {
-        socket.ioObject.sockets.emit('user_replied', {
-            message: 'reload'
-        });
+        // socket.ioObject.sockets.emit('user_replied', {
+        //     message: 'reload'
+        // });
         let rspMsg = '';
         if(msgBody == '1') {
             console.log('notification: user accepted ', msgBody);
