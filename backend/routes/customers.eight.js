@@ -118,29 +118,27 @@ router.route('/reply').post((req, res) => {
                 $gte: fns.startOfDay(new Date()),
             },
         },{ msg: Number(msgBody), msgAt: new Date() }).then(() => {
-        socket.ioObject.sockets.emit('user_replied', {
-            message: 'reload'
-        });
+        // socket.ioObject.sockets.emit('user_replied', {
+        //     message: 'reload'
+        // });
         let rspMsg = '';
-        if(msgBody == '1') {
-            console.log('notification: user accepted ', msgBody);
-            rspMsg = `Thank you, please check in to be seated promptly.`
-            // // if we want to respond to user with another msg
-        } else if (msgBody == '6') {
-            console.log('notification: user rejected ', msgBody);
-            rspMsg = `Thank you, you have been removed from 1988's waitlist.`
-        }
-        try {
-            res.send(`
-            <Response>
-                <Message>
-                    ${rspMsg}
-                </Message>
-            </Response>
-        `);
-        } catch (e) {
-            console.log('---failed-to-update---', e);
-        }
+        // if(msgBody == '1') {
+        //     console.log('notification: user accepted ', msgBody);
+        //     rspMsg = `Thank you, please check in to be seated promptly.`
+        //     // // if we want to respond to user with another msg
+        // } else if (msgBody == '6') {
+        //     console.log('notification: user rejected ', msgBody);
+        //     rspMsg = `Thank you, you have been removed from 1988's waitlist.`
+        // }
+        rspMsg = `Thank you, please check in to be seated promptly.`
+    //     res.send(`
+    //     <Response>
+    //         <Message>
+    //             ${rspMsg}
+    //         </Message>
+    //     </Response>
+    // `);
+        res.json('Vu Done');
     })
 })
 
