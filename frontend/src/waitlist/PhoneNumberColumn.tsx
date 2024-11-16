@@ -21,7 +21,8 @@ export const phoneNumberAutoFormat = (phoneNumber: string): string => {
 function PhoneNumberColumn(props: PhoneNumberColumnProps) {
     const phone = props.phoneNumber.toString();
     const phoneNumber = phone.substring(1);
-    return <div className={'MuiDataGrid-cellContent'}>{phoneNumberAutoFormat(phoneNumber)}</div>
+    // return <div className={'MuiDataGrid-cellContent'}>{phoneNumberAutoFormat(phoneNumber)}</div>
+    return <div className={'MuiDataGrid-cellContent'}>{phoneNumber}</div>
 }
 
 export default PhoneNumberColumn;
