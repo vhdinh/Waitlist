@@ -136,7 +136,7 @@ router.route('/reply').post(async (req, res) => {
     if (brickCustomer.length > 0) {
         CustomerBrick.findOneAndUpdate(
             {
-                phoneNumber: num,
+                phoneNumber: msgFrom,
                 deleted: false,
                 createdAt: {
                     $gte: fns.startOfDay(new Date()),
@@ -165,7 +165,7 @@ router.route('/reply').post(async (req, res) => {
     } else if (kumaCustomer.length > 0) {
         CustomerKuma.findOneAndUpdate(
             {
-                phoneNumber: num,
+                phoneNumber: msgFrom,
                 deleted: false,
                 createdAt: {
                     $gte: fns.startOfDay(new Date()),
@@ -176,10 +176,10 @@ router.route('/reply').post(async (req, res) => {
             });
             let rspMsg = '';
             if(msgBody == '1') {
-                console.log('notification: user accepted ', msgBody);
+                console.log('KUMA notification: user accepted ', msgBody);
                 rspMsg = `Thank you, please check in to be seated promptly.`
             } else if (msgBody == '6') {
-                console.log('notification: user rejected ', msgBody);
+                console.log('KUMA notification: user rejected ', msgBody);
                 rspMsg = `Thank you, you have been removed from the Kuma's waitlist.`
             }
             // // if we want to respond to user with another msg
@@ -194,7 +194,7 @@ router.route('/reply').post(async (req, res) => {
     } else if (eightCustomer.length > 0) {
         Customer1988.findOneAndUpdate(
             {
-                phoneNumber: num,
+                phoneNumber: msgFrom,
                 deleted: false,
                 createdAt: {
                     $gte: fns.startOfDay(new Date()),
@@ -205,10 +205,10 @@ router.route('/reply').post(async (req, res) => {
             });
             let rspMsg = '';
             if(msgBody == '1') {
-                console.log('notification: user accepted ', msgBody);
+                console.log('EIGHT notification: user accepted ', msgBody);
                 rspMsg = `Thank you, please check in to be seated promptly.`
             } else if (msgBody == '6') {
-                console.log('notification: user rejected ', msgBody);
+                console.log('EIGHT notification: user rejected ', msgBody);
                 rspMsg = `Thank you, you have been removed from the 1988's waitlist.`
             }
             // // if we want to respond to user with another msg
