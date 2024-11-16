@@ -107,24 +107,24 @@ router.route('/:id/delete').post((req, res) => {
     //     .catch((e) => res.status(400).json('error-deleting-user: ' + e))
 });
 
-router.route('/reply').post((req, res) => {
+router.route('/reply').post(async (req, res) => {
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
     const num = msgFrom.substring(1);
     console.log(`Brick webhook user replied from: ${msgFrom}, number: ${num}, msg: ${msgBody}`);
-    const brickCustomer = CustomerBrick.find({
+    const brickCustomer = await CustomerBrick.find({
         phoneNumber: num,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         }});
-    const kumaCustomer = CustomerKuma.find({
+    const kumaCustomer = await CustomerKuma.find({
         phoneNumber: num,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         }});
-    const eightCustomer = Customer1988.find({
+    const eightCustomer = await Customer1988.find({
         phoneNumber: num,
         deleted: false,
         createdAt: {
