@@ -117,7 +117,7 @@ router.route('/reply').post((req, res) => {
             createdAt: {
                 $gte: fns.startOfDay(new Date()),
             },
-        },{ msg: msgBody, msgAt: new Date() }).then(() => {
+        },{ msg: Number(msgBody), msgAt: new Date() }).then(() => {
         socket.ioObject.sockets.emit('user_replied', {
             message: 'reload'
         });
@@ -126,18 +126,11 @@ router.route('/reply').post((req, res) => {
             console.log('notification: user accepted ', msgBody);
             rspMsg = `Thank you, please check in to be seated promptly.`
             // // if we want to respond to user with another msg
-            res.send(`
-            <Response>
-                <Message>
-                    ${rspMsg}
-                </Message>
-            </Response>
-        `);
-            return;
         } else if (msgBody == '6') {
             console.log('notification: user rejected ', msgBody);
             rspMsg = `Thank you, you have been removed from 1988's waitlist.`
-            // // if we want to respond to user with another msg
+        }
+        try {
             res.send(`
             <Response>
                 <Message>
@@ -145,7 +138,8 @@ router.route('/reply').post((req, res) => {
                 </Message>
             </Response>
         `);
-            return;
+        } catch (e) {
+            console.log('---failed-to-update---', e);
         }
     })
 })
