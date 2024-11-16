@@ -13,16 +13,12 @@ import Tooltip from '@mui/material/Tooltip';
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {Role, useAppState} from './context/App.provider';
 import AdminPasscodeModal from './AdminPasscodeModal';
-import io from 'socket.io-client';
 import {useWaitlistState} from './context/Waitlist.provider';
 import {useCalendarState} from "./context/Calendar.provider";
 import brickLogo from './assets/BrickTransparent.png';
 import eightLogo from './assets/1988Transparent.png';
 import kumaLogo from './assets/KUMABlackTransparent.png';
 import {RestaurantKey, RoleKey, setLocalStorageData} from "./utils/general";
-
-// @ts-ignore
-const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
 
 const pages = [
     {
@@ -112,13 +108,6 @@ function App() {
     useEffect(() => {
         setUrl(basePath[1]);
     }, [basePath])
-
-    useEffect(() => {
-        socket.on('user_replied', (data: any) => {
-            console.log('USER REPLIED', data);
-            if (data.message === 'reload') setReloadList(true)
-        })
-    }, [socket])
 
     const handleCloseNavMenu = (url: string) => {
         navigate(url);

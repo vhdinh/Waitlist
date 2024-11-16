@@ -17,10 +17,15 @@ import TapToBegin from '../TapToBegin';
 import AddToListModal from './AddToListModal';
 import { useWaitlistState } from '../context/Waitlist.provider';
 import {RestaurantKey, setLocalStorageData} from "../utils/general";
+import io from "socket.io-client";
 
 interface WaitlistPageProps {
     location: string;
 }
+
+// @ts-ignore
+const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
+
 
 function WaitlistPage(props: WaitlistPageProps) {
     const timer = useAutoTimer(120); // 120 seconds
@@ -29,6 +34,14 @@ function WaitlistPage(props: WaitlistPageProps) {
 
     const { isAdmin, role } = useAppState();
     const { reloadList, setReloadList, openAddToListModal, setOpenAddToListModal } = useWaitlistState();
+
+    useEffect(() => {
+        socket.on(`${props.location}_user_replied`, (data: any) => {
+            console.log('USER REPLIED', data);
+            if (data.message === 'reload') setReloadList(true)
+        })
+    }, [socket])
+
 
     useEffect(() => {
         if (timer === 0) {

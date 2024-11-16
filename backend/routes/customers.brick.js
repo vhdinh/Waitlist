@@ -130,9 +130,6 @@ router.route('/reply').post(async (req, res) => {
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         }});
-    console.log('---BRICK---', brickCustomer);
-    console.log('---KUMA---', kumaCustomer);
-    console.log('---EIGHT---', eightCustomer);
     if (brickCustomer.length > 0) {
         CustomerBrick.findOneAndUpdate(
             {
@@ -142,7 +139,7 @@ router.route('/reply').post(async (req, res) => {
                     $gte: fns.startOfDay(new Date()),
                 },
             },{ msg: msgBody, msgAt: new Date() }).then(() => {
-            socket.ioObject.sockets.emit('user_replied', {
+            socket.ioObject.sockets.emit('brick_user_replied', {
                 message: 'reload'
             });
             let rspMsg = '';
@@ -171,7 +168,7 @@ router.route('/reply').post(async (req, res) => {
                     $gte: fns.startOfDay(new Date()),
                 },
             },{ msg: msgBody, msgAt: new Date() }).then(() => {
-            socket.ioObject.sockets.emit('user_replied', {
+            socket.ioObject.sockets.emit('kuma_user_replied', {
                 message: 'reload'
             });
             let rspMsg = '';
@@ -200,7 +197,7 @@ router.route('/reply').post(async (req, res) => {
                     $gte: fns.startOfDay(new Date()),
                 },
             },{ msg: msgBody, msgAt: new Date() }).then(() => {
-            socket.ioObject.sockets.emit('user_replied', {
+            socket.ioObject.sockets.emit('eight_user_replied', {
                 message: 'reload'
             });
             let rspMsg = '';
