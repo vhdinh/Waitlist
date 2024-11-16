@@ -118,34 +118,35 @@ router.route('/reply').post((req, res) => {
                 $gte: fns.startOfDay(new Date()),
             },
         },{ msg: msgBody, msgAt: new Date() }).then(() => {
-        // socket.ioObject.sockets.emit('user_replied', {
-        //     message: 'reload'
-        // });
+        socket.ioObject.sockets.emit('user_replied', {
+            message: 'reload'
+        });
         let rspMsg = '';
         if(msgBody == '1') {
             console.log('notification: user accepted ', msgBody);
             rspMsg = `Thank you, please check in to be seated promptly.`
             // // if we want to respond to user with another msg
-            return res.send(`
+            res.send(`
             <Response>
                 <Message>
                     ${rspMsg}
                 </Message>
             </Response>
         `);
+            return;
         } else if (msgBody == '6') {
             console.log('notification: user rejected ', msgBody);
             rspMsg = `Thank you, you have been removed from 1988's waitlist.`
             // // if we want to respond to user with another msg
-            return res.send(`
+            res.send(`
             <Response>
                 <Message>
                     ${rspMsg}
                 </Message>
             </Response>
         `);
+            return;
         }
-
     })
 })
 
