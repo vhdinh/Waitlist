@@ -117,19 +117,19 @@ router.route('/reply').post((req, res) => {
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
-        });
+        }});
     const kumaCustomer = CustomerKuma.find({
         phoneNumber: num,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
-        });
+        }});
     const eightCustomer = Customer1988.find({
         phoneNumber: num,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
-        });
+        }});
     console.log('---BRICK---', brickCustomer);
     console.log('---KUMA---', kumaCustomer);
     console.log('---EIGHT---', eightCustomer);
