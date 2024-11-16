@@ -109,7 +109,7 @@ router.route('/reply').post((req, res) => {
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;
     const num = msgFrom.substring(1);
-    console.log(`webhook user replied from: ${msgFrom}, number: ${num}, msg: ${msgBody}`);
+    console.log(`Eight webhook user replied from: ${msgFrom}, number: ${num}, msg: ${msgBody}`);
     CustomerEight.findOneAndUpdate(
         {
             phoneNumber: num,

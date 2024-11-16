@@ -132,7 +132,7 @@ router.route('/reply').post((req, res) => {
                 rspMsg = `Thank you, you have been removed from the Brick's waitlist.`
             }
             // // if we want to respond to user with another msg
-            res.send(`
+            return res.send(`
                     <Response>
                         <Message>
                             ${rspMsg}
@@ -160,7 +160,7 @@ router.route('/reply').post((req, res) => {
             rspMsg = `Thank you, you have been removed from the Kuma's waitlist.`
         }
         // // if we want to respond to user with another msg
-        res.send(`
+        return res.send(`
                     <Response>
                         <Message>
                             ${rspMsg}
@@ -188,7 +188,7 @@ router.route('/reply').post((req, res) => {
             rspMsg = `Thank you, you have been removed from the 1988's waitlist.`
         }
         // // if we want to respond to user with another msg
-        res.send(`
+        return res.send(`
                     <Response>
                         <Message>
                             ${rspMsg}
