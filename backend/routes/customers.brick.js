@@ -113,19 +113,19 @@ router.route('/reply').post(async (req, res) => {
     const num = msgFrom.substring(1);
     console.log(`Brick webhook user replied from: ${msgFrom}, number: ${num}, msg: ${msgBody}`);
     const brickCustomer = await CustomerBrick.find({
-        phoneNumber: num,
+        phoneNumber: msgFrom,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         }});
     const kumaCustomer = await CustomerKuma.find({
-        phoneNumber: num,
+        phoneNumber: msgFrom,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         }});
     const eightCustomer = await Customer1988.find({
-        phoneNumber: num,
+        phoneNumber: msgFrom,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
