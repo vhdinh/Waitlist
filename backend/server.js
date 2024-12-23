@@ -37,9 +37,7 @@ const googleKeys = {
 }
 
 
-fs.writeFileSync('../reservation-calendar-443403-de6b077deebe.json', JSON.stringify(googleKeys));
-
-
+fs.writeFileSync('../backend/reservation-calendar.json', JSON.stringify(googleKeys));
 
 /**
  *  FIRST DB CONNECTION
