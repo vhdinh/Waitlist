@@ -1,8 +1,10 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Calendar from './Calendar';
 import CalendarOverview from './CalendarOverview';
 import styled from "@emotion/styled";
 import {RestaurantKey, setLocalStorageData} from "../utils/general";
+import {endOfMonth, startOfMonth} from "date-fns";
+import {useCalendarState} from "../context/Calendar.provider";
 
 const CalendarPageWrapper = styled.div`
   height: 100%;

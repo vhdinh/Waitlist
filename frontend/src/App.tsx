@@ -58,6 +58,12 @@ const pages = [
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: ['kuma'],
     },
+    {
+        label: 'ReservationsV2',
+        url: '/kuma/reservations-v2',
+        role: [Role.ADMIN],
+        restaurant: ['kuma'],
+    },
     // 1988
     {
         label: 'Waitlist',
@@ -71,12 +77,19 @@ const pages = [
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: ['eight'],
     },
+    {
+        label: 'ReservationsV2',
+        url: '/eight/reservations-v2',
+        role: [Role.ADMIN],
+        restaurant: ['eight'],
+    },
     // Tip Calculator
     {
         label: 'Count Till',
         url: '/till-counter',
         role: [Role.ADMIN],
-        restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
+        restaurant: [],
+        // restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
     },
     {
         label: 'Count Tips',

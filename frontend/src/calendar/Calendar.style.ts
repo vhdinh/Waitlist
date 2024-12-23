@@ -144,13 +144,13 @@ export const CalendarWrapper = styled.div`
         cursor: pointer;
         transition: .15s ease-out;
     }
-    
+
     .calendar .header .icon:hover {
         transform: scale(2.5);
         transition: .25s ease-out;
         color: var(--main-color);
     }
-    
+
     .calendar .header .icon:first-of-type {
         margin-left: 1em;
     }

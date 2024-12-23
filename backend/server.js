@@ -5,6 +5,7 @@ const cors = require("cors");
 const http = require('http');
 const { Server } = require('socket.io');
 const server = http.createServer(app)
+const fs = require('fs');
 
 require('dotenv').config();
 
@@ -19,6 +20,26 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 const router = express.Router();
+
+// write gc file
+const googleKeys = {
+    "type": process.env.GOOGLE_CAL_TYPE,
+    "project_id": process.env.GOOGLE_CAL_PROJECT_ID,
+    "private_key_id": process.env.GOOGLE_CAL_PRIVATE_KEY_ID,
+    "private_key": process.env.GOOGLE_CAL_PRIVATE_KEY.split(String.raw`\n`).join('\n'),
+    "client_email": process.env.GOOGLE_CAL_CLIENT_EMAIL,
+    "client_id": process.env.GOOGLE_CAL_CLIENT_ID,
+    "auth_uri": process.env.GOOGLE_CAL_AUTH_URI,
+    "token_uri": process.env.GOOGLE_CAL_TOKEN_URI,
+    "auth_provider_x509_cert_url": process.env.GOOGLE_CAL_AUTH_PROVIDER_X509_CERT_URL,
+    "client_x509_cert_url": process.env.GOOGLE_CAL_CLIENT_X509_CERT_URL,
+    "universe_domain": process.env.GOOGLE_CAL_UNIVERSE_DOMAIN
+}
+
+
+fs.writeFileSync('reservation-calendar-443403-de6b077deebe.json', JSON.stringify(googleKeys));
+
+
 
 /**
  *  FIRST DB CONNECTION
@@ -85,6 +106,8 @@ const bookingEightRouter = require('./routes/booking.eight');
 app.use('/eight/customers', customersEightRouter);
 app.use('/eight/booking', bookingEightRouter);
 
+const googleCalendarRouter = require('./routes/calendar.kuma');
+app.use('/google-calendar', googleCalendarRouter);
 
 const io = new Server(server, {
     cors: {

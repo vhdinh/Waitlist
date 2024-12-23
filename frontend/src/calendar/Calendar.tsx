@@ -257,7 +257,7 @@ function Calendar(props: CalendarProps) {
     }
 
     return (
-        <CalendarWrapper >
+        <CalendarWrapper>
             <div className={'calendar'}
             >
                 {renderHeader()}

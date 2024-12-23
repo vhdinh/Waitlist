@@ -16,6 +16,7 @@ import LogsPage from "./logs/LogsPage";
 import Entry from "./Entry";
 import TillCounter from "./till-counter/TillCounter";
 import TipCounter from "./tip-counter/TipCounter";
+import GoogleCalendarPage from "./google_calendar/GoogleCalendarPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -84,11 +85,20 @@ const router = createBrowserRouter([
                 path: "/eight/reservations/:date",
                 element: <CalendarPage location={'eight'} />,
             },
-            // TILL COUNTER
+            // GOOGLE CALENDAR
             {
-                path: '/till-counter',
-                element: <TillCounter />
+              path: '/kuma/reservations-v2',
+              element: <GoogleCalendarPage location={'kuma'} />,
             },
+            {
+              path: '/eight/reservations-v2',
+              element: <GoogleCalendarPage location={'eight'} />,
+            },
+            // TILL COUNTER
+            // {
+            //     path: '/till-counter',
+            //     element: <TillCounter />
+            // },
             // TIP COUNTER
             {
                 path: '/tip-counter',

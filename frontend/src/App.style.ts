@@ -67,6 +67,7 @@ export const AppWrapper = styled.div<AppWrapperProps>`
     }
     #body-content {
         height: 100%;
+        max-width: 100% !important;
     }
 
     .waiting-screen {

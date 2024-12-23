@@ -129,17 +129,21 @@ function CalendarOverview(props: CalendarOverviewProps) {
 
     const renderEachBooking = () => {
         return (
-            bookings.length > 0 ? (
-                <div className={'bookings'}>
-                    {
-                        bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} location={props.location} />)
-                    }
-                </div>
-            ) : (
-                <div className={'bookings_empty'}>
-                    No reservations for {format(selectedDate, 'MMMM dd')}
-                </div>
-            )
+            <>
+                {
+                    bookings.length > 0 ? (
+                        <div className={'bookings'}>
+                            {
+                                bookings.map((b: Booking, index) => <BookingComponent {...b} key={index} location={props.location} />)
+                            }
+                        </div>
+                    ) : (
+                        <div className={'bookings_empty'}>
+                            No reservations for {format(selectedDate, 'MMMM dd')}
+                        </div>
+                    )
+                }
+            </>
         )
     };
 
