@@ -26,7 +26,7 @@ const calendar = google.calendar({
 
 router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
     console.log('route: /google-calendar/getMonth/', req.params.location, req.params.startOfMonth, req.params.endOfMonth);
-    console.log('route: /google-calendar/getMonth/ credentials', { google_calendar_id: GOOGLE_CALENDAR_ID, calendar: calendar, key: secrets });
+    console.log('route: /google-calendar/getMonth/ credentials', { google_calendar_id: GOOGLE_CALENDAR_ID, calendar: calendar, secretKeys: secrets });
 
     const start = req.params.startOfMonth;
     const end = req.params.endOfMonth;
