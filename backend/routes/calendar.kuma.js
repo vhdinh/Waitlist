@@ -23,6 +23,7 @@ const calendar = google.calendar({
 
 router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
     console.log('route: /google-calendar/getMonth/', req.params.location, req.params.startOfMonth, req.params.endOfMonth);
+    console.log('route: /google-calendar/getMonth/ credentials', GOOGLE_CALENDAR_ID);
 
     const start = req.params.startOfMonth;
     const end = req.params.endOfMonth;
@@ -85,7 +86,7 @@ router.route('/add-event').post((req, res) => {
         keyFile: '../reservation-calendar-443403-de6b077deebe.json',
         scopes: 'https://www.googleapis.com/auth/calendar',
     });
-    auth.getClient().then(a=>{
+    auth.getClient().then(a=> {
         calendar.events.insert({
             auth:a,
             calendarId: GOOGLE_CALENDAR_ID,

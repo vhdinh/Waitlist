@@ -48,6 +48,7 @@ function GoogleCalendarPage({ location } : { location : string }) {
             }).catch((e) => {
             setSnackMsg({ msg: `Failed to get events`, severity: 'error' });
             setDisplaySnack(true);
+            setIsLoading(false);
         });
     }
 
