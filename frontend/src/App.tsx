@@ -52,16 +52,16 @@ const pages = [
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: ['kuma'],
     },
+    // {
+    //     label: 'Reservations',
+    //     url: '/kuma/reservations',
+    //     role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+    //     restaurant: ['kuma'],
+    // },
     {
         label: 'Reservations',
         url: '/kuma/reservations',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: ['kuma'],
-    },
-    {
-        label: 'ReservationsV2',
-        url: '/kuma/reservations-v2',
-        role: [Role.ADMIN],
         restaurant: ['kuma'],
     },
     // 1988
@@ -71,16 +71,16 @@ const pages = [
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: ['eight'],
     },
+    // {
+    //     label: 'Reservations',
+    //     url: '/eight/reservations',
+    //     role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+    //     restaurant: ['eight'],
+    // },
     {
         label: 'Reservations',
         url: '/eight/reservations',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-        restaurant: ['eight'],
-    },
-    {
-        label: 'ReservationsV2',
-        url: '/eight/reservations-v2',
-        role: [Role.ADMIN],
         restaurant: ['eight'],
     },
     // Tip Calculator

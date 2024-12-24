@@ -4,12 +4,14 @@ const router = require('express').Router();
 // uncomment when making commits to get credentials for production
 const secrets = require('/etc/secrets/reservation-calendar.json');
 
-// comment out when making commits
-// let secrets;
+// uncomment for local dev
+// let secrets = {private_key: ''};
 
 // GOOGLE CALENDAR INTEGRATION
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+// uncomment when making commits to get credentials for production
 const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
+// uncomment for local dev
 // const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_PRIVATE_KEY.split(String.raw`\n`).join('\n');
 const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CAL_CLIENT_EMAIL;
 const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_CAL_PROJECT_NUMBER;
@@ -73,7 +75,6 @@ router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
 router.route('/add-event').post((req, res) => {
     const newEvent = {
         summary: req.body.summary,
-        location: req.body.location === 'Kuma' ? 'Kuma Kitchen + Bar, 6003 12th Ave S, Seattle, WA 98108, USA' : '1988 Cocktail Lounge, 6009 12th Ave S, Seattle, WA 98108, USA',
         description: req.body.description,
         start: req.body.start,
         end: req.body.end,
@@ -83,7 +84,6 @@ router.route('/add-event').post((req, res) => {
         },
         eventType: 'default'
     };
-
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
         keyFile: '/etc/secrets/reservation-calendar.json',
@@ -111,7 +111,6 @@ router.route('/add-event').post((req, res) => {
 router.route('/update-event').post((req, res) => {
     console.log('route: /google-calendar/update-event', req.body);
     const updatedBody = {...req.body};
-    updatedBody.location = req.body.location === 'Kuma' ? 'Kuma Kitchen + Bar, 6003 12th Ave S, Seattle, WA 98108, USA' : '1988 Cocktail Lounge, 6009 12th Ave S, Seattle, WA 98108, USA';
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
         keyFile: '/etc/secrets/reservation-calendar.json',

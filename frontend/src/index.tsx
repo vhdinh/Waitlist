@@ -64,10 +64,10 @@ const router = createBrowserRouter([
                 path: "/kuma/waitlist",
                 element: <WaitlistPage location={'kuma'} />,
             },
-            {
-                path: "/kuma/reservations",
-                element: <CalendarPage location={'kuma'} />,
-            },
+            // {
+            //     path: "/kuma/reservations",
+            //     element: <CalendarPage location={'kuma'} />,
+            // },
             {
                 path: "/kuma/reservations/:date",
                 element: <CalendarPage location={'kuma'} />,
@@ -77,21 +77,21 @@ const router = createBrowserRouter([
                 path: "/eight/waitlist",
                 element: <WaitlistPage location={'eight'} />,
             },
-            {
-                path: "/eight/reservations",
-                element: <CalendarPage location={'eight'} />,
-            },
+            // {
+            //     path: "/eight/reservations",
+            //     element: <CalendarPage location={'eight'} />,
+            // },
             {
                 path: "/eight/reservations/:date",
                 element: <CalendarPage location={'eight'} />,
             },
             // GOOGLE CALENDAR
             {
-              path: '/kuma/reservations-v2',
+              path: '/kuma/reservations',
               element: <GoogleCalendarPage location={'kuma'} />,
             },
             {
-              path: '/eight/reservations-v2',
+              path: '/eight/reservations',
               element: <GoogleCalendarPage location={'eight'} />,
             },
             // TILL COUNTER

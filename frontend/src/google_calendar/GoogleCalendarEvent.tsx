@@ -1,5 +1,15 @@
 import {GoogleCalendarEventType} from "./GoogleCalendar.type";
-import {Card, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, TextField} from "@mui/material";
+import {
+    Button,
+    Card,
+    FormControl,
+    IconButton,
+    InputLabel,
+    LinearProgress,
+    MenuItem,
+    Select,
+    TextField
+} from "@mui/material";
 import moment from "moment";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,6 +18,10 @@ import {getTodayTimeMapping, NewBookingType, TimeSlot} from "../calendar/util";
 import {useCalendarState} from "../context/Calendar.provider";
 import GoogleCalendarEditBooking from "./GoogleCalendarEditBooking";
 import styled from "@emotion/styled";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 
 const GoogleCalendarEventWrapper = styled.div`
     button, .icon {
@@ -25,12 +39,15 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
     const {
         selectedDate,
         setGCBookingData,
-        isLoading, setIsLoading,
-        isEditing, setIsEditing,
+        isLoading,
+        setIsLoading,
+        isEditing,
+        setIsEditing,
         setReloadCalendar,
     } = useCalendarState();
     const [isItemEditing, setIsItemEditing] = useState(false);
     const [isItemDeleting, setIsItemDeleting] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
 
     const memoizedGetTodayTimeMapping = useMemo((): TimeSlot[] =>
             getTodayTimeMapping(selectedDate),
@@ -62,6 +79,17 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
         setIsItemEditing(editingState);
         setIsEditing(editingState);
     }
+
+    const getActionButtonDisabledState = (): boolean => {
+        const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+        const todayStartNow = todayStart.getTime();
+        // disable the button for any day in the past
+        if (selectedDate >= todayStartNow) {
+            return false;
+        }
+        return true;
+    }
+
 
     return (
         <GoogleCalendarEventWrapper>
@@ -100,15 +128,15 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                                 <>
                                     <IconButton
                                         className={'icon'}
-                                        onClick={() => handleDeleteEvent()}
-                                        style={{width: '60px', height: '60px'}}
+                                        onClick={() => setOpenDialog(true)}
+                                        sx={{width: '60px', height: '60px', display: getActionButtonDisabledState()?'none':null}}
                                         disabled={isEditing || isLoading}
                                     >
                                         <DeleteIcon fontSize={'large'} style={{color: 'black'}}/>
                                     </IconButton>
                                     <IconButton
                                         className={'icon'}
-                                        style={{width: '60px', height: '60px'}}
+                                        sx={{width: '60px', height: '60px', display: getActionButtonDisabledState()?'none':null}}
                                         disabled={isEditing || isLoading}
                                         onClick={() => {
                                             setGCBookingData(props);
@@ -125,6 +153,22 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                     </Card>
                 )
             }
+            <Dialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+            >
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete event?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                    <Button onClick={() => handleDeleteEvent()} autoFocus>
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </GoogleCalendarEventWrapper>
     )
 }
