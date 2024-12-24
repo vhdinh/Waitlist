@@ -73,7 +73,7 @@ router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
 router.route('/add-event').post((req, res) => {
     const newEvent = {
         summary: req.body.summary,
-        location: req.body.location,
+        location: req.body.location === 'kuma' ? '6003 12th Ave S, Seattle, WA 98108' : '6009 12th Ave S, Seattle, WA 98108',
         description: req.body.description,
         start: req.body.start,
         end: req.body.end,
@@ -110,6 +110,8 @@ router.route('/add-event').post((req, res) => {
 
 router.route('/update-event').post((req, res) => {
     console.log('route: /google-calendar/update-event', req.body);
+    const updatedBody = {...req.body};
+    updatedBody.location = req.body.location === 'kuma' ? '6003 12th Ave S, Seattle, WA 98108' : '6009 12th Ave S, Seattle, WA 98108';
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
         keyFile: '/etc/secrets/reservation-calendar.json',
@@ -126,7 +128,7 @@ router.route('/update-event').post((req, res) => {
             auth:a,
             calendarId: GOOGLE_CALENDAR_ID,
             eventId: req.body.id,
-            requestBody: req.body,
+            requestBody: updatedBody,
         }, function(err, event) {
             if (err) {
                 console.log('There was an error contacting the Calendar service: ' + err);

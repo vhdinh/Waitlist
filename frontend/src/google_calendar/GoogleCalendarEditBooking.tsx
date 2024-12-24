@@ -7,6 +7,7 @@ import {useCalendarState} from "../context/Calendar.provider";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import moment from "moment/moment";
+import {useAppState} from "../context/App.provider";
 
 const GCEditBookingWrapper = styled.div`
     .helper-text {
@@ -24,6 +25,8 @@ interface GoogleCalendarEditBookingProps {
 
 function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
     const { selectedDate, setIsEditing, isLoading, setIsLoading, setGCBookingData, setReloadCalendar, gcBookingData, setDisplayAddNewBooking } = useCalendarState();
+    const { setSnackMsg, setDisplaySnack } = useAppState();
+
     const phoneNumberHelperText = 'Ex: 206-123-4567'
     const descriptionHelperText = 'Ex: Highchair - VD';
     const [tempEditBookingData, setTempEditBookingData] = useState(
@@ -97,6 +100,12 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
     }
 
     const updateGoogleCalendarEvent = () => {
+        if (Number(gcBookingData.partySize) > 10) {
+            setSnackMsg({ msg: `Party larger than 10 people needs to email info@kumageorgetown.com for reservation`, severity: 'error' });
+            setDisplaySnack(true);
+            return;
+        }
+
         setIsLoading(true);
         // Simple POST request with a JSON body using fetch
         const requestOptions = {

@@ -74,8 +74,6 @@ function GoogleCalendarOverview({location, currentDayBookings} : {location: stri
 
     const disableButtonStateWhenClosed = (): boolean => {
         // Disable reservation for Kuma and 1988 on Sunday, not Open
-        console.log('------disabling stuff---', location, selectedDate, day);
-
         // kuma closed for Sunday
         if (location === 'kuma' && day === 'Sunday') {
             return true;
