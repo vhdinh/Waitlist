@@ -11,6 +11,8 @@ const GOOGLE_CLIENT_EMAIL = secrets ? secrets.client_email : process.env.GOOGLE_
 const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_CAL_PROJECT_NUMBER;
 const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CAL_CALENDAR_ID;
 
+console.log('---google-private-key---', GOOGLE_PRIVATE_KEY);
+
 const jwtClient = new google.auth.JWT(
     GOOGLE_CLIENT_EMAIL,
     null,
@@ -26,7 +28,6 @@ const calendar = google.calendar({
 
 router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
     console.log('route: /google-calendar/getMonth/', req.params.location, req.params.startOfMonth, req.params.endOfMonth);
-    console.log('route: /google-calendar/getMonth/ credentials', { jwt: jwtClient, secretKeys: secrets });
 
     const start = req.params.startOfMonth;
     const end = req.params.endOfMonth;
