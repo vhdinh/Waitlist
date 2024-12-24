@@ -5,7 +5,7 @@ const router = require('express').Router();
 
 // GOOGLE CALENDAR INTEGRATION
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
-const GOOGLE_PRIVATE_KEY = `${process.env.GOOGLE_CAL_PRIVATE_KEY.replace(/\\n/g, '\n')}`;
+const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_PRIVATE_KEY.replace(/\\n/g, '\n');
 // const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_PRIVATE_KEY.split(String.raw`\n`).join('\n');
 const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CAL_CLIENT_EMAIL;
 const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_CAL_PROJECT_NUMBER;
@@ -28,6 +28,7 @@ const calendar = google.calendar({
 
 router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
     console.log('route: /google-calendar/getMonth/', req.params.location, req.params.startOfMonth, req.params.endOfMonth);
+    console.log('route: /google-calendar/getMonth/ jwt', jwtClient);
 
     const start = req.params.startOfMonth;
     const end = req.params.endOfMonth;
