@@ -86,7 +86,7 @@ router.route('/add-event').post((req, res) => {
 
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        keyFile: secrets,
+        keyFile: '/etc/secrets/reservation-calendar.json',
         // uncomment for local dev
         // keyFile: '../backend/reservation-calendar.json',
         scopes: 'https://www.googleapis.com/auth/calendar',
@@ -112,7 +112,7 @@ router.route('/update-event').post((req, res) => {
     console.log('route: /google-calendar/update-event', req.body);
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        keyFile: secrets,
+        keyFile: '/etc/secrets/reservation-calendar.json',
         // uncomment for local dev
         // keyFile: '../backend/reservation-calendar.json',
         scopes: [
@@ -143,7 +143,7 @@ router.route('/delete-event/:id').delete((req, res) => {
     console.log('route: /google-calendar/delete-event params', req.params.id);
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        keyFile: secrets,
+        keyFile: '/etc/secrets/reservation-calendar.json',
         // uncomment for local dev
         // keyFile: '../backend/reservation-calendar.json',
         scopes: [
