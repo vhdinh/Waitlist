@@ -5,7 +5,7 @@ const secrets = require('/etc/secrets/reservation-calendar.json');
 
 // GOOGLE CALENDAR INTEGRATION
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
-const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.split(String.raw`\n`).join('\n') : process.env.GOOGLE_CAL_PRIVATE_KEY.split(String.raw`\n`).join('\n');
+const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(new RegExp("\\\\n", "\g"), "\n") : process.env.GOOGLE_CAL_PRIVATE_KEY.replace(new RegExp("\\\\n", "\g"), "\n");
 // const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_PRIVATE_KEY.split(String.raw`\n`).join('\n');
 const GOOGLE_CLIENT_EMAIL = secrets ? secrets.client_email : process.env.GOOGLE_CAL_CLIENT_EMAIL;
 const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_CAL_PROJECT_NUMBER;
