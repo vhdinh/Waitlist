@@ -73,7 +73,7 @@ router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
 router.route('/add-event').post((req, res) => {
     const newEvent = {
         summary: req.body.summary,
-        location: req.body.location === 'kuma' ? '6003 12th Ave S, Seattle, WA 98108' : '6009 12th Ave S, Seattle, WA 98108',
+        location: req.body.location === 'Kuma' ? 'Kuma Kitchen + Bar, 6003 12th Ave S, Seattle, WA 98108, USA' : '1988 Cocktail Lounge, 6009 12th Ave S, Seattle, WA 98108, USA',
         description: req.body.description,
         start: req.body.start,
         end: req.body.end,
@@ -111,7 +111,7 @@ router.route('/add-event').post((req, res) => {
 router.route('/update-event').post((req, res) => {
     console.log('route: /google-calendar/update-event', req.body);
     const updatedBody = {...req.body};
-    updatedBody.location = req.body.location === 'kuma' ? '6003 12th Ave S, Seattle, WA 98108' : '6009 12th Ave S, Seattle, WA 98108';
+    updatedBody.location = req.body.location === 'Kuma' ? 'Kuma Kitchen + Bar, 6003 12th Ave S, Seattle, WA 98108, USA' : '1988 Cocktail Lounge, 6009 12th Ave S, Seattle, WA 98108, USA';
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
         keyFile: '/etc/secrets/reservation-calendar.json',
