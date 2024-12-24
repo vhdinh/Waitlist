@@ -1,17 +1,15 @@
 const { google } = require('googleapis');
 const router = require('express').Router();
 
-// const secrets = require('/etc/secrets/reservation-calendar.json');
+const secrets = require('/etc/secrets/reservation-calendar.json');
 
 // GOOGLE CALENDAR INTEGRATION
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
-const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_PRIVATE_KEY.replace(/\\n/g, '\n');
+const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
 // const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_PRIVATE_KEY.split(String.raw`\n`).join('\n');
 const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CAL_CLIENT_EMAIL;
 const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_CAL_PROJECT_NUMBER;
 const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CAL_CALENDAR_ID;
-
-console.log('---google-private-key---', GOOGLE_PRIVATE_KEY);
 
 const jwtClient = new google.auth.JWT(
     GOOGLE_CLIENT_EMAIL,
