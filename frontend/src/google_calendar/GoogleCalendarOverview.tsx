@@ -11,6 +11,7 @@ import GoogleCalendarNewBooking from "./GoogleCalendarNewBooking";
 import GoogleCalendarEvent from "./GoogleCalendarEvent";
 import {getDayFromTimestamp} from "../utils/date";
 import {InitialGCNewBooking} from "../context/GoogleCalendar.provider";
+import {useAppState} from "../context/App.provider";
 
 const GoogleCalendarOverviewWrapper = styled.div`
   height: calc(100vh - 130px);
@@ -49,6 +50,8 @@ const GoogleCalendarOverviewWrapper = styled.div`
 
 function GoogleCalendarOverview({location, currentDayBookings} : {location: string, currentDayBookings: GoogleCalendarEventType[]}) {
     const {selectedDate,setGCBookingData,  gcBookingData, setIsLoading, isLoading, setReloadCalendar, displayAddNewBooking, setDisplayAddNewBooking, isEditing } = useCalendarState();
+    const { setSnackMsg, setDisplaySnack } = useAppState();
+
     const [day, setDay] = useState(getDayFromTimestamp(selectedDate));
 
     const validateBookingForm = () => {
@@ -85,6 +88,12 @@ function GoogleCalendarOverview({location, currentDayBookings} : {location: stri
     }
 
     const saveGoogleCalendarEvent = () => {
+        if (Number(gcBookingData.partySize) > 10) {
+            setSnackMsg({ msg: `Party larger than 10 people needs to email info@kumageorgetown.com for reservation`, severity: 'error' });
+            setDisplaySnack(true);
+            return;
+        }
+
         setIsLoading(true);
         const requestOption = {
             method: 'POST',
