@@ -22,7 +22,7 @@ const GoogleCalendarOverviewWrapper = styled.div`
     border-radius: 8px;
   .co-header {
     display: flex;
-      gap: 12px;
+      gap: 8px;
     justify-content: space-between;
     margin-bottom: 8px;
     button, .icon {
@@ -112,7 +112,7 @@ function GoogleCalendarOverview({location, currentDayBookings} : {location: stri
         return (
             <div style={{ marginTop: '-8px' }}>
                 {
-                    !displayAddNewBooking ? (
+                    !displayAddNewBooking &&
                         <IconButton
                             className={'icon'}
                             onClick={() => {
@@ -123,24 +123,6 @@ function GoogleCalendarOverview({location, currentDayBookings} : {location: stri
                         >
                             <AddCircleIcon fontSize={'large'} style={{ color: 'black'}} />
                         </IconButton>
-                    ) : (
-                        <div style={{display: 'flex', gap: '32px'}}>
-                            <IconButton
-                                className={'icon'}
-                                onClick={() => setDisplayAddNewBooking(false)}
-                                disabled={isLoading}
-                            >
-                                <CancelIcon fontSize={'large'} style={{ color: 'black'}} />
-                            </IconButton>
-                            <IconButton
-                                className={'icon'}
-                                onClick={() => saveGoogleCalendarEvent()}
-                                disabled={validateBookingForm() || isLoading}
-                            >
-                                <SaveIcon fontSize={'large'} style={{ color: 'black'}} />
-                            </IconButton>
-                        </div>
-                    )
                 }
             </div>
         )

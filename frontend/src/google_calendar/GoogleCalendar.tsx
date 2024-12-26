@@ -106,7 +106,7 @@ function GoogleCalendar({ location, currentMonthBookings } : { location : string
                         onClick={() => {
                             setCurrentMonth(Today);
                             setSelectedDate(StartOfToday);
-                            navigate(`/${location}/reservations-v2`);
+                            navigate(`/${location}/reservations`);
                         }}
                     >Today</Button>
                 </div>

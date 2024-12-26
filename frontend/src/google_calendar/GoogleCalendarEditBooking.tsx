@@ -139,31 +139,6 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                             gap: '12px',
                             lineHeight: '12px'
                         }}>
-                            <div style={{display: 'flex', width: '100%', justifyContent: 'flex-end', gap: '18px'}}>
-                                <Button
-                                    sx={{height: '36px'}}
-                                    variant="contained"
-                                    color={'warning'}
-                                    startIcon={<CloseIcon/>}
-                                    disabled={isLoading}
-                                    onClick={() => {
-                                        setIsEditing(false);
-                                        setDisplayAddNewBooking(false);
-                                        props.setHandleItemEditing(false);
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    sx={{height: '36px'}}
-                                    variant="contained"
-                                    startIcon={<SaveIcon/>}
-                                    disabled={isLoading}
-                                    onClick={() => updateGoogleCalendarEvent()}
-                                >
-                                    Update
-                                </Button>
-                            </div>
                             <div style={{display: 'flex', flexDirection: 'row', gap: '12px'}}>
                                 <div style={{width: '100%'}}>
                                     <Typography
@@ -298,6 +273,31 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                                         autoComplete={'off'}
                                     />
                                 </div>
+                            </div>
+                            <div style={{display: 'flex', width: '100%', justifyContent: 'flex-end', gap: '18px'}}>
+                                <Button
+                                    sx={{height: '36px'}}
+                                    variant="contained"
+                                    color={'warning'}
+                                    startIcon={<CloseIcon/>}
+                                    disabled={isLoading}
+                                    onClick={() => {
+                                        setIsEditing(false);
+                                        setDisplayAddNewBooking(false);
+                                        props.setHandleItemEditing(false);
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    sx={{height: '36px'}}
+                                    variant="contained"
+                                    startIcon={<SaveIcon/>}
+                                    disabled={isLoading}
+                                    onClick={() => updateGoogleCalendarEvent()}
+                                >
+                                    Update
+                                </Button>
                             </div>
                         </div>
                     </div>

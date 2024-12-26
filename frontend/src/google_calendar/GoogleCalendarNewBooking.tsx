@@ -1,4 +1,5 @@
 import {
+    Button,
     Card,
     FormControl,
     IconButton,
@@ -14,6 +15,10 @@ import styled from "@emotion/styled";
 import {getTodayTimeMapping, NewBookingType, TimeSlot} from "../calendar/util";
 import {useCalendarState} from "../context/Calendar.provider";
 import moment from "moment";
+import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
+import {InitialGCNewBooking} from "../context/GoogleCalendar.provider";
+import {useAppState} from "../context/App.provider";
 
 const GCNewBookingWrapper = styled.div`
     .helper-text {
@@ -24,7 +29,17 @@ const GCNewBookingWrapper = styled.div`
 `;
 
 function GoogleCalendarNewBooking({ location} : { location: string }) {
-    const { selectedDate, gcBookingData, setGCBookingData, isLoading } = useCalendarState();
+    const {
+        selectedDate,
+        gcBookingData,
+        setGCBookingData,
+        isLoading,
+        setDisplayAddNewBooking,
+        setIsLoading,
+        setReloadCalendar,
+    } = useCalendarState();
+    const { setSnackMsg, setDisplaySnack } = useAppState();
+
     // const [tempNewBookingData, setTempNewBookingData] = useState({...gcBookingData, firstName: '', phoneNumber: '', partySize: '', note: ''})
     const descriptionHelperText = 'Ex: Highchair - VD';
     const phoneNumberHelperText = 'Ex: 206-123-4567'
@@ -89,6 +104,33 @@ function GoogleCalendarNewBooking({ location} : { location: string }) {
             }
         };
     }, [gcBookingData.startTime])
+
+    const validateBookingForm = () => {
+        return !gcBookingData.firstName || !gcBookingData.phoneNumber || !gcBookingData.start  || !gcBookingData.end || !gcBookingData.partySize || !gcBookingData.note;
+    }
+
+    const saveGoogleCalendarEvent = () => {
+        if (Number(gcBookingData.partySize) > 10) {
+            setSnackMsg({ msg: `Party larger than 10 people needs to email info@kumageorgetown.com for reservation`, severity: 'error' });
+            setDisplaySnack(true);
+            return;
+        }
+
+        setIsLoading(true);
+        const requestOption = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(gcBookingData)
+        }
+        fetch(`${process.env.REACT_APP_BRICK_API}/google-calendar/add-event`, requestOption)
+            .then(res => res.json())
+            .then((r) => {
+                setDisplayAddNewBooking(false);
+                setReloadCalendar(true);
+            }).finally(() => {
+            setIsLoading(false);
+        });
+    }
 
     return (
         <>
@@ -239,12 +281,35 @@ function GoogleCalendarNewBooking({ location} : { location: string }) {
                                     />
                                 </div>
                             </div>
+                            <div style={{display: 'flex', width: '100%', justifyContent: 'flex-end', gap: '18px'}}>
+                                <Button
+                                    sx={{height: '36px'}}
+                                    variant="contained"
+                                    color={'warning'}
+                                    startIcon={<CloseIcon/>}
+                                    disabled={isLoading}
+                                    onClick={() => {
+                                        setGCBookingData(InitialGCNewBooking);
+                                        setDisplayAddNewBooking(false)
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    sx={{height: '36px'}}
+                                    variant="contained"
+                                    startIcon={<SaveIcon/>}
+                                    disabled={validateBookingForm() || isLoading}
+                                    onClick={() => saveGoogleCalendarEvent()}
+                                >
+                                    Save
+                                </Button>
+                            </div>
+
                         </div>
                     </div>
-
                 </Card>
             </GCNewBookingWrapper>
-
         </>
     )
 }
