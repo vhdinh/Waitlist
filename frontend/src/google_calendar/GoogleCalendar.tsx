@@ -15,16 +15,14 @@ import {StartOfToday, Today, useCalendarState} from "../context/Calendar.provide
 import {GoogleCalendarWrapper} from "./GoogleCalendar.style";
 import {GoogleCalendarEventType} from "./GoogleCalendar.type";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import {Button, Card, Drawer, IconButton, Skeleton, Typography} from "@mui/material";
+import {Button, IconButton, Skeleton} from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {useNavigate} from "react-router-dom";
 import moment from "moment";
-import GoogleCalendarEvent from "./GoogleCalendarEvent";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
-import GoogleCalendarNewBooking from "./GoogleCalendarNewBooking";
-import {useAppState} from "../context/App.provider";
+import { useSwipeable } from 'react-swipeable';
 
 function GoogleCalendar({ location, currentMonthBookings } : { location : string, currentMonthBookings: GoogleCalendarEventType[] }) {
     const {
@@ -319,6 +317,11 @@ function GoogleCalendar({ location, currentMonthBookings } : { location : string
         )
     }
 
+    const handlers = useSwipeable({
+        onSwipedLeft: () => prevMonth(),
+        onSwipedRight: () => nextMonth(),
+    });
+
     return (
         <GoogleCalendarWrapper>
             <div className={'google-calendar'}>
@@ -327,68 +330,14 @@ function GoogleCalendar({ location, currentMonthBookings } : { location : string
                     {renderDays()}
                     {
                         !isLoading ? (
-                            <>
+                            <div {...handlers} >
                                 {renderCells()}
-                            </>
+                            </div>
                         ) : <Skeleton variant="rounded" width={'100%'} height={560} />
                     }
 
                 </>
             </div>
-            {/*<Drawer*/}
-            {/*    anchor={'right'}*/}
-            {/*    open={openDrawer}*/}
-            {/*    onClose={() => {*/}
-            {/*        setIsEditing(false);*/}
-            {/*        toggleDrawer(false);*/}
-            {/*    }}*/}
-            {/*    PaperProps={{*/}
-            {/*    sx: { width: "500px" },*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    <div style={{margin: '24px'}}>*/}
-            {/*        <div style={{display: 'flex', justifyContent: 'space-between', gap: '50px'}}>*/}
-            {/*            <div>*/}
-            {/*                <Typography variant={isMobile ? 'h6' : 'h5'}>*/}
-            {/*                    Date: {format(selectedDate, 'MMMM dd')}*/}
-            {/*                </Typography>*/}
-            {/*                <Typography variant={'subtitle1'}>*/}
-            {/*                    {*/}
-            {/*                        isEditing ? (*/}
-            {/*                            <>Add new reservation</>*/}
-            {/*                        ) : (*/}
-            {/*                            <>{currentDayBookings.length} Reservation{currentDayBookings.length > 1 ? 's' : ''}</>*/}
-            {/*                        )*/}
-            {/*                    }*/}
-            {/*                </Typography>*/}
-            {/*                {displayActionButtons()}*/}
-            {/*            </div>*/}
-            {/*            <div>*/}
-            {/*                <CloseIcon fontSize={'large'} style={{cursor: 'pointer'}}*/}
-            {/*                           onClick={() => setOpenDrawer(false)}/>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*        <div*/}
-            {/*            className={'events-container'}*/}
-            {/*            style={{*/}
-            {/*                maxHeight: 'calc(100vh - 115px)',*/}
-            {/*                overflowY: 'scroll',*/}
-            {/*                marginTop: '12px'*/}
-            {/*            }}>*/}
-            {/*            {*/}
-            {/*                !isEditing ? (*/}
-            {/*                    <>*/}
-            {/*                        {*/}
-            {/*                            currentDayBookings.map((b, index) => (*/}
-            {/*                                <GoogleCalendarEvent {...b} key={index} location={location} />*/}
-            {/*                            ))*/}
-            {/*                        }*/}
-            {/*                    </>*/}
-            {/*                ) : <GoogleCalendarNewBooking location={location} />*/}
-            {/*            }*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</Drawer>*/}
         </GoogleCalendarWrapper>
 );
 }
