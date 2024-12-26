@@ -318,8 +318,8 @@ function GoogleCalendar({ location, currentMonthBookings } : { location : string
     }
 
     const handlers = useSwipeable({
-        onSwipedLeft: () => prevMonth(),
-        onSwipedRight: () => nextMonth(),
+        onSwipedLeft: () => nextMonth(),
+        onSwipedRight: () => prevMonth(),
     });
 
     return (
