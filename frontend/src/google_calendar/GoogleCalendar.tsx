@@ -103,7 +103,8 @@ function GoogleCalendar({ location, currentMonthBookings } : { location : string
                         variant="outlined"
                         onClick={() => {
                             setCurrentMonth(Today);
-                            setSelectedDate(StartOfToday);
+                            const t = new Date().setHours(0,0,0,0);
+                            setSelectedDate(t);
                             navigate(`/${location}/reservations`);
                         }}
                     >Today</Button>
