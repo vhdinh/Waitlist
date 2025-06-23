@@ -1,19 +1,20 @@
 const { google } = require('googleapis');
 const router = require('express').Router();
 
+
 // uncomment when making commits to get credentials for production
-const secrets = require('/etc/secrets/reservation-calendar.json');
-const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_KUMA_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
+const secrets = require('/etc/secrets/brick-reservation-calendar.json');
+const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_BRICK_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
 
 
 // uncomment for local dev
-// const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_KUMA_PRIVATE_KEY.split(String.raw`\n`).join('\n');
+// const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_BRICK_PRIVATE_KEY.split(String.raw`\n`).join('\n');
 
-// GOOGLE CALENDAR INTEGRATION
+// GOOGLE CALENDAR INTEGRATION BRICK
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
-const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CAL_KUMA_CLIENT_EMAIL;
-const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_CAL_KUMA_PROJECT_NUMBER;
-const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CAL_KUMA_CALENDAR_ID;
+const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CAL_BRICK_CLIENT_EMAIL;
+const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_CAL_BRICK_PROJECT_NUMBER;
+const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CAL_BRICK_CALENDAR_ID;
 
 const jwtClient = new google.auth.JWT(
     GOOGLE_CLIENT_EMAIL,
@@ -38,6 +39,7 @@ router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
         singleEvents: true,
         orderBy: 'startTime',
     }, (error, result) => {
+        console.log('---brick---', error, result);
         if (error) {
             res.send(JSON.stringify({ error: error }));
         } else {
@@ -84,9 +86,9 @@ router.route('/add-event').post((req, res) => {
     };
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        keyFile: '/etc/secrets/reservation-calendar.json',
+        keyFile: '/etc/secrets/brick-reservation-calendar.json',
         // uncomment for local dev
-        // keyFile: '../backend/reservation-calendar.json',
+        // keyFile: '../backend/brick-reservation-calendar.json',
         scopes: 'https://www.googleapis.com/auth/calendar',
     });
     auth.getClient().then(a=> {
@@ -111,9 +113,9 @@ router.route('/update-event').post((req, res) => {
     const updatedBody = {...req.body};
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        keyFile: '/etc/secrets/reservation-calendar.json',
+        keyFile: '/etc/secrets/brick-reservation-calendar.json',
         // uncomment for local dev
-        // keyFile: '../backend/reservation-calendar.json',
+        // keyFile: '../backend/brick-reservation-calendar.json',
         scopes: [
             'https://www.googleapis.com/auth/calendar',
             'https://www.googleapis.com/auth/calendar.events',
@@ -142,9 +144,9 @@ router.route('/delete-event/:id').delete((req, res) => {
     console.log('route: /google-calendar/delete-event params', req.params.id);
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        keyFile: '/etc/secrets/reservation-calendar.json',
+        keyFile: '/etc/secrets/brick-reservation-calendar.json',
         // uncomment for local dev
-        // keyFile: '../backend/reservation-calendar.json',
+        // keyFile: '../backend/brick-reservation-calendar.json',
         scopes: [
             'https://www.googleapis.com/auth/calendar',
             'https://www.googleapis.com/auth/calendar.events',
@@ -156,7 +158,7 @@ router.route('/delete-event/:id').delete((req, res) => {
             calendarId: GOOGLE_CALENDAR_ID,
             eventId: req.params.id,
         }, function (err, event) {
-            console.log('----after--trying-to-delete----', event, err);
+            console.log('----after--trying-to-delete-BRICK----', event, err);
             if (err) {
                 console.log('There was an error contacting the Calendar service: ' + err);
                 res.status(400).json('Error: ' + err)

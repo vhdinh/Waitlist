@@ -63,7 +63,13 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(props)
         };
-        fetch(`${process.env.REACT_APP_BRICK_API}/google-calendar/delete-event/${props.id}`, requestOptions)
+        let path = '';
+        if (props.location === 'brick') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/delete-event/${props.id}`;
+        } else {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar/delete-event/${props.id}`;
+        }
+        fetch(path, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 console.log('-----response from adding google event---', r);

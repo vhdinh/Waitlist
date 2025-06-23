@@ -21,23 +21,42 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 const router = express.Router();
 
-// write gc file
+// write gc kuma/1988 file
 const googleKeys = {
     "type": process.env.GOOGLE_CAL_TYPE,
-    "project_id": process.env.GOOGLE_CAL_PROJECT_ID,
-    "private_key_id": process.env.GOOGLE_CAL_PRIVATE_KEY_ID,
-    "private_key": process.env.GOOGLE_CAL_PRIVATE_KEY.split(String.raw`\n`).join('\n'),
-    "client_email": process.env.GOOGLE_CAL_CLIENT_EMAIL,
-    "client_id": process.env.GOOGLE_CAL_CLIENT_ID,
+    "project_id": process.env.GOOGLE_CAL_KUMA_PROJECT_ID,
+    "private_key_id": process.env.GOOGLE_CAL_KUMA_PRIVATE_KEY_ID,
+    "private_key": process.env.GOOGLE_CAL_KUMA_PRIVATE_KEY.split(String.raw`\n`).join('\n'),
+    "client_email": process.env.GOOGLE_CAL_KUMA_CLIENT_EMAIL,
+    "client_id": process.env.GOOGLE_CAL_KUMA_CLIENT_ID,
     "auth_uri": process.env.GOOGLE_CAL_AUTH_URI,
     "token_uri": process.env.GOOGLE_CAL_TOKEN_URI,
     "auth_provider_x509_cert_url": process.env.GOOGLE_CAL_AUTH_PROVIDER_X509_CERT_URL,
-    "client_x509_cert_url": process.env.GOOGLE_CAL_CLIENT_X509_CERT_URL,
+    "client_x509_cert_url": process.env.GOOGLE_CAL_KUMA_CLIENT_X509_CERT_URL,
     "universe_domain": process.env.GOOGLE_CAL_UNIVERSE_DOMAIN
 }
 
 
 fs.writeFileSync('../backend/reservation-calendar.json', JSON.stringify(googleKeys));
+
+// write gc brick file
+const googleBrickKeys = {
+    "type": process.env.GOOGLE_CAL_TYPE,
+    "project_id": process.env.GOOGLE_CAL_BRICK_PROJECT_ID,
+    "private_key_id": process.env.GOOGLE_CAL_BRICK_PRIVATE_KEY_ID,
+    "private_key": process.env.GOOGLE_CAL_BRICK_PRIVATE_KEY.split(String.raw`\n`).join('\n'),
+    "client_email": process.env.GOOGLE_CAL_BRICK_CLIENT_EMAIL,
+    "client_id": process.env.GOOGLE_CAL_BRICK_CLIENT_ID,
+    "auth_uri": process.env.GOOGLE_CAL_AUTH_URI,
+    "token_uri": process.env.GOOGLE_CAL_TOKEN_URI,
+    "auth_provider_x509_cert_url": process.env.GOOGLE_CAL_AUTH_PROVIDER_X509_CERT_URL,
+    "client_x509_cert_url": process.env.GOOGLE_CAL_BRICK_CLIENT_X509_CERT_URL,
+    "universe_domain": process.env.GOOGLE_CAL_UNIVERSE_DOMAIN
+}
+
+
+fs.writeFileSync('../backend/brick-reservation-calendar.json', JSON.stringify(googleBrickKeys));
+
 
 /**
  *  FIRST DB CONNECTION
@@ -106,6 +125,9 @@ app.use('/eight/booking', bookingEightRouter);
 
 const googleCalendarRouter = require('./routes/calendar.kuma');
 app.use('/google-calendar', googleCalendarRouter);
+
+const googleCalendarBrickRouter = require('./routes/calendar.brick');
+app.use('/google-calendar-brick', googleCalendarBrickRouter);
 
 const io = new Server(server, {
     cors: {
