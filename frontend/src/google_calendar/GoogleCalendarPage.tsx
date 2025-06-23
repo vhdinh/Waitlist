@@ -34,7 +34,13 @@ function GoogleCalendarPage({ location } : { location : string }) {
 
     const getGoogleCurrentMonthBooking = () => {
         setIsLoading(true);
-        fetch(`${process.env.REACT_APP_BRICK_API}/google-calendar/${location === 'kuma' ? 'kuma' : '1988'}/${startOfMonth(currentMonth).toISOString()}/${endOfMonth(currentMonth).toISOString()}`)
+        let path = '';
+        if (location === 'brick') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/brick/${startOfMonth(currentMonth).toISOString()}/${endOfMonth(currentMonth).toISOString()}`;
+        } else {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar/${location === 'kuma' ? 'kuma' : '1988'}/${startOfMonth(currentMonth).toISOString()}/${endOfMonth(currentMonth).toISOString()}`;
+        }
+        fetch(path)
             .then(res => res.json())
             .then((r) => {
                 if (r.message) {

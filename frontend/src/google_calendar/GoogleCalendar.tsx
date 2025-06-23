@@ -131,9 +131,9 @@ function GoogleCalendar({ location, currentMonthBookings } : { location : string
         const dayInteger = day.getDay();
         // kuma closed for Sunday
         // [0 = sunday, 1 = monday...]
-        if (location === 'kuma' && dayInteger === 0) {
-            return <span className={'closed'}>Closed</span>;
-        }
+        // if (location === 'kuma' && dayInteger === 0) {
+        //     return <span className={'closed'}>Closed</span>;
+        // }
         // // 1988 closed for Sunday-Tuesday
         if (location === 'eight' && (dayInteger === 0 || dayInteger === 1 || dayInteger === 2)) {
             return <span className={'closed'}>Closed</span>;

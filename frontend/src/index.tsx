@@ -43,9 +43,13 @@ const router = createBrowserRouter([
                 path: "/brick/waitlist",
                 element: <WaitlistPage location={'brick'} />,
             },
+            // {
+            //     path: "/brick/reservations",
+            //     element: <CalendarPage location={'brick'} />,
+            // },
             {
                 path: "/brick/reservations",
-                element: <CalendarPage location={'brick'} />,
+                element: <GoogleCalendarPage location={'brick'} />,
             },
             {
                 path: "/brick/reservations/:date",

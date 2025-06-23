@@ -75,9 +75,9 @@ function GoogleCalendarOverview({location, currentDayBookings} : {location: stri
     const disableButtonStateWhenClosed = (): boolean => {
         // Disable reservation for Kuma and 1988 on Sunday, not Open
         // kuma closed for Sunday
-        if (location === 'kuma' && day === 'Sunday') {
-            return true;
-        }
+        // if (location === 'kuma' && day === 'Sunday') {
+        //     return true;
+        // }
         // 1988 closed for Sunday-Tuesday
         if (location === 'eight' && (day === 'Sunday' || day === 'Monday' || day === 'Tuesday')) {
             return true;
@@ -87,7 +87,7 @@ function GoogleCalendarOverview({location, currentDayBookings} : {location: stri
 
     const saveGoogleCalendarEvent = () => {
         if (Number(gcBookingData.partySize) > 10) {
-            setSnackMsg({ msg: `Party larger than 10 people needs to email info@kumageorgetown.com for reservation`, severity: 'error' });
+            setSnackMsg({ msg: `Party larger than 10 people needs to email ${location === 'brick' ? 'info@thebrickrenton.com' : 'info@kumageorgetown.com'} for reservation`, severity: 'error' });
             setDisplaySnack(true);
             return;
         }
@@ -98,7 +98,13 @@ function GoogleCalendarOverview({location, currentDayBookings} : {location: stri
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(gcBookingData)
         }
-        fetch(`${process.env.REACT_APP_BRICK_API}/google-calendar/add-event`, requestOption)
+        let path = '';
+        if (location === 'brick') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/add-event`;
+        } else {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar/add-event`;
+        }
+        fetch(path, requestOption)
             .then(res => res.json())
             .then((r) => {
                 setDisplayAddNewBooking(false);

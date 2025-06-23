@@ -54,7 +54,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
             [e.target.name]: e.target.name === 'partySize' ? Number(e.target.value) || '' : e.target.value,
         }))
         // MAP back to google calendar
-        const summary = `${props.location === 'kuma' ? 'Kuma' : '1988'}: ${ e.target.name === 'firstName' ? e.target.value : tempEditBookingData.firstName } (${e.target.name === 'partySize' ? e.target.value : tempEditBookingData.partySize })`
+        const summary = `${props.location === 'brick' ? 'Brick' : props.location === 'kuma' ? 'Kuma' : '1988'}: ${ e.target.name === 'firstName' ? e.target.value : tempEditBookingData.firstName } (${e.target.name === 'partySize' ? e.target.value : tempEditBookingData.partySize })`
         const description = `${e.target.name === 'phoneNumber' ? e.target.value :  tempEditBookingData.phoneNumber }\n${e.target.name === 'note' ? e.target.value : tempEditBookingData.note }`
 
         setGCBookingData((oldState) => ({
@@ -101,7 +101,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
 
     const updateGoogleCalendarEvent = () => {
         if (Number(gcBookingData.partySize) > 10) {
-            setSnackMsg({ msg: `Party larger than 10 people needs to email info@kumageorgetown.com for reservation`, severity: 'error' });
+            setSnackMsg({ msg: `Party larger than 10 people needs to email ${props.location === 'brick' ? 'info@thebrickrenton.com' : 'info@kumageorgetown.com'} for reservation`, severity: 'error' });
             setDisplaySnack(true);
             return;
         }
@@ -113,7 +113,13 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(gcBookingData)
         };
-        fetch(`${process.env.REACT_APP_BRICK_API}/google-calendar/update-event`, requestOptions)
+        let path = '';
+        if (props.location === 'brick') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/update-event`;
+        } else {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar/update-event`;
+        }
+        fetch(path, requestOptions)
             .then(res => res.json())
             .then((r) => {
                 setReloadCalendar(true);

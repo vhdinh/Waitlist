@@ -60,7 +60,7 @@ function GoogleCalendarNewBooking({ location} : { location: string }) {
         }))
 
         // MAP back to google calendar
-        const summary = `${location === 'kuma' ? 'Kuma' : '1988'}: ${ e.target.name === 'firstName' ? e.target.value : gcBookingData.firstName } (${e.target.name === 'partySize' ? e.target.value : gcBookingData.partySize })`
+        const summary = `${location === 'brick' ? 'Brick' : location === 'kuma' ? 'Kuma' : '1988'}: ${ e.target.name === 'firstName' ? e.target.value : gcBookingData.firstName } (${e.target.name === 'partySize' ? e.target.value : gcBookingData.partySize })`
         const description = `${e.target.name === 'phoneNumber' ? e.target.value :  gcBookingData.phoneNumber }\n${e.target.name === 'note' ? e.target.value : gcBookingData.note }`
 
         setGCBookingData((oldState) => ({
@@ -111,7 +111,7 @@ function GoogleCalendarNewBooking({ location} : { location: string }) {
 
     const saveGoogleCalendarEvent = () => {
         if (Number(gcBookingData.partySize) > 10) {
-            setSnackMsg({ msg: `Party larger than 10 people needs to email info@kumageorgetown.com for reservation`, severity: 'error' });
+            setSnackMsg({ msg: `Party larger than 10 people needs to email ${location ? 'info@thebrickrenton.com' : 'info@kumageorgetown.com'} for reservation`, severity: 'error' });
             setDisplaySnack(true);
             return;
         }
@@ -122,7 +122,13 @@ function GoogleCalendarNewBooking({ location} : { location: string }) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(gcBookingData)
         }
-        fetch(`${process.env.REACT_APP_BRICK_API}/google-calendar/add-event`, requestOption)
+        let path = '';
+        if (location === 'brick') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/add-event`;
+        } else {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar/add-event`;
+        }
+        fetch(path, requestOption)
             .then(res => res.json())
             .then((r) => {
                 setDisplayAddNewBooking(false);
