@@ -99,10 +99,10 @@ const router = createBrowserRouter([
               element: <GoogleCalendarPage location={'eight'} />,
             },
             // TILL COUNTER
-            // {
-            //     path: '/till-counter',
-            //     element: <TillCounter />
-            // },
+            {
+                path: '/till-counter',
+                element: <TillCounter />
+            },
             // TIP COUNTER
             {
                 path: '/tip-counter',

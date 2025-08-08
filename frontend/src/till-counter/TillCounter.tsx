@@ -12,6 +12,21 @@ const TillCounterWrapper = styled.div`
     .MuiTableRow-root > .MuiTableCell-root:first-of-type {
         padding: 12px;
     }
+    .till-result {
+        font-size: 96px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        flex-grow: 1;
+        align-items: center;
+    }
+    @media (max-width: 660px) {
+        .till-wrapper {
+            display: grid;
+        }
+        .till-result {
+            font-size: 60px;
+        }
 `;
 
 const initialTillState = {
@@ -59,6 +74,7 @@ function TillCounter() {
                 sx={{marginTop: '15px', display: 'inline-flex', width: '100%'}}
                 justifyContent={'space-around'}
                 gap={'36px'}
+                className={'till-wrapper'}
             >
                 <TableContainer sx={{display: 'flex', justifyContent: 'center', width: 'unset !important', flexGrow: 1, minWidth: '400px'}}>
                     <Table sx={{ border: 1, maxWidth: '300px', borderCollapse: 'unset !important', borderRadius: '0 !important'}}>
@@ -416,7 +432,7 @@ function TillCounter() {
                     <div>
                         <Button variant="contained" size={'large'} style={{width: '100%'}} onClick={() => setTill(initialTillState)}>Clear Till</Button>
                     </div>
-                    <div style={{fontSize: '96px', textAlign: 'center', display: 'flex', justifyContent: 'center', flexGrow: 1, alignItems: 'center'}}>
+                    <div className={'till-result'}>
                         Total: ${getTotal().toFixed(2)}
                     </div>
                     {/*<div>*/}

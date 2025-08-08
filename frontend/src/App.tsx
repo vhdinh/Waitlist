@@ -84,19 +84,19 @@ const pages = [
         restaurant: ['eight'],
     },
     // Tip Calculator
-    {
-        label: 'Count Till',
-        url: '/till-counter',
-        role: [Role.ADMIN],
-        restaurant: [],
-        // restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
-    },
-    {
-        label: 'Count Tips',
-        url: '/tip-counter',
-        role: [Role.ADMIN],
-        restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
-    }
+    // {
+    //     label: 'Till',
+    //     url: '/till-counter',
+    //     role: [Role.ADMIN],
+    //     // restaurant: [],
+    //     restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
+    // },
+    // {
+    //     label: 'Tips',
+    //     url: '/tip-counter',
+    //     role: [Role.ADMIN],
+    //     restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
+    // }
 ];
 
 function App() {
