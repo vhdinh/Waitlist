@@ -6,22 +6,31 @@ import kumaLogo from './assets/KumaCircle.jpg';
 import {useNavigate} from "react-router-dom";
 import styled from "@emotion/styled";
 import {RestaurantKey, setLocalStorageData} from "./utils/general";
+import {Button} from "@mui/material";
 
 const EntryWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 24px 0;
-    gap: 24px;
-    img {
-        width: 175px;
-        height: 175px;
-        border: 15px solid #E5E5E5;
-        //background-color: #E5E5E5;
-        border-radius: 36px;
-        cursor: pointer;
-        padding: 10px;
+    .restaurant-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        margin: 24px 0;
+        gap: 24px;
+        img {
+            width: 175px;
+            height: 175px;
+            border: 15px solid #E5E5E5;
+            //background-color: #E5E5E5;
+            border-radius: 36px;
+            cursor: pointer;
+            padding: 10px;
+        }
+    }
+    .misc-wrapper {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        margin-bottom: 16px;
     }
 `;
 
@@ -33,23 +42,37 @@ function Entry() {
         navigate(path);
     }
 
+    const navigateTo = (location: string) => {
+        navigate(`/${location}`);
+    }
+
     return (
         <EntryWrapper>
-            <img
-                src={brickLogo}
-                alt="brickKitchenLoungeLogo"
-                onClick={() => setStorageAndNavigate('Brick', '/brick/waitlist')}
-            />
-            <img
-                src={kumaLogo}
-                alt="kumaLogo"
-                onClick={() => setStorageAndNavigate('Kuma', '/kuma/waitlist')}
-            />
-            <img
-                src={eightLogo}
-                alt="1988LoungeLogo"
-                onClick={() => setStorageAndNavigate('Eight', '/eight/waitlist')}
-           />
+            <div className={'restaurant-wrapper'}>
+                <img
+                    src={brickLogo}
+                    alt="brickKitchenLoungeLogo"
+                    onClick={() => setStorageAndNavigate('Brick', '/brick/waitlist')}
+                />
+                <img
+                    src={kumaLogo}
+                    alt="kumaLogo"
+                    onClick={() => setStorageAndNavigate('Kuma', '/kuma/waitlist')}
+                />
+                <img
+                    src={eightLogo}
+                    alt="1988LoungeLogo"
+                    onClick={() => setStorageAndNavigate('Eight', '/eight/waitlist')}
+                />
+            </div>
+            <div className={'misc-wrapper'}>
+                <Button variant="contained" onClick={() => navigateTo('till-counter')}>
+                    Count Till
+                </Button>
+                <Button variant="contained" onClick={() => navigateTo('tip-counter')}>
+                    Count Tips
+                </Button>
+            </div>
         </EntryWrapper>
     )
 }

@@ -6,6 +6,16 @@ import {useCalendarState} from "../context/Calendar.provider";
 import {useEffect, useState} from "react";
 import {useAppState} from "../context/App.provider";
 import moment from "moment";
+import styled from "@emotion/styled";
+
+const GoogleCalendarPageWrapper = styled.div`
+    display: grid;
+    grid-template-columns: auto 500px;
+    @media (max-width: 660px) {
+        grid-template-columns: unset;
+    }
+`;
+
 
 function GoogleCalendarPage({ location } : { location : string }) {
     const {
@@ -79,10 +89,10 @@ function GoogleCalendarPage({ location } : { location : string }) {
     }, [selectedDate, currentMonthBookings]);
 
     return (
-        <div style={{display: 'grid', gridTemplateColumns: 'auto 500px'}}>
+        <GoogleCalendarPageWrapper>
             <GoogleCalendar location={location} currentMonthBookings={currentMonthBookings} />
             <GoogleCalendarOverview location={location} currentDayBookings={currentDayBookings} />
-        </div>
+        </GoogleCalendarPageWrapper>
     );
 }
 
