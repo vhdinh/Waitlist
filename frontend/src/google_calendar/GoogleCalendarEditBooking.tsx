@@ -1,21 +1,79 @@
 import styled from "@emotion/styled";
-import {Button, Card, FormControl, LinearProgress, MenuItem, Select, TextField, Typography} from "@mui/material";
-import React, {Dispatch, SetStateAction, useMemo, useState} from "react";
-import {GoogleCalendarEventType} from "./GoogleCalendar.type";
-import {getTodayTimeMapping, TimeSlot} from "../calendar/util";
-import {useCalendarState} from "../context/Calendar.provider";
+import { Button, FormControl, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
+import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { GoogleCalendarEventType } from "./GoogleCalendar.type";
+import { getTodayTimeMapping, TimeSlot } from "../calendar/util";
+import { useCalendarState } from "../context/Calendar.provider";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import moment from "moment/moment";
-import {useAppState} from "../context/App.provider";
+import { useAppState } from "../context/App.provider";
 
 const GCEditBookingWrapper = styled.div`
-    .helper-text {
-        color: gray !important;
-        font-size: 16px !important;
-        margin-left: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    margin: 12px 0;
+
+    .input-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #3c4043;
+        margin-bottom: 4px;
     }
-`
+
+    .helper-text {
+        color: #70757a !important;
+        font-size: 12px !important;
+        margin-left: 0 !important;
+        margin-top: 4px !important;
+    }
+
+    .row {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+    }
+
+    .field-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 8px;
+    }
+
+    .MuiOutlinedInput-root {
+        border-radius: 4px;
+        font-size: 14px;
+        
+        &.Mui-focused .MuiOutlinedInput-notchedOutline {
+            border-color: #1a73e8;
+            border-width: 2px;
+        }
+    }
+
+    .MuiButton-root {
+        text-transform: none;
+        font-weight: 500;
+        border-radius: 4px;
+        box-shadow: none;
+        
+        &:hover {
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+    }
+`;
 
 interface GoogleCalendarEditBookingProps {
     event: GoogleCalendarEventType;
@@ -32,13 +90,13 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
     const [tempEditBookingData, setTempEditBookingData] = useState(
         {
             ...gcBookingData,
-            firstName: props.event.summary?.split(' ').slice(1,-1).join(' '),
+            firstName: props.event.summary?.split(' ').slice(1, -1).join(' '),
             phoneNumber: props.event.description?.split('\n').shift(),
-            partySize: props.event.summary?.split(' ').pop()!.replace(/\D/g,''),
+            partySize: props.event.summary?.split(' ').pop()!.replace(/\D/g, ''),
             note: props.event.description?.split('\n').slice(1).join('\n') || '',
         });
     const memoizedGetTodayTimeMapping = useMemo((): TimeSlot[] =>
-            getTodayTimeMapping(selectedDate),
+        getTodayTimeMapping(selectedDate),
         [selectedDate]
     );
 
@@ -54,8 +112,8 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
             [e.target.name]: e.target.name === 'partySize' ? Number(e.target.value) || '' : e.target.value,
         }))
         // MAP back to google calendar
-        const summary = `${props.location === 'brick' ? 'Brick' : props.location === 'kuma' ? 'Kuma' : '1988'}: ${ e.target.name === 'firstName' ? e.target.value : tempEditBookingData.firstName } (${e.target.name === 'partySize' ? e.target.value : tempEditBookingData.partySize })`
-        const description = `${e.target.name === 'phoneNumber' ? e.target.value :  tempEditBookingData.phoneNumber }\n${e.target.name === 'note' ? e.target.value : tempEditBookingData.note }`
+        const summary = `${props.location === 'brick' ? 'Brick' : props.location === 'kuma' ? 'Kuma' : '1988'}: ${e.target.name === 'firstName' ? e.target.value : tempEditBookingData.firstName} (${e.target.name === 'partySize' ? e.target.value : tempEditBookingData.partySize})`
+        const description = `${e.target.name === 'phoneNumber' ? e.target.value : tempEditBookingData.phoneNumber}\n${e.target.name === 'note' ? e.target.value : tempEditBookingData.note}`
 
         setGCBookingData((oldState) => ({
             ...oldState,
@@ -127,189 +185,147 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
             }).finally(() => {
                 setIsLoading(false);
                 setIsEditing(false);
-        });
+            });
     }
 
     return (
-        <>
-            <GCEditBookingWrapper>
-                <Card style={{border: '1px solid black', padding: '12px', paddingTop: '8px', margin: '12px 0', display: 'flex', flexDirection: 'column', gap: '8px', justifyContent: 'space-between'}}>
-                    {
-                        isLoading ? <LinearProgress /> : <div style={{height: '4px'}} />
-                    }
-                    <div style={{width: '100%'}}>
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            gap: '12px',
-                            lineHeight: '12px'
-                        }}>
-                            <div style={{display: 'flex', flexDirection: 'row', gap: '12px'}}>
-                                <div style={{width: '100%'}}>
-                                    <Typography
-                                        variant="h6"
-                                        className={'input-label'}
-                                    >
-                                        First Name
-                                    </Typography>
-                                    <TextField
-                                        // size={'small'}
-                                        variant={"outlined"}
-                                        name={'firstName'}
-                                        sx={{width: '100%'}}
-                                        autoComplete={'off'}
-                                        disabled={isLoading}
-                                        value={tempEditBookingData.firstName}
-                                        onChange={(e) => handleChange(e)}
-                                    />
-                                </div>
-                                <div style={{width: '100%'}}>
-                                    <Typography
-                                        variant="h6"
-                                        className={'input-label'}
-                                    >
-                                        Party Size
-                                    </Typography>
-                                    <TextField
-                                        variant={"outlined"}
-                                        sx={{width: '100%'}}
-                                        value={tempEditBookingData.partySize}
-                                        name={'partySize'}
-                                        type={'tel'}
-                                        disabled={isLoading}
-                                        onChange={(e) => handleChange(e)}
-                                        autoComplete={'off'}
-                                    />
-                                </div>
-                            </div>
-                            <div style={{display: 'flex', flexDirection: 'row', gap: '12px'}}>
-                                <FormControl fullWidth sx={{display: 'flex', flexDirection: 'row', gap: '24px'}}>
-                                    <div style={{width: '100%'}}>
-                                        <Typography
-                                            variant="h6"
-                                            className={'input-label'}
-                                        >
-                                            Start Time:
-                                        </Typography>
-                                        <Select
-                                            id="start"
-                                            value={tempEditBookingData.startTime}
-                                            name={'startTime'}
-                                            sx={{width: '100%'}}
-                                            disabled={isLoading}
-                                            onChange={(e) => handleSelectChange(e)}
-                                        >
-                                            {memoizedGetTodayTimeMapping.map((t: TimeSlot) => {
-                                                return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
-                                            })}
-                                        </Select>
-                                    </div>
-                                </FormControl>
-                                <FormControl fullWidth>
-                                    <Typography
-                                        variant="h6"
-                                        className={'input-label'}
-                                    >
-                                        End Time:
-                                    </Typography>
-                                    <Select
-                                        id="end"
-                                        value={tempEditBookingData.endTime}
-                                        name={'endTime'}
-                                        disabled={isLoading}
-                                        onChange={handleSelectChange}
-                                    >
-                                        {memoizedGetTodayTimeMapping // filter out the values after 1 hrs of start time (7,200,000 ms)
-                                            .filter((t) => {
-                                                const twoHrsLater = (tempEditBookingData.startTime || 0) + 3600000;
-                                                if (t.value >= twoHrsLater) {
-                                                    return t.value >= twoHrsLater;
-                                                } else {
-                                                    return t.label === '11:00 PM'
-                                                }
-                                            })
-                                            .map((t) => {
-                                                return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
-                                            })}
-                                    </Select>
-                                </FormControl>
-                            </div>
-                            <div style={{display: 'flex', flexDirection: 'row', gap: '12px'}}>
-                                <div style={{width: '100%'}}>
-                                    <Typography
-                                        variant="h6"
-                                        className={'input-label'}
-                                    >
-                                        Phone Number
-                                    </Typography>
-                                    <TextField
-                                        variant={"outlined"}
-                                        sx={{width: '100%'}}
-                                        value={tempEditBookingData.phoneNumber}
-                                        name={'phoneNumber'}
-                                        autoComplete={'off'}
-                                        disabled={isLoading}
-                                        onChange={(e) => handleChange(e)}
-                                        helperText={phoneNumberHelperText}
-                                        FormHelperTextProps={{
-                                            className: 'helper-text'
-                                        }}
-                                    />
-                                </div>
-                                <div style={{width: '100%'}}>
-                                    <Typography
-                                        variant="h6"
-                                        className={'input-label'}
-                                    >
-                                        Description/Initials
-                                    </Typography>
-                                    <TextField
-                                        variant={"outlined"}
-                                        sx={{width: '100%'}}
-                                        value={tempEditBookingData.note}
-                                        name={'note'}
-                                        multiline={true}
-                                        disabled={isLoading}
-                                        helperText={descriptionHelperText}
-                                        FormHelperTextProps={{
-                                            className: 'helper-text'
-                                        }}
-                                        onChange={(e) => handleChange(e)}
-                                        autoComplete={'off'}
-                                    />
-                                </div>
-                            </div>
-                            <div style={{display: 'flex', width: '100%', justifyContent: 'flex-end', gap: '18px'}}>
-                                <Button
-                                    sx={{height: '36px'}}
-                                    variant="contained"
-                                    color={'warning'}
-                                    startIcon={<CloseIcon/>}
-                                    disabled={isLoading}
-                                    onClick={() => {
-                                        setIsEditing(false);
-                                        setDisplayAddNewBooking(false);
-                                        props.setHandleItemEditing(false);
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    sx={{height: '36px'}}
-                                    variant="contained"
-                                    startIcon={<SaveIcon/>}
-                                    disabled={isLoading}
-                                    onClick={() => updateGoogleCalendarEvent()}
-                                >
-                                    Update
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-            </GCEditBookingWrapper>
-        </>
+        <GCEditBookingWrapper>
+            {isLoading && <LinearProgress />}
+
+            <div className="row">
+                <div className="field-container">
+                    <Typography className="input-label">First Name</Typography>
+                    <TextField
+                        variant="outlined"
+                        name="firstName"
+                        fullWidth
+                        autoComplete="off"
+                        disabled={isLoading}
+                        value={tempEditBookingData.firstName}
+                        onChange={handleChange}
+                        size="small"
+                    />
+                </div>
+                <div className="field-container">
+                    <Typography className="input-label">Party Size</Typography>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        value={tempEditBookingData.partySize}
+                        name="partySize"
+                        type="tel"
+                        disabled={isLoading}
+                        onChange={handleChange}
+                        autoComplete="off"
+                        size="small"
+                    />
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="field-container">
+                    <Typography className="input-label">Start Time</Typography>
+                    <FormControl fullWidth size="small">
+                        <Select
+                            id="start"
+                            value={tempEditBookingData.startTime}
+                            name="startTime"
+                            disabled={isLoading}
+                            onChange={handleSelectChange}
+                        >
+                            {memoizedGetTodayTimeMapping.map((t: TimeSlot) => (
+                                <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </div>
+                <div className="field-container">
+                    <Typography className="input-label">End Time</Typography>
+                    <FormControl fullWidth size="small">
+                        <Select
+                            id="end"
+                            value={tempEditBookingData.endTime}
+                            name="endTime"
+                            disabled={isLoading}
+                            onChange={handleSelectChange}
+                        >
+                            {memoizedGetTodayTimeMapping
+                                .filter((t) => {
+                                    const twoHrsLater = (tempEditBookingData.startTime || 0) + 3600000;
+                                    if (t.value >= twoHrsLater) {
+                                        return t.value >= twoHrsLater;
+                                    } else {
+                                        return t.label === '11:00 PM'
+                                    }
+                                })
+                                .map((t) => (
+                                    <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
+                                ))}
+                        </Select>
+                    </FormControl>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="field-container">
+                    <Typography className="input-label">Phone Number</Typography>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        value={tempEditBookingData.phoneNumber}
+                        name="phoneNumber"
+                        autoComplete="off"
+                        disabled={isLoading}
+                        onChange={handleChange}
+                        helperText={phoneNumberHelperText}
+                        FormHelperTextProps={{ className: 'helper-text' }}
+                        size="small"
+                    />
+                </div>
+                <div className="field-container">
+                    <Typography className="input-label">Description/Initials</Typography>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        value={tempEditBookingData.note}
+                        name="note"
+                        multiline
+                        disabled={isLoading}
+                        helperText={descriptionHelperText}
+                        FormHelperTextProps={{ className: 'helper-text' }}
+                        onChange={handleChange}
+                        autoComplete="off"
+                        size="small"
+                    />
+                </div>
+            </div>
+
+            <div className="actions">
+                <Button
+                    variant="outlined"
+                    color="inherit"
+                    startIcon={<CloseIcon />}
+                    disabled={isLoading}
+                    onClick={() => {
+                        setIsEditing(false);
+                        setDisplayAddNewBooking(false);
+                        props.setHandleItemEditing(false);
+                    }}
+                >
+                    Cancel
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<SaveIcon />}
+                    disabled={isLoading}
+                    onClick={updateGoogleCalendarEvent}
+                    style={{ backgroundColor: '#1a73e8' }}
+                >
+                    Update
+                </Button>
+            </div>
+        </GCEditBookingWrapper>
     )
 };
 

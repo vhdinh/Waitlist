@@ -1,9 +1,9 @@
 import React from 'react';
-import {Box} from '@mui/material';
-import {DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
+import { Box } from '@mui/material';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import ActionColumn from './ActionColumn';
 import styled from '@emotion/styled';
-import {Role, useAppState} from '../context/App.provider';
+import { Role, useAppState } from '../context/App.provider';
 import PhoneNumberColumn from './PhoneNumberColumn';
 import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
@@ -47,7 +47,7 @@ const getColumns = (isAdmin: boolean, location: string): GridColDef[] => {
                 field: 'action',
                 headerName: '', // @ts-ignore
                 renderCell: (params: GridRenderCellParams) => {
-                    return <ActionColumn { ...params.row} location={location} />
+                    return <ActionColumn {...params.row} location={location} />
                 },
                 sortable: false,
                 align: 'right',
@@ -98,18 +98,18 @@ const ListWrapper = styled.div`
 `;
 
 function List(props: ListProps) {
-    const {isAdmin, role} = useAppState();
+    const { isAdmin, role } = useAppState();
 
     return (
         <ListWrapper>
             {
                 role === Role.EMPLOYEE || role === Role.ADMIN ? (
-                    <div style={{fontSize: '20px', display: 'flex', gap: 24, paddingBottom: 8, position: 'absolute', marginTop: '-28px'}}>
-                        <span style={{display: 'flex', justifyItems: 'center', gap: 12}}>
-                            <MobileFriendlyIcon className={'accepts-icon'}/> Accepted
+                    <div style={{ fontSize: '20px', display: 'flex', gap: 24, paddingBottom: 8, position: 'absolute', marginTop: '-28px' }}>
+                        <span style={{ display: 'flex', justifyItems: 'center', gap: 12 }}>
+                            <MobileFriendlyIcon className={'accepts-icon'} /> Accepted
                         </span>
-                        <span style={{display: 'flex', justifyItems: 'center', gap: 12}}>
-                            <PhonelinkEraseIcon className={'decline-icon'}/> Declined
+                        <span style={{ display: 'flex', justifyItems: 'center', gap: 12 }}>
+                            <PhonelinkEraseIcon className={'decline-icon'} /> Declined
                         </span>
                     </div>
                 ) : <></>
