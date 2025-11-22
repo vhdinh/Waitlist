@@ -101,7 +101,7 @@ export const AppWrapper = styled.div<AppWrapperProps>`
         max-width: 100% !important;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow-y: auto;
         padding-bottom: 12px; // Add spacing at the bottom
     }
 
