@@ -148,7 +148,7 @@ function App() {
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static" className={'app-bar'}>
                     <Container maxWidth="xl">
-                        <Toolbar disableGutters>
+                        <Toolbar disableGutters sx={{ height: '64px' }}>
                             {
                                 url === '' ? <></> : url.includes('till-counter') || url.includes('tip-counter') ? (
                                     <IconButton>
@@ -193,8 +193,8 @@ function App() {
                                             <Button
                                                 key={index}
                                                 onClick={() => handleCloseNavMenu(page.url)}
-                                                sx={{ my: 2, color: 'black', display: 'block' }}
-                                                size={'large'}
+                                                sx={{ my: 2, display: 'block' }}
+                                                className="nav-btn"
                                             >
                                                 {page.label}
                                             </Button>
@@ -207,16 +207,16 @@ function App() {
                                     <Box sx={{ flexGrow: 0 }} style={{ display: 'flex', gap: '32px' }}>
                                         <Tooltip title="Refresh Page">
                                             <IconButton onClick={() => window.location.reload()} sx={{ p: 0 }}>
-                                                <RefreshIcon fontSize={'large'} style={{ color: 'black' }} />
+                                                <RefreshIcon style={{ color: '#5f6368' }} />
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Open settings">
                                             <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
-                                                <SettingsIcon fontSize={'large'} style={{ color: 'black' }} />
+                                                <SettingsIcon style={{ color: '#5f6368' }} />
                                             </IconButton>
                                         </Tooltip>
                                     </Box>
-                                ) : url.includes('till-counter') || url.includes('tip-counter') ? <></> : <h1 className={'select-restaurant'}>SELECT RESTAURANT</h1>
+                                ) : url.includes('till-counter') || url.includes('tip-counter') ? <></> : <h2 className={'select-restaurant'}>SELECT RESTAURANT</h2>
                             }
                         </Toolbar>
                     </Container>

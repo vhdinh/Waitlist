@@ -128,7 +128,8 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                 setIsItemDeleting(false);
             }).finally(() => {
                 setIsLoading(false);
-                setIsEditing(false)
+                setIsEditing(false);
+                setOpenDialog(false);
             });
     }
 

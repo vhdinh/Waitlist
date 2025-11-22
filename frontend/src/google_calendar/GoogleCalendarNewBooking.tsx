@@ -165,7 +165,7 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
 
     const saveGoogleCalendarEvent = () => {
         if (Number(gcBookingData.partySize) > 10) {
-            setSnackMsg({ msg: `Party larger than 10 people needs to email ${location ? 'info@thebrickrenton.com' : 'info@kumageorgetown.com'} for reservation`, severity: 'error' });
+            setSnackMsg({ msg: `Party larger than 10 people needs to email ${location === 'brick' ? 'info@thebrickrenton.com' : 'info@kumageorgetown.com'} for reservation`, severity: 'error' });
             setDisplaySnack(true);
             return;
         }

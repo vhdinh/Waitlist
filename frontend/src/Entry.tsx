@@ -17,9 +17,9 @@ const EntryWrapper = styled.div`
         margin: 24px 0;
         gap: 24px;
         img {
-            width: 175px;
-            height: 175px;
-            border: 15px solid #E5E5E5;
+            width: 100px;
+            height: 100px;
+            border: 10px solid #E5E5E5;
             //background-color: #E5E5E5;
             border-radius: 36px;
             cursor: pointer;

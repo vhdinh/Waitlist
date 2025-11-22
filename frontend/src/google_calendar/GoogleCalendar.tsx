@@ -188,18 +188,18 @@ function GoogleCalendar({ location, currentMonthBookings }: { location: string, 
         if (todaysEvent && todaysEvent.length > 3) {
             return (
                 <>
-                    {todaysEvent.slice(0, 3).map((x, index) => (
+                    {todaysEvent.slice(0, 2).map((x, index) => (
                         <div className={'event'} key={index}>
-                            {x.start.dateTime ? moment(x.start.dateTime).format('h:mmA') : ''} {x.summary}
+                            {x.start.dateTime ? moment(x.start.dateTime).format('h:mmA') : ''} {location === 'brick' ? x.summary?.substring(7) : x.summary?.substring(6)}
                         </div>
                     ))}
-                    <div className={'more-events'}>+{todaysEvent.length - 3} more</div>
+                    <div className={'more-events'}>+{todaysEvent.length - 2} more</div>
                 </>
             );
         } else {
             return todaysEvent && todaysEvent.map((x, index) => (
                 <div className={'event'} key={index}>
-                    {x.start.dateTime ? moment(x.start.dateTime).format('h:mmA') : ''} {x.summary}
+                    {x.start.dateTime ? moment(x.start.dateTime).format('h:mmA') : ''} {location === 'brick' ? x.summary?.substring(7) : x.summary?.substring(6)}
                 </div>
             ))
         }

@@ -89,7 +89,7 @@ function WaitlistPage(props: WaitlistPageProps) {
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <Typography
-                                        variant="h1"
+                                        variant="h2"
                                         className={'title'}
                                         onClick={() => window.location.reload()}
                                     >
