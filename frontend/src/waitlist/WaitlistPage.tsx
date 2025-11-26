@@ -16,7 +16,7 @@ import { useAppState } from '../context/App.provider';
 import TapToBegin from '../TapToBegin';
 import AddToListModal from './AddToListModal';
 import { useWaitlistState } from '../context/Waitlist.provider';
-import {RestaurantKey, setLocalStorageData} from "../utils/general";
+import { RestaurantKey, setLocalStorageData } from "../utils/general";
 import io from "socket.io-client";
 
 interface WaitlistPageProps {
@@ -89,7 +89,7 @@ function WaitlistPage(props: WaitlistPageProps) {
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <Typography
-                                        variant="h1"
+                                        variant="h2"
                                         className={'title'}
                                         onClick={() => window.location.reload()}
                                     >

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import {Role} from "./context/App.provider";
+import { Role } from "./context/App.provider";
 
 interface AppWrapperProps {
     isAdmin: boolean;
@@ -7,15 +7,35 @@ interface AppWrapperProps {
 }
 
 export const AppWrapper = styled.div<AppWrapperProps>`
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
     .app-bar {
         background: ${(props) => props.role === Role.USER ? '#F7F7F8' : props.role === Role.EMPLOYEE ? '#ff7961' : '#DFFFB9'};
+        flex-shrink: 0;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        
         img {
-            width: 100px;
+            height: 30px;
+            width: auto;
+            // Remove specific width overrides to rely on height
             &.eight-eight {
-                width: 50px;
+                height: 25px; // Slightly smaller if needed visually
             }
             &.kuma {
-                width: 75px;
+                height: 30px;
+            }
+        }
+        
+        .nav-btn {
+            text-transform: none;
+            font-weight: 500;
+            font-size: 15px;
+            color: #3c4043;
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.04);
             }
         }
         #menu-appbar {
@@ -65,9 +85,24 @@ export const AppWrapper = styled.div<AppWrapperProps>`
     .MuiAlert-standardError {
         background: red;
     }
+    
+    // Target the Box component which is the direct child
+    & > .MuiBox-root {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        height: 100%;
+    }
+
     #body-content {
+        flex: 1;
         height: 100%;
         max-width: 100% !important;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        padding-bottom: 12px; // Add spacing at the bottom
     }
 
     .waiting-screen {

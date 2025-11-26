@@ -1,21 +1,16 @@
-import {GoogleCalendarEventType} from "./GoogleCalendar.type";
+import { GoogleCalendarEventType } from "./GoogleCalendar.type";
 import {
     Button,
     Card,
-    FormControl,
     IconButton,
-    InputLabel,
     LinearProgress,
-    MenuItem,
-    Select,
-    TextField
 } from "@mui/material";
 import moment from "moment";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import React, {memo, useMemo, useState} from "react";
-import {getTodayTimeMapping, NewBookingType, TimeSlot} from "../calendar/util";
-import {useCalendarState} from "../context/Calendar.provider";
+import React, { useMemo, useState } from "react";
+import { getTodayTimeMapping, TimeSlot } from "../calendar/util";
+import { useCalendarState } from "../context/Calendar.provider";
 import GoogleCalendarEditBooking from "./GoogleCalendarEditBooking";
 import styled from "@emotion/styled";
 import Dialog from '@mui/material/Dialog';
@@ -24,18 +19,74 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
 const GoogleCalendarEventWrapper = styled.div`
-    button, .icon {
-        &.Mui-disabled {
-            svg {
-                color: gray !important;
-            }
+    margin-bottom: 12px;
+    
+    .event-card {
+        border: 1px solid #dadce0;
+        border-radius: 8px;
+        padding: 12px 16px;
+        box-shadow: none;
+        transition: box-shadow 0.2s ease, background-color 0.2s ease;
+        
+        &:hover {
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            background-color: #fff;
         }
 
+        .event-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            
+            .info {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                
+                .summary {
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: #3c4043;
+                }
+                
+                .time {
+                    font-size: 12px;
+                    color: #70757a;
+                }
+
+                .description {
+                    font-size: 12px;
+                    color: #70757a;
+                    white-space: pre-line;
+                    margin-top: 4px;
+                }
+            }
+
+            .actions {
+                display: flex;
+                gap: 8px;
+                
+                .icon-btn {
+                    padding: 8px;
+                    color: #5f6368;
+                    
+                    &:hover {
+                        background-color: #f1f3f4;
+                        color: #202124;
+                    }
+                    
+                    &.delete:hover {
+                        color: #d93025;
+                        background-color: #fce8e6;
+                    }
+                }
+            }
+        }
     }
 `;
 
 function GoogleCalendarEvent(props: GoogleCalendarEventType) {
-    const [currentBooking ] = useState<GoogleCalendarEventType>(props);
+    const [currentBooking] = useState<GoogleCalendarEventType>(props);
     const {
         selectedDate,
         setGCBookingData,
@@ -50,7 +101,7 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
     const [openDialog, setOpenDialog] = useState(false);
 
     const memoizedGetTodayTimeMapping = useMemo((): TimeSlot[] =>
-            getTodayTimeMapping(selectedDate),
+        getTodayTimeMapping(selectedDate),
         [selectedDate]
     );
 
@@ -76,9 +127,10 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                 setReloadCalendar(true);
                 setIsItemDeleting(false);
             }).finally(() => {
-            setIsLoading(false);
-            setIsEditing(false)
-        });
+                setIsLoading(false);
+                setIsEditing(false);
+                setOpenDialog(false);
+            });
     }
 
     const handleItemEditing = (editingState: boolean) => {
@@ -101,58 +153,49 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
         <GoogleCalendarEventWrapper>
             {
                 isItemEditing ? <GoogleCalendarEditBooking event={props} setHandleItemEditing={handleItemEditing} location={props.location || ''} /> : (
-                    <Card style={{border: '1px solid black', padding: '12px', paddingTop: '8px', margin: '12px 0'}}>
+                    <Card className="event-card">
                         {
                             isLoading && isItemDeleting ? <LinearProgress /> : <div style={{ height: '4px' }} />
                         }
-                        <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '4px' }}>
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                gap: '12px',
-                                lineHeight: '12px'
-                            }}>
-                                <>
-                                    <div>
-                                        {currentBooking.summary}
-                                    </div>
-                                    {
-                                        currentBooking.description ? (
-                                            <div style={{whiteSpace: 'pre-line', lineHeight: '1.25rem'}}>
-                                                {currentBooking.description}
-                                            </div>
-                                        ) : <></>
-                                    }
-
-                                    <div>
-                                        {moment(currentBooking.start.dateTime).format('h:mm A')}
-                                    </div>
-                                </>
+                        <div className="event-content">
+                            <div className="info">
+                                <div className="summary">
+                                    {currentBooking.summary}
+                                </div>
+                                <div className="time">
+                                    {moment(currentBooking.start.dateTime).format('h:mm A')}
+                                </div>
+                                {
+                                    currentBooking.description && (
+                                        <div className="description">
+                                            {currentBooking.description}
+                                        </div>
+                                    )
+                                }
                             </div>
-                            <div style={{display: 'flex', flexDirection: 'row', gap: '24px', marginRight: '12px'}}>
-                                <>
-                                    <IconButton
-                                        className={'icon'}
-                                        onClick={() => setOpenDialog(true)}
-                                        sx={{width: '60px', height: '60px', display: getActionButtonDisabledState()?'none':null}}
-                                        disabled={isEditing || isLoading}
-                                    >
-                                        <DeleteIcon fontSize={'large'} style={{color: 'black'}}/>
-                                    </IconButton>
-                                    <IconButton
-                                        className={'icon'}
-                                        sx={{width: '60px', height: '60px', display: getActionButtonDisabledState()?'none':null}}
-                                        disabled={isEditing || isLoading}
-                                        onClick={() => {
-                                            setGCBookingData(props);
-                                            setIsItemEditing(true);
-                                            setIsEditing(true);
-                                        }}
-                                    >
-                                        <ModeEditIcon fontSize={'large'} style={{color: 'black'}}/>
-                                    </IconButton>
-                                </>
+                            <div className="actions">
+                                <IconButton
+                                    className={'icon-btn delete'}
+                                    onClick={() => setOpenDialog(true)}
+                                    size="small"
+                                    disabled={isEditing || isLoading || getActionButtonDisabledState()}
+                                    style={{ display: getActionButtonDisabledState() ? 'none' : 'inline-flex' }}
+                                >
+                                    <DeleteIcon fontSize="small" />
+                                </IconButton>
+                                <IconButton
+                                    className={'icon-btn'}
+                                    size="small"
+                                    disabled={isEditing || isLoading || getActionButtonDisabledState()}
+                                    style={{ display: getActionButtonDisabledState() ? 'none' : 'inline-flex' }}
+                                    onClick={() => {
+                                        setGCBookingData(props);
+                                        setIsItemEditing(true);
+                                        setIsEditing(true);
+                                    }}
+                                >
+                                    <ModeEditIcon fontSize="small" />
+                                </IconButton>
                             </div>
                         </div>
 

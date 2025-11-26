@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     Button,
     Dialog,
@@ -9,9 +9,9 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import {Role, useAppState} from './context/App.provider';
-import {useCalendarState} from "./context/Calendar.provider";
-import {RoleKey, setLocalStorageData} from "./utils/general";
+import { Role, useAppState } from './context/App.provider';
+import { useCalendarState } from "./context/Calendar.provider";
+import { RoleKey, setLocalStorageData } from "./utils/general";
 
 function AdminPasscodeModal() {
     const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin, setRole, } = useAppState();
@@ -66,11 +66,12 @@ function AdminPasscodeModal() {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             disableRestoreFocus
+            PaperProps={{ sx: { borderRadius: '8px' } }}
         >
             <DialogTitle id="alert-dialog-title">
                 <Typography
                     variant="inherit"
-                    style={{marginBottom: '24px', marginTop: '24px', fontSize: '24px'}}
+                    style={{ fontSize: '22px', fontWeight: 400, color: '#3c4043', marginBottom: '12px' }}
                 >
                     Enter admin code
                 </Typography>
@@ -88,42 +89,40 @@ function AdminPasscodeModal() {
                         onKeyPress={handleKeyPress}
                         autoComplete={'off'}
                         inputProps={{
-                            style: {fontSize: 24},
+                            style: { fontSize: 16 },
                             inputMode: 'tel',
                             pattern: "[0-9]*"
-                        }} // font size of input text
-                        InputLabelProps={{style: {fontSize: 24}}} // font size of input label
+                        }}
+                        InputLabelProps={{ style: { fontSize: 16 } }}
                         helperText={helperText}
+                        size="small"
                     />
                 </FormControl>
             </DialogContent>
-            <DialogActions style={{justifyContent: 'space-between'}}>
+            <DialogActions style={{ justifyContent: 'flex-end', padding: '16px 24px' }}>
                 <Button
-                    size='large'
-                    variant="contained"
                     onClick={() => {
                         setAdminPasscode('');
                         setDisplayAdminDialog(false);
                         setHelperText('');
                     }}
                     style={{
-                        background: 'black',
-                        color: 'white',
-                        fontSize: '24px',
-                        minWidth: '150px'
+                        color: '#5f6368',
+                        textTransform: 'none',
+                        fontWeight: 500
                     }}
                 >
                     Cancel
                 </Button>
                 <Button
-                    size='large'
                     variant="contained"
                     onClick={(e) => handleSubmit(e)}
                     style={{
-                        background: 'black',
+                        background: '#1a73e8',
                         color: 'white',
-                        fontSize: '24px',
-                        minWidth: '150px'
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        boxShadow: 'none'
                     }}
                 >
                     Enter

@@ -11,7 +11,7 @@ import {
     Step, Typography,
 } from '@mui/material';
 import styled from '@emotion/styled';
-import Dialog  from '@mui/material/Dialog';
+import Dialog from '@mui/material/Dialog';
 import { TransitionProps } from '@mui/material/transitions';
 import Slide from '@mui/material/Slide';
 import { useAppState } from '../context/App.provider';
@@ -59,18 +59,19 @@ const initialState = {
 
 const buttonStyles = {
     container: {
-        background: 'black',
+        background: '#1a73e8',
         color: 'white',
-        fontSize: '24px',
-        minWidth: '150px'
-    },
+        textTransform: 'none',
+        fontWeight: 500,
+        boxShadow: 'none',
+    } as React.CSSProperties,
     containerDisabled: {
         background: '#EAEBEB',
         color: 'white',
-        fontSize: '24px',
-        minWidth: '150px'
-
-    },
+        textTransform: 'none',
+        fontWeight: 500,
+        boxShadow: 'none',
+    } as React.CSSProperties,
 };
 
 function AddToListModal(props: AddToListModalProps) {
@@ -120,7 +121,7 @@ function AddToListModal(props: AddToListModalProps) {
     const handleNext = (e: any) => {
         e.preventDefault();
         if (activeStep < 2) {
-           return setActiveStep(activeStep + 1);
+            return setActiveStep(activeStep + 1);
         }
         else {
             setLoading(true);
@@ -129,28 +130,28 @@ function AddToListModal(props: AddToListModalProps) {
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phoneNumber: state.phoneNumber, name: state.name, partySize: state.party})
+                body: JSON.stringify({ phoneNumber: state.phoneNumber, name: state.name, partySize: state.party })
             };
             fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/add`, requestOptions)
                 .then(res => res.json())
                 .then((r) => {
                     console.log('RRR', r.includes('error-invalid-phone'));
                     if (r.includes('error-invalid-phone')) {
-                        setSnackMsg({msg: `Invalid phone number`, severity: 'error' });
+                        setSnackMsg({ msg: `Invalid phone number`, severity: 'error' });
                         setDisplaySnack(true);
                     } else if (r.includes('error-saving-user')) {
-                        setSnackMsg({msg: `Unable to add to waitlist, please try again`, severity: 'error' });
+                        setSnackMsg({ msg: `Unable to add to waitlist, please try again`, severity: 'error' });
                         setDisplaySnack(true);
                     } else {
                         console.log('added Customer', r);
-                        setSnackMsg({msg: `${state.name} has been added to the waitlist`, severity: 'success'});
+                        setSnackMsg({ msg: `${state.name} has been added to the waitlist`, severity: 'success' });
                         setDisplaySnack(true);
                         setReloadList(true);
                         handleClose();
                     }
                 }).catch((e) => {
                     console.log('caughtttt', e);
-            }).finally(() => setLoading(false));
+                }).finally(() => setLoading(false));
         }
 
     }
@@ -189,22 +190,20 @@ function AddToListModal(props: AddToListModalProps) {
                 TransitionComponent={Transition}
                 disableRestoreFocus
             >
-                { loading && <Loader />}
+                {loading && <Loader />}
                 <DialogTitle>
                     <div
                         className={'modal-action'}
-                        style={{ display: 'flex', justifyContent: 'space-between'}}
+                        style={{ display: 'flex', justifyContent: 'space-between' }}
                     >
                         <div>
                             <Button
-                                size='large'
-                                variant="contained"
                                 onClick={handleClose}
                                 style={{
-                                    background: 'black',
-                                    color: 'white',
-                                    fontSize: '24px',
-                                    minWidth: '150px'
+                                    color: '#5f6368',
+                                    textTransform: 'none',
+                                    fontWeight: 500,
+                                    fontSize: '16px'
                                 }}
                             >
                                 Cancel
@@ -218,17 +217,19 @@ function AddToListModal(props: AddToListModalProps) {
                         >
                             {activeStep > 0 && (
                                 <Button
-                                    size='large'
-                                    variant="contained"
                                     onClick={handleBack}
-                                    style={buttonStyles.container}
+                                    style={{
+                                        color: '#5f6368',
+                                        textTransform: 'none',
+                                        fontWeight: 500,
+                                        fontSize: '16px'
+                                    }}
                                 >
                                     Back
                                 </Button>
                             )}
 
                             <Button
-                                size='large'
                                 variant="contained"
                                 onClick={handleNext}
                                 style={getDisabledState() ? buttonStyles.containerDisabled : buttonStyles.container}
@@ -239,7 +240,7 @@ function AddToListModal(props: AddToListModalProps) {
                         </div>
                     </div>
                     <Stepper
-                        style={{marginTop: '48px'}}
+                        style={{ marginTop: '24px' }}
                         activeStep={activeStep}
                         alternativeLabel
                     >
@@ -248,30 +249,31 @@ function AddToListModal(props: AddToListModalProps) {
                                 key={label}
                                 sx={{
                                     '& .MuiStepLabel-root .Mui-completed': {
-                                        color: 'black', // circle color (COMPLETED)
+                                        color: '#1a73e8', // circle color (COMPLETED)
                                     },
                                     '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel':
-                                        {
-                                            fontSize: '24px',
-                                            color: 'black', // Just text label (COMPLETED)
-                                        },
+                                    {
+                                        fontSize: '14px',
+                                        color: '#1a73e8', // Just text label (COMPLETED)
+                                    },
                                     '& .MuiStepLabel-root .Mui-active': {
                                         fontSize: '24px',
-                                        color: 'black', // circle color (ACTIVE)
+                                        color: '#1a73e8', // circle color (ACTIVE)
                                     },
                                     '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel':
-                                        {
-                                            fontSize: '24px',
-                                            color: 'grey.600', // Just text label (ACTIVE)
-                                        },
+                                    {
+                                        fontSize: '14px',
+                                        color: '#3c4043', // Just text label (ACTIVE)
+                                        fontWeight: 500
+                                    },
                                     '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
                                         fill: 'white', // circle's number (ACTIVE)
                                     },
                                     '& .MuiStepLabel-label.Mui-disabled.MuiStepLabel-alternativeLabel':
-                                        {
-                                            fontSize: '24px',
-                                            color: 'grey.300', // Just text label (FUTURE)
-                                        },
+                                    {
+                                        fontSize: '14px',
+                                        color: 'grey.500', // Just text label (FUTURE)
+                                    },
                                 }}
                             >
                                 <StepLabel>{label}</StepLabel>
@@ -284,9 +286,9 @@ function AddToListModal(props: AddToListModalProps) {
                         {activeStep === 0 && (
                             <Grid item xs={12} sm={12} md={8} lg={4}>
                                 <Typography
-                                    variant="h4"
+                                    variant="h5"
                                     className={'title'}
-                                    style={{marginBottom: '24px', marginTop: '24px'}}
+                                    style={{ marginBottom: '24px', marginTop: '24px', color: '#3c4043' }}
                                 >
                                     How many people in your party
                                 </Typography>
@@ -300,8 +302,8 @@ function AddToListModal(props: AddToListModalProps) {
                                         onChange={handlePartyChange}
                                         onKeyPress={handleKeyPress}
                                         autoComplete={'off'}
-                                        inputProps={{style: {fontSize: 24}}} // font size of input text
-                                        InputLabelProps={{style: {fontSize: 24}}} // font size of input label
+                                        inputProps={{ style: { fontSize: 18 } }}
+                                        InputLabelProps={{ style: { fontSize: 18 } }}
                                     />
                                 </FormControl>
                             </Grid>
@@ -310,9 +312,9 @@ function AddToListModal(props: AddToListModalProps) {
                             activeStep === 1 && (
                                 <Grid item xs={12} sm={12} md={8} lg={4}>
                                     <Typography
-                                        variant="h4"
+                                        variant="h5"
                                         className={'title'}
-                                        style={{marginBottom: '24px', marginTop: '24px'}}
+                                        style={{ marginBottom: '24px', marginTop: '24px', color: '#3c4043' }}
                                     >
                                         What's your name?
                                     </Typography>
@@ -326,8 +328,8 @@ function AddToListModal(props: AddToListModalProps) {
                                             onChange={handleNameChange}
                                             onKeyPress={handleKeyPress}
                                             autoComplete={'off'}
-                                            inputProps={{style: {fontSize: 24}}} // font size of input text
-                                            InputLabelProps={{style: {fontSize: 24}}} // font size of input label
+                                            inputProps={{ style: { fontSize: 18 } }}
+                                            InputLabelProps={{ style: { fontSize: 18 } }}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -337,9 +339,9 @@ function AddToListModal(props: AddToListModalProps) {
                             activeStep === 2 && (
                                 <Grid item xs={12} sm={12} md={8} lg={4}>
                                     <Typography
-                                        variant="h4"
+                                        variant="h5"
                                         className={'title'}
-                                        style={{marginBottom: '24px', marginTop: '24px'}}
+                                        style={{ marginBottom: '24px', marginTop: '24px', color: '#3c4043' }}
                                     >
                                         What is your mobile number?
                                     </Typography>
@@ -353,8 +355,8 @@ function AddToListModal(props: AddToListModalProps) {
                                             onChange={handlePhoneChange}
                                             onKeyPress={handleKeyPress}
                                             autoComplete={'off'}
-                                            inputProps={{style: {fontSize: 24}}} // font size of input text
-                                            InputLabelProps={{style: {fontSize: 24}}} // font size of input label
+                                            inputProps={{ style: { fontSize: 18 } }}
+                                            InputLabelProps={{ style: { fontSize: 18 } }}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -363,7 +365,7 @@ function AddToListModal(props: AddToListModalProps) {
                     </Grid>
                     <Typography
                         variant="inherit"
-                        style={{marginBottom: '12px', marginTop: '12px', fontSize: '12px', textAlign: 'center'}}
+                        style={{ marginBottom: '12px', marginTop: '12px', fontSize: '12px', textAlign: 'center', color: '#70757a' }}
                     >
                         * message and data rates may apply *
                     </Typography>

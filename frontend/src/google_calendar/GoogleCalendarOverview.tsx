@@ -1,62 +1,93 @@
-import {GoogleCalendarEventType} from "./GoogleCalendar.type";
-import {IconButton, Typography} from "@mui/material";
-import {format} from "date-fns";
-import React, {useEffect, useState} from "react";
-import {useCalendarState} from "../context/Calendar.provider";
-import SaveIcon from "@mui/icons-material/Save";
+import { GoogleCalendarEventType } from "./GoogleCalendar.type";
+import { Button, IconButton, Typography } from "@mui/material";
+import { format } from "date-fns";
+import React, { useEffect, useState } from "react";
+import { useCalendarState } from "../context/Calendar.provider";
 import styled from "@emotion/styled";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
+import AddIcon from '@mui/icons-material/Add';
 import GoogleCalendarNewBooking from "./GoogleCalendarNewBooking";
 import GoogleCalendarEvent from "./GoogleCalendarEvent";
-import {getDayFromTimestamp} from "../utils/date";
-import {InitialGCNewBooking} from "../context/GoogleCalendar.provider";
-import {useAppState} from "../context/App.provider";
+import { getDayFromTimestamp } from "../utils/date";
+import { InitialGCNewBooking } from "../context/GoogleCalendar.provider";
+import { useAppState } from "../context/App.provider";
 
 const GoogleCalendarOverviewWrapper = styled.div`
-  height: calc(100vh - 130px);
-  padding: 16px;
-    margin: 12px; 
-    margin-right: 0; 
-    border: 1px solid #eee;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    // margin removed to rely on grid gap
+    border: 1px solid #dadce0;
     border-radius: 8px;
-  .co-header {
+    background-color: #fff;
+    font-family: 'Roboto', sans-serif;
     display: flex;
-      gap: 8px;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    button, .icon {
-      &.Mui-disabled {
-          svg {
-              color: gray !important;
-          }
-      }
+    flex-direction: column;
+
+    .co-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
         
+        .date-info {
+            h5 {
+                font-size: 18px;
+                font-weight: 400;
+                color: #3c4043;
+                margin-bottom: 4px;
+            }
+            .subtitle {
+                font-size: 12px;
+                color: #70757a;
+                font-weight: 500;
+            }
+        }
+
+        .create-btn {
+            text-transform: none;
+            border-radius: 24px;
+            padding: 6px 16px;
+            font-weight: 500;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            background-color: #fff;
+            color: #3c4043;
+            
+            &:hover {
+                background-color: #f1f3f4;
+                box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+            }
+        }
     }
-    .actions {
-      display: flex;
-      gap: 16px;
-    }
-  }
+
     .event-container {
-        overflow-y: scroll;
-        max-height: calc(100vh - 195px);
+        overflow-y: auto;
+        flex-grow: 1;
+        padding-right: 4px; // Space for scrollbar
+        
+        /* Custom Scrollbar */
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #dadce0;
+            border-radius: 4px;
+        }
     }
-    @media (max-width: 660px) {
-        margin: 16px;
-        width: unset;
+
+    @media (max-width: 1024px) {
+        height: auto;
+        min-height: 400px;
     }
 `;
 
-function GoogleCalendarOverview({location, currentDayBookings} : {location: string, currentDayBookings: GoogleCalendarEventType[]}) {
-    const {selectedDate,setGCBookingData,  gcBookingData, setIsLoading, isLoading, setReloadCalendar, displayAddNewBooking, setDisplayAddNewBooking, isEditing } = useCalendarState();
+function GoogleCalendarOverview({ location, currentDayBookings }: { location: string, currentDayBookings: GoogleCalendarEventType[] }) {
+    const { selectedDate, setGCBookingData, gcBookingData, setIsLoading, isLoading, setReloadCalendar, displayAddNewBooking, setDisplayAddNewBooking, isEditing } = useCalendarState();
     const { setSnackMsg, setDisplaySnack } = useAppState();
 
     const [day, setDay] = useState(getDayFromTimestamp(selectedDate));
-
-    const validateBookingForm = () => {
-        return !gcBookingData.firstName || !gcBookingData.phoneNumber || !gcBookingData.start  || !gcBookingData.end || !gcBookingData.partySize || !gcBookingData.note;
-    }
 
     useEffect(() => {
         setDay(getDayFromTimestamp(selectedDate));
@@ -85,70 +116,41 @@ function GoogleCalendarOverview({location, currentDayBookings} : {location: stri
         return false
     }
 
-    const saveGoogleCalendarEvent = () => {
-        if (Number(gcBookingData.partySize) > 10) {
-            setSnackMsg({ msg: `Party larger than 10 people needs to email ${location === 'brick' ? 'info@thebrickrenton.com' : 'info@kumageorgetown.com'} for reservation`, severity: 'error' });
-            setDisplaySnack(true);
-            return;
-        }
-
-        setIsLoading(true);
-        const requestOption = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(gcBookingData)
-        }
-        let path = '';
-        if (location === 'brick') {
-            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/add-event`;
-        } else {
-            path = `${process.env.REACT_APP_BRICK_API}/google-calendar/add-event`;
-        }
-        fetch(path, requestOption)
-            .then(res => res.json())
-            .then((r) => {
-                setDisplayAddNewBooking(false);
-                setReloadCalendar(true);
-            }).finally(() => {
-            setIsLoading(false);
-        });
-    }
-
     const displayActionButtons = () => {
-        return (
-            <div style={{ marginTop: '-8px' }}>
-                {
-                    !displayAddNewBooking &&
-                        <IconButton
-                            className={'icon'}
-                            onClick={() => {
-                                setGCBookingData(InitialGCNewBooking);
-                                setDisplayAddNewBooking(true);
-                            }}
-                            disabled={getActionButtonDisabledState() || disableButtonStateWhenClosed() || isEditing}
-                        >
-                            <AddCircleIcon fontSize={'large'} style={{ color: 'black'}} />
-                        </IconButton>
-                }
-            </div>
-        )
+        if (!displayAddNewBooking && (!getActionButtonDisabledState() && !disableButtonStateWhenClosed())) {
+            return (
+                <Button
+                    className="create-btn"
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                        setGCBookingData(InitialGCNewBooking);
+                        setDisplayAddNewBooking(true);
+                    }}
+                    disabled={getActionButtonDisabledState() || disableButtonStateWhenClosed() || isEditing}
+                >
+                    Create
+                </Button>
+            )
+        }
+        return null;
     }
 
-    const  getLabelText = () => {
+    const getLabelText = () => {
         if (isEditing) return 'Editing reservation';
         if (displayAddNewBooking) return 'Adding new reservation';
-        return `${currentDayBookings.length} Reservation${currentDayBookings.length > 1 ? 's' : ''}`;
+        return `${currentDayBookings.length} Reservation${currentDayBookings.length !== 1 ? 's' : ''}`;
     }
 
     return (
         <GoogleCalendarOverviewWrapper >
             <div className={'co-header'}>
-                <div>
+                <div className="date-info">
                     <Typography variant={'h5'}>
-                        Selected Date: {format(selectedDate, 'MMM dd')}
+                        {format(selectedDate, 'MMMM dd')}
                     </Typography>
-                    <Typography variant={'subtitle1'}>
-                        <>{getLabelText()}</>
+                    <Typography className="subtitle">
+                        {getLabelText()}
                     </Typography>
                 </div>
 

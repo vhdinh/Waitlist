@@ -1,32 +1,63 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
-import {Button, FormControl, Table, TableBody, TableCell, TableContainer, TableRow, TextField} from "@mui/material";
-import {RestaurantKey, RoleKey, setLocalStorageData} from "../utils/general";
-import {Role, useAppState} from "../context/App.provider";
+import { Button, Container, Grid, Paper, TextField, Typography } from "@mui/material";
+import { RestaurantKey, setLocalStorageData } from "../utils/general";
 
 const TillCounterWrapper = styled.div`
-    tfoot > td {
-        border-bottom: 1px solid black;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    background-color: #f8f9fa;
+
+    .till-card {
+        background: white;
+        border-radius: 8px;
+        padding: 32px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        width: 100%;
+        max-width: 600px;
     }
-    .MuiTableRow-root > .MuiTableCell-root:first-of-type {
-        padding: 12px;
-    }
-    .till-result {
-        font-size: 96px;
+
+    .total-display {
+        margin-top: 16px;
         text-align: center;
-        display: flex;
-        justify-content: center;
-        flex-grow: 1;
-        align-items: center;
+        
+        .amount {
+            font-size: 48px;
+            font-weight: 300;
+            color: #1a73e8;
+            line-height: 1;
+            margin: 16px 0;
+        }
+        
+        .label {
+            font-size: 16px;
+            color: #5f6368;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
     }
-    @media (max-width: 660px) {
-        .till-wrapper {
-            display: grid;
+
+    .input-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        
+        .currency-label {
+            width: 80px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #3c4043;
         }
-        .till-result {
-            font-size: 60px;
+        
+        .MuiTextField-root {
+            flex-grow: 1;
         }
+    }
 `;
 
 const initialTillState = {
@@ -45,6 +76,7 @@ const initialTillState = {
 function TillCounter() {
     const [till, setTill] = useState(initialTillState);
     const inputRefs: any[] = [];
+
     const getTotal = () => {
         return (Number(till.hundreds) * 100) +
             (Number(till.fifties) * 50) +
@@ -58,389 +90,88 @@ function TillCounter() {
             (Number(till.pennies) * .01)
     }
 
-    const [differences, setDifferences] = useState(300);
-
-    useEffect(() => {
-        setDifferences(300 - getTotal());
-    }, [getTotal()])
-
     useEffect(() => {
         setLocalStorageData(RestaurantKey, '');
     }, []);
 
+    const handleKeyPress = (e: any, index: number) => {
+        if (e.key === 'Enter') {
+            if (index < inputRefs.length - 1) {
+                inputRefs[index + 1].focus();
+            }
+        }
+    }
+
+    const renderInput = (label: string, key: keyof typeof initialTillState, index: number) => (
+        <div className="input-row">
+            <div className="currency-label">{label}</div>
+            <TextField
+                inputRef={ref => inputRefs[index] = ref}
+                autoComplete={'off'}
+                variant="outlined"
+                value={till[key]}
+                type="number"
+                size="small"
+                placeholder="0"
+                onChange={(e) => setTill({ ...till, [key]: e.target.value })}
+                onKeyDown={(e) => handleKeyPress(e, index)}
+                fullWidth
+                InputProps={{
+                    style: { fontSize: 18 }
+                }}
+            />
+        </div>
+    );
+
     return (
         <TillCounterWrapper>
-            <Box
-                sx={{marginTop: '15px', display: 'inline-flex', width: '100%'}}
-                justifyContent={'space-around'}
-                gap={'36px'}
-                className={'till-wrapper'}
-            >
-                <TableContainer sx={{display: 'flex', justifyContent: 'center', width: 'unset !important', flexGrow: 1, minWidth: '400px'}}>
-                    <Table sx={{ border: 1, maxWidth: '300px', borderCollapse: 'unset !important', borderRadius: '0 !important'}}>
-                        {/*<TableHead>*/}
-                        {/*    <TableCell>Type</TableCell>*/}
-                        {/*    <TableCell>Count</TableCell>*/}
-                        {/*</TableHead>*/}
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>$100</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="hundred"
-                                            label="Hundreds"
-                                            variant="outlined"
-                                            value={till.hundreds}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, hundreds: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[1].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>$50</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="fifty"
-                                            label="Fifties"
-                                            variant="outlined"
-                                            value={till.fifties}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, fifties: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[2].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>$20</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="twenty"
-                                            label="Twenties"
-                                            variant="outlined"
-                                            value={till.twenties}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, twenties: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[3].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>$10</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="ten"
-                                            label="Tens"
-                                            variant="outlined"
-                                            value={till.tens}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, tens: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[4].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>$5</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="five"
-                                            label="Fives"
-                                            variant="outlined"
-                                            value={till.fives}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, fives: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[5].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>$1</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="one"
-                                            label="Ones"
-                                            variant="outlined"
-                                            value={till.ones}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, ones: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[6].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Quarters</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="quarters"
-                                            label="Quarters"
-                                            variant="outlined"
-                                            value={till.quarters}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, quarters: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[7].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Dimes</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="dime"
-                                            label="Dimes"
-                                            variant="outlined"
-                                            value={till.dimes}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, dimes: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[8].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Nickles</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="nickle"
-                                            label="Nickles"
-                                            variant="outlined"
-                                            value={till.nickles}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, nickles: d.target.value})}
-                                            onKeyPress= {(e) => {
-                                                if (e.key === 'Enter') {
-                                                    console.log('Enter key pressed');
-                                                    // write your functionality here
-                                                    inputRefs[9].focus()
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow style={{borderBottom: '1px solid black'}}>
-                                <TableCell>Pennies</TableCell>
-                                <TableCell sx={{
-                                    padding: '0',
-                                    '& fieldset' : {
-                                        top: '0'
-                                    }
-                                }}>
-                                    <FormControl>
-                                        <TextField
-                                            inputRef={ref => inputRefs.push(ref)}
-                                            autoComplete={'off'}
-                                            id="penny"
-                                            label="Pennies"
-                                            variant="outlined"
-                                            value={till.pennies}
-                                            inputProps={{ type: 'number'}}
-                                            size={'small'}
-                                            hiddenLabel
-                                            sx={{
-                                                '& legend': { display: 'none' },
-                                                '& .MuiInputLabel-shrink': { opacity: 0, transition: "all 0.2s ease-in" }
-                                            }}
-                                            onChange={(d) => setTill({...till, pennies: d.target.value})}/>
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <div style={{flexGrow: 2, margin: '0 24px', display: 'flex', flexDirection: 'column', gap: '48px'}}>
-                    <div>
-                        <Button variant="contained" size={'large'} style={{width: '100%'}} onClick={() => setTill(initialTillState)}>Clear Till</Button>
-                    </div>
-                    <div className={'till-result'}>
-                        Total: ${getTotal().toFixed(2)}
-                    </div>
-                    {/*<div>*/}
-                    {/*    differences: (300 - ${getTotal().toFixed(2)} = ${differences.toFixed(2)})*/}
-                    {/*</div>*/}
+            <div className="till-card">
+                <Typography variant="h5" style={{ textAlign: 'center', marginBottom: '16px', color: '#3c4043', fontWeight: 200 }}>
+                    Till Counter
+                </Typography>
+
+                <Grid container spacing={{ xs: 0, sm: 4 }}>
+                    <Grid item xs={12} sm={6}>
+                        {renderInput('$100', 'hundreds', 0)}
+                        {renderInput('$50', 'fifties', 1)}
+                        {renderInput('$20', 'twenties', 2)}
+                        {renderInput('$10', 'tens', 3)}
+                        {renderInput('$5', 'fives', 4)}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        {renderInput('$1', 'ones', 5)}
+                        {renderInput('25¢', 'quarters', 6)}
+                        {renderInput('10¢', 'dimes', 7)}
+                        {renderInput('5¢', 'nickles', 8)}
+                        {renderInput('1¢', 'pennies', 9)}
+                    </Grid>
+                </Grid>
+
+                <div className="total-display">
+                    <div className="label">Total Amount</div>
+                    <div className="amount">${getTotal().toFixed(2)}</div>
                 </div>
-            </Box>
+
+                <Box display="flex" justifyContent="center" marginTop="16px">
+                    <Button
+                        variant="contained"
+                        onClick={() => setTill(initialTillState)}
+                        style={{
+                            background: '#1a73e8',
+                            color: 'white',
+                            textTransform: 'none',
+                            fontWeight: 500,
+                            boxShadow: 'none',
+                            padding: '8px 32px',
+                            fontSize: '16px'
+                        }}
+                    >
+                        Clear Till
+                    </Button>
+                </Box>
+            </div>
         </TillCounterWrapper>
     );
 }
+
 export default TillCounter;

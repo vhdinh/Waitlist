@@ -89,12 +89,12 @@ router.route('/add-event').post((req, res) => {
         // keyFile: '../backend/reservation-calendar.json',
         scopes: 'https://www.googleapis.com/auth/calendar',
     });
-    auth.getClient().then(a=> {
+    auth.getClient().then(a => {
         calendar.events.insert({
-            auth:a,
+            auth: a,
             calendarId: GOOGLE_CALENDAR_ID,
             resource: newEvent,
-        }, function(err, event) {
+        }, function (err, event) {
             if (err) {
                 console.log('There was an error contacting the Calendar service: ' + err);
                 return res.status(400).json('Error: ' + err)
@@ -108,7 +108,7 @@ router.route('/add-event').post((req, res) => {
 
 router.route('/update-event').post((req, res) => {
     console.log('route: /google-calendar/update-event', req.body);
-    const updatedBody = {...req.body};
+    const updatedBody = { ...req.body };
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
         keyFile: '/etc/secrets/reservation-calendar.json',
@@ -120,13 +120,13 @@ router.route('/update-event').post((req, res) => {
         ],
     });
 
-    auth.getClient().then(a=> {
+    auth.getClient().then(a => {
         calendar.events.patch({
-            auth:a,
+            auth: a,
             calendarId: GOOGLE_CALENDAR_ID,
             eventId: req.body.id,
             requestBody: updatedBody,
-        }, function(err, event) {
+        }, function (err, event) {
             if (err) {
                 console.log('There was an error contacting the Calendar service: ' + err);
                 res.status(400).json('Error: ' + err)
@@ -150,7 +150,7 @@ router.route('/delete-event/:id').delete((req, res) => {
             'https://www.googleapis.com/auth/calendar.events',
         ],
     });
-    auth.getClient().then(a=> {
+    auth.getClient().then(a => {
         calendar.events.delete({
             auth: a,
             calendarId: GOOGLE_CALENDAR_ID,
