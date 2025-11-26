@@ -117,7 +117,7 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
     }
 
     const displayActionButtons = () => {
-        if (!displayAddNewBooking && !getActionButtonDisabledState()) {
+        if (!displayAddNewBooking && (!getActionButtonDisabledState() && !disableButtonStateWhenClosed())) {
             return (
                 <Button
                     className="create-btn"
