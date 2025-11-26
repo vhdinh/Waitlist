@@ -2,12 +2,12 @@ const { google } = require('googleapis');
 const router = require('express').Router();
 
 // uncomment when making commits to get credentials for production
-// const secrets = require('/etc/secrets/reservation-calendar.json');
-// const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_KUMA_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
+const secrets = require('/etc/secrets/reservation-calendar.json');
+const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_KUMA_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
 
 
 // uncomment for local dev
-const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_KUMA_PRIVATE_KEY.split(String.raw`\n`).join('\n');
+// const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_KUMA_PRIVATE_KEY.split(String.raw`\n`).join('\n');
 
 // GOOGLE CALENDAR INTEGRATION
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
@@ -84,9 +84,9 @@ router.route('/add-event').post((req, res) => {
     };
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        // keyFile: '/etc/secrets/reservation-calendar.json',
+        keyFile: '/etc/secrets/reservation-calendar.json',
         // uncomment for local dev
-        keyFile: '../backend/reservation-calendar.json',
+        // keyFile: '../backend/reservation-calendar.json',
         scopes: 'https://www.googleapis.com/auth/calendar',
     });
     auth.getClient().then(a => {
@@ -111,9 +111,9 @@ router.route('/update-event').post((req, res) => {
     const updatedBody = { ...req.body };
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        // keyFile: '/etc/secrets/reservation-calendar.json',
+        keyFile: '/etc/secrets/reservation-calendar.json',
         // uncomment for local dev
-        keyFile: '../backend/reservation-calendar.json',
+        // keyFile: '../backend/reservation-calendar.json',
         scopes: [
             'https://www.googleapis.com/auth/calendar',
             'https://www.googleapis.com/auth/calendar.events',
@@ -142,9 +142,9 @@ router.route('/delete-event/:id').delete((req, res) => {
     console.log('route: /google-calendar/delete-event params', req.params.id);
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        // keyFile: '/etc/secrets/reservation-calendar.json',
+        keyFile: '/etc/secrets/reservation-calendar.json',
         // uncomment for local dev
-        keyFile: '../backend/reservation-calendar.json',
+        // keyFile: '../backend/reservation-calendar.json',
         scopes: [
             'https://www.googleapis.com/auth/calendar',
             'https://www.googleapis.com/auth/calendar.events',
