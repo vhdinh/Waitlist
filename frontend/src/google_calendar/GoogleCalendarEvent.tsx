@@ -163,7 +163,7 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                                     {currentBooking.summary}
                                 </div>
                                 <div className="time">
-                                    {moment(currentBooking.start.dateTime).format('h:mm A')}
+                                    {currentBooking.start.dateTime ? moment(currentBooking.start.dateTime).format('h:mm A') : 'All Day'}
                                 </div>
                                 {
                                     currentBooking.description && (
