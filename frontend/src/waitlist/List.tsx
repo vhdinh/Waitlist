@@ -16,17 +16,12 @@ const getColumns = (isAdmin: boolean, location: string): GridColDef[] => {
             editable: true,
             sortable: false,
             flex: 1,
+            renderCell: (params: GridRenderCellParams<any, Date>) => {
+                return (
+                    <p className='MuiDataGrid-cellContent'>{params['row'][params.field]} ({params['row']['partySize']})</p>
+                )
+            }
         },
-        {
-            field: 'partySize',
-            headerName: 'Party',
-            headerAlign: 'left',
-            type: 'number',
-            editable: true,
-            sortable: false,
-            flex: 1,
-            align: 'left',
-        }
     ];
 
     if (isAdmin) {
