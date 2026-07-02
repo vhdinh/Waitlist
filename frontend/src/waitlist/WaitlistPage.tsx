@@ -85,31 +85,28 @@ function WaitlistPage(props: WaitlistPageProps) {
                     <TapToBegin />
                 ) : (
                     <>
-                        <Container className={'body-content'}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <Typography
-                                        variant="h2"
-                                        className={'title'}
-                                        onClick={() => window.location.reload()}
-                                    >
+                        <div className={'page-content'}>
+                            <div className={'page-header'}>
+                                <div className={'header-left'}>
+                                    <Typography variant="h3" className={'title'}>
                                         Waitlist
                                     </Typography>
-                                </Grid>
-                                <Grid item xs={12} className={'join-waitlist'}>
-                                    <Button
-                                        size='large'
-                                        variant="contained"
-                                        onClick={() => setOpenAddToListModal(true)}
-                                    >
-                                        Join the Waitlist
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2} className={'customer-list'}>
+                                    <Typography className={'subtitle'}>
+                                        {list.length} {list.length === 1 ? 'party' : 'parties'} waiting · Tonight
+                                    </Typography>
+                                </div>
+                                <Button
+                                    className={'add-party-btn'}
+                                    onClick={() => setOpenAddToListModal(true)}
+                                    startIcon={<span className={'plus-icon'}>+</span>}
+                                >
+                                    Add party
+                                </Button>
+                            </div>
+                            <div className={'customer-list'}>
                                 <List list={list} location={props.location} />
-                            </Grid>
-                        </Container>
+                            </div>
+                        </div>
                         <AddToListModal location={props.location} open={openAddToListModal} close={() => setOpenAddToListModal(false)} />
                     </>
                 )

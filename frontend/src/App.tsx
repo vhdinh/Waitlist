@@ -186,21 +186,23 @@ function App() {
                                     </Typography>
                                 )
                             }
-                            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' }, gap: '18px' }} style={{ justifyContent: 'center' }}>
-                                {pages.map((page, index) => {
-                                    if (page.role.includes(role) && page.restaurant.includes(location.pathname.split('/')[1])) {
-                                        return (
-                                            <Button
-                                                key={index}
-                                                onClick={() => handleCloseNavMenu(page.url)}
-                                                sx={{ my: 2, display: 'block' }}
-                                                className="nav-btn"
-                                            >
-                                                {page.label}
-                                            </Button>
-                                        )
-                                    }
-                                })}
+                            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }} style={{ justifyContent: 'center' }}>
+                                <div className="nav-pill-container">
+                                    {pages.map((page, index) => {
+                                        if (page.role.includes(role) && page.restaurant.includes(location.pathname.split('/')[1])) {
+                                            const isActive = location.pathname === page.url;
+                                            return (
+                                                <Button
+                                                    key={index}
+                                                    onClick={() => handleCloseNavMenu(page.url)}
+                                                    className={`nav-btn${isActive ? ' active' : ''}`}
+                                                >
+                                                    {page.label}
+                                                </Button>
+                                            )
+                                        }
+                                    })}
+                                </div>
                             </Box>
                             {
                                 url.includes('brick') || url.includes('kuma') || url.includes('eight') ? (

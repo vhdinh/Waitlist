@@ -1,66 +1,21 @@
 import React from 'react';
-import { Box } from '@mui/material';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import ActionColumn from './ActionColumn';
 import styled from '@emotion/styled';
 import { Role, useAppState } from '../context/App.provider';
-import PhoneNumberColumn from './PhoneNumberColumn';
-import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
-import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
-
-const getColumns = (isAdmin: boolean, location: string): GridColDef[] => {
-    const arr: GridColDef[] = [
-        {
-            field: 'name',
-            headerName: 'Name',
-            editable: true,
-            sortable: false,
-            flex: 1,
-            renderCell: (params: GridRenderCellParams<any, Date>) => {
-                return (
-                    <p className='MuiDataGrid-cellContent'>{params['row'][params.field]} ({params['row']['partySize']})</p>
-                )
-            }
-        },
-    ];
-
-    if (isAdmin) {
-        arr.push(
-            {
-                field: 'phoneNumber',
-                headerName: 'Phone', // @ts-ignore
-                renderCell: (params: GridRenderCellParams) => {
-                    return <PhoneNumberColumn {...params.row} />
-                },
-                sortable: false,
-                flex: 1,
-                align: 'left',
-            }
-        )
-        arr.push(
-            {
-                field: 'action',
-                headerName: '', // @ts-ignore
-                renderCell: (params: GridRenderCellParams) => {
-                    return <ActionColumn {...params.row} location={location} />
-                },
-                sortable: false,
-                align: 'right',
-                width: 150,
-            }
-        )
-    }
-    return arr;
-}
+import ActionColumn from './ActionColumn';
+import { phoneNumberAutoFormat } from './PhoneNumberColumn';
+import PhoneIcon from '@mui/icons-material/Phone';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 interface Customer {
-    id: number;
+    _id: string;
     createdAt: string;
     name: string;
     partySize: number;
-    phoneNumber: number;
+    phoneNumber: string;
     updatedAt: string;
     msg?: string;
+    notified?: boolean;
+    notifiedAt?: string;
 }
 
 interface ListProps {
@@ -68,73 +23,181 @@ interface ListProps {
     list: Customer[];
 }
 
-const ListWrapper = styled.div`
-    width: 100%;
-    .Mui-odd {
-        background: #FCFCFC;
+const CustomerCard = styled.div`
+    background: #252525;
+    border-radius: 12px;
+    border-left: 3px solid #5c6bc0;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .party-size-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 56px;
+        background: #1e1e2e;
+        border-radius: 8px;
+        padding: 8px 12px;
+        .party-number {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #e8eaed;
+            line-height: 1;
+        }
+        .party-label {
+            font-size: 0.6rem;
+            color: #9aa0a6;
+            letter-spacing: 0.08em;
+            margin-top: 2px;
+            text-transform: uppercase;
+        }
     }
-    .accepts {
-        // background: #1b5e20;
+
+    .customer-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
     }
-    .accepts-icon {
-        // color: #D8EEE1;
-        color: #4caf50;
+
+    .name-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        .customer-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e8eaed;
+        }
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(66, 133, 244, 0.15);
+            border-radius: 20px;
+            padding: 2px 10px;
+            .status-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #4285f4;
+                flex-shrink: 0;
+            }
+            .status-text {
+                font-size: 0.75rem;
+                color: #4285f4;
+                font-weight: 500;
+            }
+        }
+        .notified-badge {
+            background: rgba(76, 175, 80, 0.15);
+            .status-dot { background: #4caf50; }
+            .status-text { color: #4caf50; }
+        }
+        .declined-badge {
+            background: rgba(221, 44, 0, 0.15);
+            .status-dot { background: #dd2c00; }
+            .status-text { color: #dd2c00; }
+        }
     }
-    .decline {
-        // background: #dd2c00;
+
+    .meta-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #9aa0a6;
+            font-size: 0.85rem;
+            svg {
+                font-size: 0.95rem;
+                color: #6b7280;
+            }
+        }
     }
-    .decline-icon {
-        // color: #FBDBC1;
-        color: #dd2c00;
-    }
-    input {
-      font-size: 24px;
+
+    .actions-col {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
     }
 `;
 
+function formatAddedTime(createdAt: string): string {
+    const date = new Date(createdAt);
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+function getStatusBadgeClass(notified: boolean | undefined, msg: string | undefined): string {
+    if (notified && msg === '1') return 'status-badge notified-badge';
+    if (notified && msg === '6') return 'status-badge declined-badge';
+    return 'status-badge';
+}
+
+function getStatusText(notified: boolean | undefined, msg: string | undefined): string {
+    if (notified && msg === '1') return 'Accepted';
+    if (notified && msg === '6') return 'Declined';
+    if (notified) return 'Notified';
+    return 'Waiting';
+}
+
 function List(props: ListProps) {
-    const { isAdmin, role } = useAppState();
+    const { role } = useAppState();
+    const showAdminActions = role === Role.EMPLOYEE || role === Role.ADMIN;
 
     return (
-        <ListWrapper>
-            {
-                role === Role.EMPLOYEE || role === Role.ADMIN ? (
-                    <div style={{ fontSize: '20px', display: 'flex', gap: 24, paddingBottom: 8, position: 'absolute', marginTop: '-28px' }}>
-                        <span style={{ display: 'flex', justifyItems: 'center', gap: 12 }}>
-                            <MobileFriendlyIcon className={'accepts-icon'} /> Accepted
-                        </span>
-                        <span style={{ display: 'flex', justifyItems: 'center', gap: 12 }}>
-                            <PhonelinkEraseIcon className={'decline-icon'} /> Declined
-                        </span>
+        <>
+            {props.list.map((customer) => (
+                <CustomerCard key={customer._id}>
+                    <div className="party-size-box">
+                        <span className="party-number">{customer.partySize}</span>
+                        <span className="party-label">Guests</span>
                     </div>
-                ) : <></>
-            }
-            <Box sx={{ height: 'calc(100vh - 400px)', width: '100%' }}>
-                <DataGrid
-                    rows={props.list}
-                    columns={getColumns(role === Role.EMPLOYEE || role === Role.ADMIN, props.location)}
-                    disableRowSelectionOnClick
-                    disableColumnMenu
-                    hideFooterPagination
-                    hideFooterSelectedRowCount
-                    hideFooter
-                    rowSelection={false}
-                    getRowId={(row) => row._id}
-                    getRowClassName={(params) => {
-                        let c = '';
-                        // user accepts
-                        if (params.row.msg === '1' && (role === Role.EMPLOYEE || role === Role.ADMIN)) {
-                            c += 'accepts';
-                        } else if (params.row.msg === '6' && (role === Role.EMPLOYEE || role === Role.ADMIN)) {
-                            c += 'decline';
-                        }
-                        c += params.indexRelativeToCurrentPage % 2 === 0 ? ' Mui-even' : ' Mui-odd'
-                        return c;
-                    }}
-                />
-            </Box>
-        </ListWrapper>
-    )
+                    <div className="customer-info">
+                        <div className="name-row">
+                            <span className="customer-name">{customer.name}</span>
+                            <span className={getStatusBadgeClass(customer.notified, customer.msg)}>
+                                <span className="status-dot" />
+                                <span className="status-text">{getStatusText(customer.notified, customer.msg)}</span>
+                            </span>
+                        </div>
+                        <div className="meta-row">
+                            {showAdminActions && (
+                                <span className="meta-item">
+                                    <PhoneIcon />
+                                    {phoneNumberAutoFormat(customer.phoneNumber?.toString() ?? '')}
+                                </span>
+                            )}
+                            <span className="meta-item">
+                                <AccessTimeIcon />
+                                Added {formatAddedTime(customer.createdAt)}
+                            </span>
+                        </div>
+                    </div>
+                    {showAdminActions && (
+                        <div className="actions-col">
+                            <ActionColumn
+                                _id={customer._id as any}
+                                name={customer.name}
+                                party={customer.partySize}
+                                notified={customer.notified ?? false}
+                                notifiedAt={customer.notifiedAt}
+                                phoneNumber={customer.phoneNumber}
+                                msg={customer.msg ?? ''}
+                                location={props.location}
+                            />
+                        </div>
+                    )}
+                </CustomerCard>
+            ))}
+        </>
+    );
 }
 
 export default List;

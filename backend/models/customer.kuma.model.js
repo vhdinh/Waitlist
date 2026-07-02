@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// connect to brick db
+// connect to kuma db
 const kumaDb = require("../connectDbs")('Kuma', process.env.KUMA_MONGODB_URL);
 
 const Schema = mongoose.Schema;
@@ -33,6 +33,11 @@ const customerSchema = new Schema({
     partySize: {
         type: Number,
         required: true,
+    },
+    seated: {
+        type: Boolean,
+        requred: false,
+        default: false,
     },
     deleted: {
         type: Boolean,
