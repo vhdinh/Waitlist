@@ -12,6 +12,7 @@ import {
 import { Role, useAppState } from './context/App.provider';
 import { useCalendarState } from "./context/Calendar.provider";
 import { RoleKey, setLocalStorageData } from "./utils/general";
+import { gcColors, gcFonts } from "./google_calendar/GoogleCalendar.theme";
 
 function AdminPasscodeModal() {
     const { displayAdminDialog, setDisplayAdminDialog, setIsAdmin, setRole, } = useAppState();
@@ -66,12 +67,19 @@ function AdminPasscodeModal() {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             disableRestoreFocus
-            PaperProps={{ sx: { borderRadius: '8px' } }}
+            PaperProps={{
+                sx: {
+                    borderRadius: '8px',
+                    backgroundColor: gcColors.panelBg,
+                    border: `1px solid ${gcColors.border}`,
+                    backgroundImage: 'none',
+                },
+            }}
         >
             <DialogTitle id="alert-dialog-title">
                 <Typography
                     variant="inherit"
-                    style={{ fontSize: '22px', fontWeight: 400, color: '#3c4043', marginBottom: '12px' }}
+                    style={{ fontFamily: gcFonts.serif, fontSize: '28px', fontWeight: 500, color: gcColors.textPrimary, marginBottom: '12px' }}
                 >
                     Enter admin code
                 </Typography>
@@ -96,6 +104,16 @@ function AdminPasscodeModal() {
                         InputLabelProps={{ style: { fontSize: 16 } }}
                         helperText={helperText}
                         size="small"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                color: gcColors.textPrimary,
+                                backgroundColor: gcColors.panelBgHover,
+                                '& fieldset': { borderColor: gcColors.border },
+                                '&:hover fieldset': { borderColor: gcColors.accent },
+                                '&.Mui-focused fieldset': { borderColor: gcColors.accent },
+                            },
+                            '& .MuiFormHelperText-root': { color: gcColors.danger },
+                        }}
                     />
                 </FormControl>
             </DialogContent>
@@ -107,7 +125,7 @@ function AdminPasscodeModal() {
                         setHelperText('');
                     }}
                     style={{
-                        color: '#5f6368',
+                        color: gcColors.textSecondary,
                         textTransform: 'none',
                         fontWeight: 500
                     }}
@@ -118,11 +136,12 @@ function AdminPasscodeModal() {
                     variant="contained"
                     onClick={(e) => handleSubmit(e)}
                     style={{
-                        background: '#1a73e8',
-                        color: 'white',
+                        background: gcColors.accent,
+                        color: gcColors.accentText,
                         textTransform: 'none',
                         fontWeight: 500,
-                        boxShadow: 'none'
+                        boxShadow: 'none',
+                        borderRadius: '8px',
                     }}
                 >
                     Enter

@@ -178,6 +178,14 @@ function List(props: ListProps) {
                                 <AccessTimeIcon />
                                 Added {formatAddedTime(customer.createdAt)}
                             </span>
+                            {
+                                customer.notified && showAdminActions && (
+                                    <span className="meta-item">
+                                        <AccessTimeIcon />
+                                        Notified {formatAddedTime(customer.notifiedAt || '')}
+                                    </span>
+                                )
+                            }
                         </div>
                     </div>
                     {showAdminActions && (

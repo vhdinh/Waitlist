@@ -1,8 +1,8 @@
 import React from 'react';
 import brickLogo from './assets/BrickTransparent.png';
 import eightLogo from './assets/1988Transparent.png';
-// import kumaLogo from './assets/KUMABlackTransparent.png';
-import kumaLogo from './assets/KumaCircle.jpg';
+import kumaLogo from './assets/KUMABlackTransparent.png';
+// import kumaLogo from './assets/KumaCircle.jpg';
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { RestaurantKey, setLocalStorageData } from "./utils/general";
@@ -19,9 +19,11 @@ const EntryWrapper = styled.div`
         img {
             width: 100px;
             height: 100px;
-            border: 10px solid #E5E5E5;
+            border: 5px solid #E5E5E5;
             //background-color: #E5E5E5;
             border-radius: 36px;
+            filter: brightness(0) invert(1);
+
             cursor: pointer;
             padding: 10px;
         }
