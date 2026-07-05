@@ -206,17 +206,27 @@ function App() {
                             </Box>
                             {
                                 url.includes('brick') || url.includes('kuma') || url.includes('eight') ? (
-                                    <Box sx={{ flexGrow: 0 }} style={{ display: 'flex', gap: '32px' }}>
-                                        <Tooltip title="Refresh Page">
-                                            <IconButton onClick={() => window.location.reload()} sx={{ p: 0 }}>
-                                                <RefreshIcon style={{ color: '#5f6368' }} />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Tooltip title="Open settings">
-                                            <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
-                                                <SettingsIcon style={{ color: '#5f6368' }} />
-                                            </IconButton>
-                                        </Tooltip>
+                                    <Box sx={{ flexGrow: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                        {
+                                            isAdmin && (
+                                                <div className={`admin-badge${role === Role.ADMIN ? ' is-admin' : ' is-employee'}`}>
+                                                    <span className="admin-badge-dot" />
+                                                    {role === Role.ADMIN ? 'Admin Mode' : 'Employee Mode'}
+                                                </div>
+                                            )
+                                        }
+                                        <Box style={{ display: 'flex', gap: '32px' }}>
+                                            <Tooltip title="Refresh Page">
+                                                <IconButton onClick={() => window.location.reload()} sx={{ p: 0 }}>
+                                                    <RefreshIcon style={{ color: '#5f6368' }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Open settings">
+                                                <IconButton onClick={handleCloseUserMenu} sx={{ p: 0 }}>
+                                                    <SettingsIcon style={{ color: '#5f6368' }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
                                     </Box>
                                 ) : url.includes('till-counter') || url.includes('tip-counter') ? <></> : <h2 className={'select-restaurant'}>SELECT RESTAURANT</h2>
                             }

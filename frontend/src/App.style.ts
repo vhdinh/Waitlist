@@ -71,6 +71,42 @@ export const AppWrapper = styled.div<AppWrapperProps>`
         .admin {
             color: lightgray;
         }
+        .admin-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            padding: 6px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+
+            .admin-badge-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+
+            &.is-admin {
+                background: rgba(245, 166, 35, 0.15);
+                color: #F5A623;
+                .admin-badge-dot {
+                    background: #F5A623;
+                    box-shadow: 0 0 6px rgba(245, 166, 35, 0.8);
+                }
+            }
+
+            &.is-employee {
+                background: rgba(76, 175, 80, 0.15);
+                color: #4caf50;
+                .admin-badge-dot {
+                    background: #4caf50;
+                    box-shadow: 0 0 6px rgba(76, 175, 80, 0.8);
+                }
+            }
+        }
         .select-restaurant {
             width: 100%;
             color: white;

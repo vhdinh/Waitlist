@@ -55,10 +55,13 @@ export const AppProvider = ({
         console.log('-----', storedRole);
         if (storedRole === 'admin') {
             setRole(Role.ADMIN);
+            setIsAdmin(true);
         } else if (storedRole === 'employee') {
             setRole(Role.EMPLOYEE);
+            setIsAdmin(true);
         } else {
             setRole(Role.USER);
+            setIsAdmin(false);
         }
     }, []);
 
