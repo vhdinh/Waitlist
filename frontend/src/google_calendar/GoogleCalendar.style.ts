@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
+import { gcColors, gcFonts } from './GoogleCalendar.theme';
 
 export const GoogleCalendarWrapper = styled.div`
-    font-family: 'Roboto', sans-serif;
-    color: #3c4043;
+    font-family: ${gcFonts.sans};
+    color: ${gcColors.textPrimary};
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -36,70 +37,73 @@ export const GoogleCalendarWrapper = styled.div`
         flex-direction: column;
         width: 100%;
         height: 100%;
-        background: #fff;
-        border: 1px solid #dadce0;
+        background: ${gcColors.panelBg};
+        border: 1px solid ${gcColors.border};
         border-radius: 8px;
         overflow: hidden;
         box-sizing: border-box;
-        
+
         /* HEADER */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 24px;
-            border-bottom: 1px solid #dadce0;
+            padding: 16px 24px;
+            border-bottom: 1px solid ${gcColors.borderSubtle};
             flex-shrink: 0; // Prevent header from shrinking
-            
+
             .month-nav {
                 display: flex;
                 align-items: center;
-                gap: 12px;
+                gap: 16px;
             }
 
             .month-year {
-                font-size: 22px;
-                font-weight: 400;
-                color: #3c4043;
-                margin-left: 12px;
+                font-family: ${gcFonts.serif};
+                font-size: 32px;
+                font-weight: 500;
+                color: ${gcColors.textPrimary};
+                margin-left: 4px;
                 min-width: 200px;
             }
 
             .icon {
-                color: #5f6368;
+                color: ${gcColors.textSecondary};
                 padding: 8px;
                 &:hover {
-                    background-color: #f1f3f4;
+                    background-color: ${gcColors.panelBgHover};
+                    color: ${gcColors.textPrimary};
                 }
             }
-            
+
             .today-btn {
                 text-transform: none;
-                color: #3c4043;
-                border: 1px solid #dadce0;
-                border-radius: 4px;
-                padding: 6px 12px;
+                color: ${gcColors.textPrimary};
+                border: 1px solid ${gcColors.border};
+                border-radius: 8px;
+                padding: 6px 16px;
                 font-weight: 500;
                 font-size: 14px;
                 &:hover {
-                    background-color: #f1f3f4;
-                    border-color: #dadce0;
+                    background-color: ${gcColors.panelBgHover};
+                    border-color: ${gcColors.border};
                 }
             }
         }
 
         /* DAYS HEADER */
         .days {
-            border-bottom: 1px solid #dadce0;
-            padding: 8px 0;
+            border-bottom: 1px solid ${gcColors.borderSubtle};
+            padding: 10px 0;
             flex-shrink: 0; // Prevent days header from shrinking
-            
+
             .col {
                 font-size: 11px;
                 font-weight: 500;
-                color: #70757a;
+                color: ${gcColors.textSecondary};
+                letter-spacing: 0.05em;
                 text-transform: uppercase;
-                
+
                 &:last-child {
                     border-right: none;
                 }
@@ -124,16 +128,16 @@ export const GoogleCalendarWrapper = styled.div`
 
             .row {
                 flex-grow: 1;
-                border-bottom: 1px solid #dadce0;
-                min-height: 100px; 
+                border-bottom: 1px solid ${gcColors.borderSubtle};
+                min-height: 100px;
             }
 
             .cell {
                 position: relative;
-                border-right: 1px solid #dadce0;
-                background: #fff;
+                border-right: 1px solid ${gcColors.borderSubtle};
+                background: ${gcColors.panelBg};
                 transition: background-color 0.1s ease;
-                
+
                 &:last-child {
                     border-right: none;
                 }
@@ -141,29 +145,30 @@ export const GoogleCalendarWrapper = styled.div`
                 display: flex;
                 flex-direction: column;
                 gap: 4px;
+                box-sizing: border-box;
 
                 &:hover {
-                    background-color: #f8f9fa; // Subtle hover effect
+                    background-color: ${gcColors.panelBgHover}; // Subtle hover effect
                 }
 
                 &.disabled {
-                    background-color: #f8f9fa;
                     .number span {
-                        color: #70757a;
-                        opacity: 0.5;
+                        color: ${gcColors.textMuted};
                     }
                 }
 
                 &.selected {
-                    background-color: #e8f0fe;
+                    background-color: ${gcColors.selectedBg};
+                    box-shadow: inset 0 0 0 1px ${gcColors.accent};
+                    border-radius: 4px;
                 }
 
                 .number {
                     display: flex;
-                    justify-content: center;
-                    font-size: 12px;
+                    justify-content: flex-start;
+                    font-size: 13px;
                     font-weight: 500;
-                    color: #3c4043;
+                    color: ${gcColors.textPrimary};
                     margin-bottom: 4px;
 
                     span {
@@ -176,15 +181,16 @@ export const GoogleCalendarWrapper = styled.div`
                     }
 
                     .today {
-                        background-color: #1a73e8;
-                        color: #fff;
+                        background-color: ${gcColors.accent};
+                        color: ${gcColors.accentText};
+                        font-weight: 700;
                     }
                 }
 
                 .closed {
                     font-size: 10px;
-                    color: #d93025;
-                    background: #fce8e6;
+                    color: ${gcColors.danger};
+                    background: ${gcColors.dangerBg};
                     padding: 2px 4px;
                     border-radius: 4px;
                     align-self: center;
@@ -201,24 +207,24 @@ export const GoogleCalendarWrapper = styled.div`
                     .event {
                         font-size: 10px; // Small text for events
                         font-weight: 500;
-                        padding: 2px 6px;
+                        padding: 3px 6px;
                         border-radius: 4px;
-                        background-color: #039be5; // Google Calendar Blue
-                        color: #fff;
+                        background-color: ${gcColors.eventBg};
+                        color: ${gcColors.textPrimary};
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         cursor: pointer;
                         line-height: 1.4;
-                        
+
                         &:hover {
-                            filter: brightness(0.95);
+                            background-color: ${gcColors.eventBgHover};
                         }
                     }
-                    
+
                     .more-events {
                         font-size: 10px;
-                        color: #3c4043;
+                        color: ${gcColors.accent};
                         padding: 0 4px;
                         font-weight: 500;
                         cursor: pointer;
@@ -240,7 +246,7 @@ export const GoogleCalendarWrapper = styled.div`
                 justify-content: space-between;
             }
         }
-        
+
         .cell {
             height: auto !important;
             min-height: 60px;

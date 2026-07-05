@@ -1,12 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { IconButton } from '@mui/material';
-import SmsIcon from '@mui/icons-material/Sms';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useWaitlistState } from '../context/Waitlist.provider';
-import {Role, useAppState} from '../context/App.provider';
-import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
-import PhonelinkEraseIcon from '@mui/icons-material/PhonelinkErase';
+import { Role, useAppState } from '../context/App.provider';
 
 interface ActionColumnProps {
     _id: number;
@@ -19,51 +14,74 @@ interface ActionColumnProps {
     location: string;
 }
 
-const ActionColumnWrapper = styled.div`
+const ActionWrapper = styled.div`
     display: flex;
-    gap: 8px;
     align-items: center;
-    .actions {
+    gap: 8px;
+
+    .action-btn {
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 7px 16px;
+        cursor: pointer;
+        border: none;
+        transition: background 0.15s, opacity 0.15s;
+        white-space: nowrap;
+        &:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+    }
+
+    .notify-btn {
+        background: transparent;
+        color: #e8eaed;
+        border: 1px solid #444;
+        &:hover:not(:disabled) {
+            background: rgba(255,255,255,0.07);
+        }
+    }
+
+    .seat-btn {
+        background: #4caf50;
+        color: #fff;
+        &:hover:not(:disabled) {
+            background: #43a047;
+        }
+    }
+
+    .remove-btn {
+        background: transparent;
+        color: #9aa0a6;
+        border: 1px solid #444;
+        width: 34px;
+        height: 34px;
+        padding: 0;
         display: flex;
-        flex-direction: column;
-        .__icons {
-            display: flex;
-            align-items: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        border-radius: 8px;
+        &:hover {
+            background: rgba(255,255,255,0.07);
+            color: #e8eaed;
         }
-    }
-    .sms {
-        color: #1976d2;
-        cursor: pointer;
-        &:disabled {
-            cursor: not-allowed;
-        }
-    }
-    .delete {
-        color: black;
-        cursor: pointer;
-        &:disabled {
-            cursor: not-allowed;
-        }
-    }
-    .Mui-disabled svg {
-        color: #D5D7D8 !important;
     }
 `;
 
 function ActionColumn(props: ActionColumnProps) {
     const { setReloadList } = useWaitlistState();
-    const { isAdmin, setDisplaySnack, setSnackMsg, role } = useAppState();
+    const { setDisplaySnack, setSnackMsg } = useAppState();
+
     const getInitialNotifiedTimeframe = (): number => {
         const n = Date.now();
         const notified = new Date(props.notifiedAt);
         const lapsed = ((n - notified.getTime()) / 1000) / 60;
         return Math.floor(lapsed);
-    }
-    console.log('----notified---', getInitialNotifiedTimeframe());
+    };
 
     const [timeSinceNotified, setTimeSinceNotified] = useState(getInitialNotifiedTimeframe);
-
-    const MINUTE_MS =  60000;
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -73,13 +91,12 @@ function ActionColumn(props: ActionColumnProps) {
                 const notified = new Date(props.notifiedAt);
                 const lapsed = ((n - notified.getTime()) / 1000) / 60;
                 setTimeSinceNotified(Math.floor(lapsed));
-                }, MINUTE_MS);
+            }, 60000);
         }
-        return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+        return () => clearInterval(interval);
     }, []);
 
     const notifyCustomer = () => {
-        // Simple POST request with a JSON body using fetch
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -87,7 +104,7 @@ function ActionColumn(props: ActionColumnProps) {
         };
         fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/${props._id}/notify`, requestOptions)
             .then(res => res.json())
-            .then((r) => {
+            .then(() => {
                 setSnackMsg({ msg: `${props.name} has been notified`, severity: 'success' });
                 setDisplaySnack(true);
                 setReloadList(true);
@@ -95,8 +112,6 @@ function ActionColumn(props: ActionColumnProps) {
     };
 
     const removeCustomer = () => {
-        // setList(list.filter((l) => l.phoneNumber !== phoneNumber));
-        // Simple POST request with a JSON body using fetch
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -104,62 +119,50 @@ function ActionColumn(props: ActionColumnProps) {
         };
         fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/${props._id}/delete`, requestOptions)
             .then(res => res.json())
-            .then((r) => {
-                console.log('Deleted', r);
-                // setSnackMsg(`${name} has been notified`);
-                // setDisplaySnack(true);
-                // setList(list.filter((l) => l.phoneNumber !== phoneNumber));
+            .then(() => {
                 setReloadList(true);
             });
-    }
+    };
 
-    const renderPhoneIcons = () => {
-        if (props.notified && props.msg === '1') return <MobileFriendlyIcon fontSize={'large'} style={{color: '#4caf50', width: '59px'}} />
-        if (props.notified && props.msg === '6') return <PhonelinkEraseIcon fontSize={'large'} style={{color: "#dd2c00", width: '59px'}}/>
-        return (
-            <>
-                <IconButton
-                    onClick={(e: any) => notifyCustomer()}
-                    size={'large'}
-                    disabled={props.notified}
-                >
-                    <SmsIcon
-                        style={{color: `${props.notified ? 'gray' : '#1875D1'}`}}
-                        className={'sms'}
-                        fontSize={'large'}
-                    />
-                </IconButton>
-            </>
-        )
-    }
-    console.log('---Role', role);
+    const seatCustomer = () => {
+        // handler to be implemented by user
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: props._id })
+        };
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/${props._id}/seat`, requestOptions)
+            .then(res => res.json())
+            .then(() => {
+                setReloadList(true);
+            });
+    };
+
     return (
-        <ActionColumnWrapper>
-            { role === Role.EMPLOYEE || role === Role.ADMIN ? (
-                <div className={'actions'}>
-                    <div className={'__icons'}>
-                        {renderPhoneIcons()}
-                        <IconButton
-                            onClick={(e: any) => removeCustomer()}
-                            size={'large'}
-                        >
-                            <DeleteIcon
-                                className={'delete'}
-                                fontSize={'large'}
-                            />
-                        </IconButton>
-                    </div>
-                    { props.notified ? (
-                        <div>
-                            Notified {timeSinceNotified || 0} min ago
-                        </div>
-                    ) : <></>
-                    }
-                </div>
-            ) : <></>
-            }
-        </ActionColumnWrapper>
-    )
+        <ActionWrapper>
+            <button
+                className="action-btn notify-btn"
+                onClick={notifyCustomer}
+                disabled={props.notified}
+                title={props.notified ? `Notified ${timeSinceNotified} min ago` : 'Send SMS notification'}
+            >
+                Notify
+            </button>
+            <button
+                className="action-btn seat-btn"
+                onClick={seatCustomer}
+            >
+                Seat
+            </button>
+            <button
+                className="action-btn remove-btn"
+                onClick={removeCustomer}
+                title="Remove from waitlist"
+            >
+                ×
+            </button>
+        </ActionWrapper>
+    );
 }
 
 export default ActionColumn;

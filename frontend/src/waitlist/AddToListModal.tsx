@@ -17,6 +17,7 @@ import Slide from '@mui/material/Slide';
 import { useAppState } from '../context/App.provider';
 import { useWaitlistState } from '../context/Waitlist.provider';
 import Loader from "../common/Loader";
+import { gcColors, gcFonts } from '../google_calendar/GoogleCalendar.theme';
 
 interface AddToListModalProps {
     location: string;
@@ -57,20 +58,40 @@ const initialState = {
     party: '',
 }
 
+const titleStyle: React.CSSProperties = {
+    marginBottom: '24px',
+    marginTop: '24px',
+    color: gcColors.textPrimary,
+    fontFamily: gcFonts.serif,
+    fontWeight: 500,
+};
+
+const textFieldSx = {
+    '& .MuiOutlinedInput-root': {
+        color: gcColors.textPrimary,
+        backgroundColor: gcColors.panelBgHover,
+        '& fieldset': { borderColor: gcColors.border },
+        '&:hover fieldset': { borderColor: gcColors.accent },
+        '&.Mui-focused fieldset': { borderColor: gcColors.accent },
+    },
+};
+
 const buttonStyles = {
     container: {
-        background: '#1a73e8',
-        color: 'white',
+        background: gcColors.accent,
+        color: gcColors.accentText,
         textTransform: 'none',
         fontWeight: 500,
         boxShadow: 'none',
+        borderRadius: '8px',
     } as React.CSSProperties,
     containerDisabled: {
-        background: '#EAEBEB',
-        color: 'white',
+        background: gcColors.eventBg,
+        color: gcColors.textMuted,
         textTransform: 'none',
         fontWeight: 500,
         boxShadow: 'none',
+        borderRadius: '8px',
     } as React.CSSProperties,
 };
 
@@ -189,6 +210,12 @@ function AddToListModal(props: AddToListModalProps) {
                 onClose={() => handleClose()}
                 TransitionComponent={Transition}
                 disableRestoreFocus
+                PaperProps={{
+                    sx: {
+                        backgroundColor: gcColors.pageBg,
+                        backgroundImage: 'none',
+                    },
+                }}
             >
                 {loading && <Loader />}
                 <DialogTitle>
@@ -200,7 +227,7 @@ function AddToListModal(props: AddToListModalProps) {
                             <Button
                                 onClick={handleClose}
                                 style={{
-                                    color: '#5f6368',
+                                    color: gcColors.textSecondary,
                                     textTransform: 'none',
                                     fontWeight: 500,
                                     fontSize: '16px'
@@ -219,7 +246,7 @@ function AddToListModal(props: AddToListModalProps) {
                                 <Button
                                     onClick={handleBack}
                                     style={{
-                                        color: '#5f6368',
+                                        color: gcColors.textSecondary,
                                         textTransform: 'none',
                                         fontWeight: 500,
                                         fontSize: '16px'
@@ -248,31 +275,40 @@ function AddToListModal(props: AddToListModalProps) {
                             <Step
                                 key={label}
                                 sx={{
+                                    '& .MuiStepConnector-line': {
+                                        borderColor: gcColors.border,
+                                    },
                                     '& .MuiStepLabel-root .Mui-completed': {
-                                        color: '#1a73e8', // circle color (COMPLETED)
+                                        color: gcColors.accent, // circle color (COMPLETED)
                                     },
                                     '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel':
                                     {
                                         fontSize: '14px',
-                                        color: '#1a73e8', // Just text label (COMPLETED)
+                                        color: gcColors.accent, // Just text label (COMPLETED)
                                     },
                                     '& .MuiStepLabel-root .Mui-active': {
                                         fontSize: '24px',
-                                        color: '#1a73e8', // circle color (ACTIVE)
+                                        color: gcColors.accent, // circle color (ACTIVE)
                                     },
                                     '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel':
                                     {
                                         fontSize: '14px',
-                                        color: '#3c4043', // Just text label (ACTIVE)
+                                        color: gcColors.textPrimary, // Just text label (ACTIVE)
                                         fontWeight: 500
                                     },
                                     '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
-                                        fill: 'white', // circle's number (ACTIVE)
+                                        fill: gcColors.accentText, // circle's number (ACTIVE)
                                     },
                                     '& .MuiStepLabel-label.Mui-disabled.MuiStepLabel-alternativeLabel':
                                     {
                                         fontSize: '14px',
-                                        color: 'grey.500', // Just text label (FUTURE)
+                                        color: gcColors.textMuted, // Just text label (FUTURE)
+                                    },
+                                    '& .MuiStepIcon-root': {
+                                        color: gcColors.eventBg,
+                                    },
+                                    '& .MuiStepIcon-text': {
+                                        fill: gcColors.textSecondary,
                                     },
                                 }}
                             >
@@ -288,7 +324,7 @@ function AddToListModal(props: AddToListModalProps) {
                                 <Typography
                                     variant="h5"
                                     className={'title'}
-                                    style={{ marginBottom: '24px', marginTop: '24px', color: '#3c4043' }}
+                                    style={titleStyle}
                                 >
                                     How many people in your party
                                 </Typography>
@@ -304,6 +340,7 @@ function AddToListModal(props: AddToListModalProps) {
                                         autoComplete={'off'}
                                         inputProps={{ style: { fontSize: 18 } }}
                                         InputLabelProps={{ style: { fontSize: 18 } }}
+                                        sx={textFieldSx}
                                     />
                                 </FormControl>
                             </Grid>
@@ -314,7 +351,7 @@ function AddToListModal(props: AddToListModalProps) {
                                     <Typography
                                         variant="h5"
                                         className={'title'}
-                                        style={{ marginBottom: '24px', marginTop: '24px', color: '#3c4043' }}
+                                        style={titleStyle}
                                     >
                                         What's your name?
                                     </Typography>
@@ -330,6 +367,7 @@ function AddToListModal(props: AddToListModalProps) {
                                             autoComplete={'off'}
                                             inputProps={{ style: { fontSize: 18 } }}
                                             InputLabelProps={{ style: { fontSize: 18 } }}
+                                            sx={textFieldSx}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -341,7 +379,7 @@ function AddToListModal(props: AddToListModalProps) {
                                     <Typography
                                         variant="h5"
                                         className={'title'}
-                                        style={{ marginBottom: '24px', marginTop: '24px', color: '#3c4043' }}
+                                        style={titleStyle}
                                     >
                                         What is your mobile number?
                                     </Typography>
@@ -357,6 +395,7 @@ function AddToListModal(props: AddToListModalProps) {
                                             autoComplete={'off'}
                                             inputProps={{ style: { fontSize: 18 } }}
                                             InputLabelProps={{ style: { fontSize: 18 } }}
+                                            sx={textFieldSx}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -365,7 +404,7 @@ function AddToListModal(props: AddToListModalProps) {
                     </Grid>
                     <Typography
                         variant="inherit"
-                        style={{ marginBottom: '12px', marginTop: '12px', fontSize: '12px', textAlign: 'center', color: '#70757a' }}
+                        style={{ marginBottom: '12px', marginTop: '12px', fontSize: '12px', textAlign: 'center', color: gcColors.textSecondary }}
                     >
                         * message and data rates may apply *
                     </Typography>

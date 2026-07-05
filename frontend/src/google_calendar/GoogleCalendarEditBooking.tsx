@@ -8,27 +8,28 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import moment from "moment/moment";
 import { useAppState } from "../context/App.provider";
+import { gcColors } from "./GoogleCalendar.theme";
 
 const GCEditBookingWrapper = styled.div`
     display: flex;
     flex-direction: column;
     gap: 16px;
     padding: 16px;
-    border: 1px solid #dadce0;
+    border: 1px solid ${gcColors.border};
     border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    background-color: ${gcColors.panelBg};
+    box-shadow: none;
     margin: 12px 0;
 
     .input-label {
         font-size: 14px;
         font-weight: 500;
-        color: #3c4043;
+        color: ${gcColors.textPrimary};
         margin-bottom: 4px;
     }
 
     .helper-text {
-        color: #70757a !important;
+        color: ${gcColors.textMuted} !important;
         font-size: 12px !important;
         margin-left: 0 !important;
         margin-top: 4px !important;
@@ -56,21 +57,35 @@ const GCEditBookingWrapper = styled.div`
     .MuiOutlinedInput-root {
         border-radius: 4px;
         font-size: 14px;
-        
+        color: ${gcColors.textPrimary};
+        background-color: ${gcColors.panelBgHover};
+
+        .MuiOutlinedInput-notchedOutline {
+            border-color: ${gcColors.border};
+        }
+
+        &:hover .MuiOutlinedInput-notchedOutline {
+            border-color: ${gcColors.accent};
+        }
+
         &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #1a73e8;
+            border-color: ${gcColors.accent};
             border-width: 2px;
         }
+    }
+
+    .MuiSelect-icon {
+        color: ${gcColors.textSecondary};
     }
 
     .MuiButton-root {
         text-transform: none;
         font-weight: 500;
-        border-radius: 4px;
+        border-radius: 8px;
         box-shadow: none;
-        
+
         &:hover {
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            box-shadow: none;
         }
     }
 `;
@@ -87,6 +102,17 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
 
     const phoneNumberHelperText = 'Ex: 206-123-4567'
     const descriptionHelperText = 'Ex: Highchair - VD';
+    const selectMenuProps = {
+        PaperProps: {
+            sx: {
+                backgroundColor: gcColors.panelBgHover,
+                color: gcColors.textPrimary,
+                border: `1px solid ${gcColors.border}`,
+                '& .MuiMenuItem-root.Mui-selected': { backgroundColor: gcColors.eventBg },
+                '& .MuiMenuItem-root:hover': { backgroundColor: gcColors.eventBg },
+            },
+        },
+    };
     const [tempEditBookingData, setTempEditBookingData] = useState(
         {
             ...gcBookingData,
@@ -190,7 +216,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
 
     return (
         <GCEditBookingWrapper>
-            {isLoading && <LinearProgress />}
+            {isLoading && <LinearProgress sx={{ backgroundColor: gcColors.eventBg, '& .MuiLinearProgress-bar': { backgroundColor: gcColors.accent } }} />}
 
             <div className="row">
                 <div className="field-container">
@@ -232,6 +258,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                             name="startTime"
                             disabled={isLoading}
                             onChange={handleSelectChange}
+                            MenuProps={selectMenuProps}
                         >
                             {memoizedGetTodayTimeMapping.map((t: TimeSlot) => (
                                 <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
@@ -248,6 +275,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                             name="endTime"
                             disabled={isLoading}
                             onChange={handleSelectChange}
+                            MenuProps={selectMenuProps}
                         >
                             {memoizedGetTodayTimeMapping
                                 .filter((t) => {
@@ -303,7 +331,6 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
             <div className="actions">
                 <Button
                     variant="outlined"
-                    color="inherit"
                     startIcon={<CloseIcon />}
                     disabled={isLoading}
                     onClick={() => {
@@ -311,16 +338,16 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                         setDisplayAddNewBooking(false);
                         props.setHandleItemEditing(false);
                     }}
+                    style={{ color: gcColors.textPrimary, borderColor: gcColors.border }}
                 >
                     Cancel
                 </Button>
                 <Button
                     variant="contained"
-                    color="primary"
                     startIcon={<SaveIcon />}
                     disabled={isLoading}
                     onClick={updateGoogleCalendarEvent}
-                    style={{ backgroundColor: '#1a73e8' }}
+                    style={{ backgroundColor: gcColors.accent, color: gcColors.accentText }}
                 >
                     Update
                 </Button>

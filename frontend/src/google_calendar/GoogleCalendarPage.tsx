@@ -1,3 +1,4 @@
+import '@fontsource/playfair-display';
 import GoogleCalendar from "./GoogleCalendar";
 import GoogleCalendarOverview from "./GoogleCalendarOverview";
 import { endOfMonth, startOfMonth } from "date-fns";
@@ -7,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useAppState } from "../context/App.provider";
 import moment from "moment";
 import styled from "@emotion/styled";
+import { gcColors } from "./GoogleCalendar.theme";
 
 const GoogleCalendarPageWrapper = styled.div`
     display: flex;
@@ -16,6 +18,7 @@ const GoogleCalendarPageWrapper = styled.div`
     gap: 12px;
     padding: 12px;
     box-sizing: border-box;
+    background-color: ${gcColors.pageBg};
 
     // Ensure children take full height
     & > div {

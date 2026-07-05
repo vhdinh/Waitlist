@@ -29,7 +29,7 @@ router.route('/getCurrent').get((req, res) => {
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         },
-        deleted: false
+        // deleted: false
     })
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
@@ -96,7 +96,7 @@ router.route('/:id/notify').post((req, res) => {
 router.route('/:id/delete').post((req, res) => {
     console.log('delete:', req.body);
     // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAIT LIST
-    CustomerEight.findByIdAndUpdate(req.body.id, {deleted: true})
+    CustomerEight.findByIdAndUpdate(req.body.id, { deleted: true })
         .then((r) => res.json(`${req.body.id} deleted`))
         .catch((e) => res.status(400).json('error-deleting-user: ' + e))
     // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAITLIST
@@ -104,6 +104,14 @@ router.route('/:id/delete').post((req, res) => {
     //     .then((r) => res.json(`${req.body.id} deleted`))
     //     .catch((e) => res.status(400).json('error-deleting-user: ' + e))
 });
+
+router.route('/:id/seat').post((req, res) => {
+    console.log('seat:', req.body);
+    CustomerEight.findByIdAndUpdate(req.body.id, {seated: true})
+        .then((r) => res.json(`${req.body.id} seated`))
+        .catch((e) => res.status(400).json('error-seating-user: ' + e))
+});
+
 
 router.route('/reply').post((req, res) => {
     const msgFrom = req.body.From;
@@ -117,29 +125,29 @@ router.route('/reply').post((req, res) => {
             createdAt: {
                 $gte: fns.startOfDay(new Date()),
             },
-        },{ msg: Number(msgBody), msgAt: new Date() }).then(() => {
-        // socket.ioObject.sockets.emit('user_replied', {
-        //     message: 'reload'
-        // });
-        let rspMsg = '';
-        // if(msgBody == '1') {
-        //     console.log('notification: user accepted ', msgBody);
-        //     rspMsg = `Thank you, please check in to be seated promptly.`
-        //     // // if we want to respond to user with another msg
-        // } else if (msgBody == '6') {
-        //     console.log('notification: user rejected ', msgBody);
-        //     rspMsg = `Thank you, you have been removed from 1988's waitlist.`
-        // }
-        rspMsg = `Thank you, please check in to be seated promptly.`
-    //     res.send(`
-    //     <Response>
-    //         <Message>
-    //             ${rspMsg}
-    //         </Message>
-    //     </Response>
-    // `);
-        res.json('Vu Done');
-    })
+        }, { msg: Number(msgBody), msgAt: new Date() }).then(() => {
+            // socket.ioObject.sockets.emit('user_replied', {
+            //     message: 'reload'
+            // });
+            let rspMsg = '';
+            // if(msgBody == '1') {
+            //     console.log('notification: user accepted ', msgBody);
+            //     rspMsg = `Thank you, please check in to be seated promptly.`
+            //     // // if we want to respond to user with another msg
+            // } else if (msgBody == '6') {
+            //     console.log('notification: user rejected ', msgBody);
+            //     rspMsg = `Thank you, you have been removed from 1988's waitlist.`
+            // }
+            rspMsg = `Thank you, please check in to be seated promptly.`
+            //     res.send(`
+            //     <Response>
+            //         <Message>
+            //             ${rspMsg}
+            //         </Message>
+            //     </Response>
+            // `);
+            res.json('Vu Done');
+        })
 })
 
 module.exports = router;

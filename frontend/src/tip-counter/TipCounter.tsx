@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography, Card, CardContent, Divider } from "@mui/material";
 import { hoursWorked } from "./util";
+import { gcColors, gcFonts } from "../google_calendar/GoogleCalendar.theme";
 
 const TipCounterWrapper = styled.div`
     min-height: 100vh;
     padding: 24px;
-    background-color: #f8f9fa;
+    box-sizing: border-box;
+    background-color: ${gcColors.pageBg};
+    font-family: ${gcFonts.sans};
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -15,36 +18,85 @@ const TipCounterWrapper = styled.div`
         width: 100%;
         max-width: 900px;
         border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        background-color: ${gcColors.panelBg};
+        border: 1px solid ${gcColors.border};
+        box-shadow: none;
     }
 
     .section-title {
-        color: #3c4043;
+        font-family: ${gcFonts.serif};
+        color: ${gcColors.textPrimary};
         font-weight: 500;
         margin-bottom: 16px;
     }
 
     .result-box {
-        background-color: #f1f3f4;
-        padding: 12px;
+        background-color: ${gcColors.panelBgHover};
+        border: 1px solid ${gcColors.borderSubtle};
+        padding: 12px 16px;
         border-radius: 8px;
         margin-top: 8px;
     }
 
     .result-label {
-        color: #5f6368;
+        color: ${gcColors.textSecondary};
         font-size: 14px;
         font-weight: 500;
     }
 
     .result-value {
-        color: #1a73e8;
+        color: ${gcColors.accent};
         font-size: 18px;
         font-weight: 500;
+    }
+
+    .MuiDivider-root {
+        border-color: ${gcColors.borderSubtle};
+    }
+
+    .MuiOutlinedInput-root {
+        color: ${gcColors.textPrimary};
+        background-color: ${gcColors.panelBgHover};
+
+        fieldset {
+            border-color: ${gcColors.border};
+        }
+
+        &:hover fieldset {
+            border-color: ${gcColors.accent};
+        }
+
+        &.Mui-focused fieldset {
+            border-color: ${gcColors.accent};
+        }
+    }
+
+    .MuiInputLabel-root {
+        color: ${gcColors.textSecondary};
+
+        &.Mui-focused {
+            color: ${gcColors.accent};
+        }
+    }
+
+    .MuiSelect-icon {
+        color: ${gcColors.textSecondary};
     }
 `;
 
 const numberOfEmployees = 15;
+
+const selectMenuProps = {
+    PaperProps: {
+        sx: {
+            backgroundColor: gcColors.panelBgHover,
+            color: gcColors.textPrimary,
+            border: `1px solid ${gcColors.border}`,
+            '& .MuiMenuItem-root.Mui-selected': { backgroundColor: gcColors.eventBg },
+            '& .MuiMenuItem-root:hover': { backgroundColor: gcColors.eventBg },
+        },
+    },
+};
 
 interface IndividualEmployeeHours {
     id: number;
@@ -113,7 +165,10 @@ function TipCounter() {
         <TipCounterWrapper>
             <Card className="tip-card">
                 <CardContent>
-                    <Typography variant="h5" style={{ textAlign: 'center', marginBottom: '24px', color: '#3c4043', fontWeight: 400 }}>
+                    <Typography
+                        variant="h5"
+                        style={{ textAlign: 'center', marginBottom: '24px', color: gcColors.textPrimary, fontFamily: gcFonts.serif, fontWeight: 500, fontSize: '32px' }}
+                    >
                         Tip Counter
                     </Typography>
 
@@ -144,11 +199,12 @@ function TipCounter() {
                                     setNumberOfBackEmployees([]);
                                 }}
                                 style={{
-                                    background: '#1a73e8',
-                                    color: 'white',
+                                    background: gcColors.accent,
+                                    color: gcColors.accentText,
                                     textTransform: 'none',
                                     fontWeight: 500,
                                     boxShadow: 'none',
+                                    borderRadius: '8px',
                                     height: '40px'
                                 }}
                             >
@@ -172,6 +228,7 @@ function TipCounter() {
                                     value={numberFrontStaff}
                                     label="Number of Employees"
                                     onChange={(e) => { setNumberFrontStaff(e.target.value) }}
+                                    MenuProps={selectMenuProps}
                                 >
                                     {employeesCount.map((e) => (
                                         <MenuItem key={e} value={e}>{e}</MenuItem>
@@ -201,6 +258,7 @@ function TipCounter() {
                                                     value={numberOfFrontEmployees[i].value}
                                                     label="Hours"
                                                     onChange={(event) => updateHoursWorkedForIndividualEmployee('front', e.id, Number(event.target.value))}
+                                                    MenuProps={selectMenuProps}
                                                 >
                                                     {hoursWorked.map((h) => (
                                                         <MenuItem key={h.value} value={h.value}>{h.label}</MenuItem>
@@ -209,7 +267,7 @@ function TipCounter() {
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <Typography variant="body1" style={{ fontWeight: 500, color: '#3c4043' }}>
+                                            <Typography variant="body1" style={{ fontWeight: 500, color: gcColors.textPrimary }}>
                                                 ${getFrontAmount(e.value).toFixed(2)}
                                             </Typography>
                                         </Grid>
@@ -229,6 +287,7 @@ function TipCounter() {
                                     value={numberBackStaff}
                                     label="Number of Employees"
                                     onChange={(e) => { setNumberBackStaff(e.target.value) }}
+                                    MenuProps={selectMenuProps}
                                 >
                                     {employeesCount.map((e) => (
                                         <MenuItem key={e} value={e}>{e}</MenuItem>
@@ -258,6 +317,7 @@ function TipCounter() {
                                                     value={numberOfBackEmployees[i].value}
                                                     label="Hours"
                                                     onChange={(event) => updateHoursWorkedForIndividualEmployee('back', e.id, Number(event.target.value))}
+                                                    MenuProps={selectMenuProps}
                                                 >
                                                     {hoursWorked.map((h) => (
                                                         <MenuItem key={h.value} value={h.value}>{h.label}</MenuItem>
@@ -266,7 +326,7 @@ function TipCounter() {
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <Typography variant="body1" style={{ fontWeight: 500, color: '#3c4043' }}>
+                                            <Typography variant="body1" style={{ fontWeight: 500, color: gcColors.textPrimary }}>
                                                 ${getBackAmount(e.value).toFixed(2)}
                                             </Typography>
                                         </Grid>

@@ -10,16 +10,17 @@ import GoogleCalendarEvent from "./GoogleCalendarEvent";
 import { getDayFromTimestamp } from "../utils/date";
 import { InitialGCNewBooking } from "../context/GoogleCalendar.provider";
 import { useAppState } from "../context/App.provider";
+import { gcColors, gcFonts } from "./GoogleCalendar.theme";
 
 const GoogleCalendarOverviewWrapper = styled.div`
     height: 100%;
-    padding: 20px;
+    padding: 24px;
     box-sizing: border-box;
     // margin removed to rely on grid gap
-    border: 1px solid #dadce0;
+    border: 1px solid ${gcColors.border};
     border-radius: 8px;
-    background-color: #fff;
-    font-family: 'Roboto', sans-serif;
+    background-color: ${gcColors.panelBg};
+    font-family: ${gcFonts.sans};
     display: flex;
     flex-direction: column;
 
@@ -28,33 +29,48 @@ const GoogleCalendarOverviewWrapper = styled.div`
         justify-content: space-between;
         align-items: flex-start;
         margin-bottom: 20px;
-        
+
         .date-info {
+            .day-of-week {
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                color: ${gcColors.accent};
+                text-transform: uppercase;
+                margin-bottom: 2px;
+            }
             h5 {
-                font-size: 18px;
-                font-weight: 400;
-                color: #3c4043;
+                font-family: ${gcFonts.serif};
+                font-size: 32px;
+                font-weight: 500;
+                color: ${gcColors.textPrimary};
                 margin-bottom: 4px;
             }
             .subtitle {
                 font-size: 12px;
-                color: #70757a;
+                color: ${gcColors.textSecondary};
                 font-weight: 500;
             }
         }
 
         .create-btn {
             text-transform: none;
-            border-radius: 24px;
-            padding: 6px 16px;
+            border-radius: 8px;
+            padding: 8px 20px;
             font-weight: 500;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-            background-color: #fff;
-            color: #3c4043;
-            
+            box-shadow: none;
+            background-color: ${gcColors.accent};
+            color: ${gcColors.accentText};
+
             &:hover {
-                background-color: #f1f3f4;
-                box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+                background-color: ${gcColors.accentHover};
+                box-shadow: none;
+            }
+
+            &.Mui-disabled {
+                background-color: ${gcColors.eventBg};
+                color: ${gcColors.textMuted};
             }
         }
     }
@@ -63,7 +79,7 @@ const GoogleCalendarOverviewWrapper = styled.div`
         overflow-y: auto;
         flex-grow: 1;
         padding-right: 4px; // Space for scrollbar
-        
+
         /* Custom Scrollbar */
         &::-webkit-scrollbar {
             width: 8px;
@@ -72,7 +88,7 @@ const GoogleCalendarOverviewWrapper = styled.div`
             background: transparent;
         }
         &::-webkit-scrollbar-thumb {
-            background-color: #dadce0;
+            background-color: ${gcColors.border};
             border-radius: 4px;
         }
     }
@@ -146,6 +162,9 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
         <GoogleCalendarOverviewWrapper >
             <div className={'co-header'}>
                 <div className="date-info">
+                    <span className="day-of-week">
+                        {format(selectedDate, 'EEEE')}
+                    </span>
                     <Typography variant={'h5'}>
                         {format(selectedDate, 'MMMM dd')}
                     </Typography>
