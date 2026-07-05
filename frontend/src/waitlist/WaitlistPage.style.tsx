@@ -29,6 +29,7 @@ export const WaitlistPageWrapper = styled.div`
         font-weight: 600;
         color: #e8eaed;
         line-height: 1.1;
+        text-align: left;
     }
 
     .subtitle {
