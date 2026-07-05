@@ -107,6 +107,14 @@ router.route('/:id/delete').post((req, res) => {
     //     .catch((e) => res.status(400).json('error-deleting-user: ' + e))
 });
 
+router.route('/:id/seat').post((req, res) => {
+    console.log('seat:', req.body);
+    CustomerBrick.findByIdAndUpdate(req.body.id, { seated: true })
+        .then((r) => res.json(`${req.body.id} seated`))
+        .catch((e) => res.status(400).json('error-seating-user: ' + e))
+});
+
+
 router.route('/reply').post(async (req, res) => {
     const msgFrom = req.body.From;
     const msgBody = req.body.Body;

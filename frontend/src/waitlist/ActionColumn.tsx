@@ -126,6 +126,16 @@ function ActionColumn(props: ActionColumnProps) {
 
     const seatCustomer = () => {
         // handler to be implemented by user
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: props._id })
+        };
+        fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/${props._id}/seat`, requestOptions)
+            .then(res => res.json())
+            .then(() => {
+                setReloadList(true);
+            });
     };
 
     return (

@@ -38,6 +38,23 @@ export const WaitlistPageWrapper = styled.div`
         margin-top: 4px;
     }
 
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .history-btn {
+        color: #9aa0a6;
+        border: 1px solid #444;
+        border-radius: 10px;
+        padding: 9px;
+        &:hover {
+            background: rgba(255,255,255,0.07);
+            color: #e8eaed;
+        }
+    }
+
     .add-party-btn {
         background: #F5A623;
         color: #1a1a1a;

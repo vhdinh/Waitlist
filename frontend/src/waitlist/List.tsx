@@ -14,6 +14,7 @@ export interface Customer {
     phoneNumber: string;
     updatedAt: string;
     deleted?: boolean;
+    seated?: boolean;
     msg?: string;
     msgAt?: string;
     notified?: boolean;

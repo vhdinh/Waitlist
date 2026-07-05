@@ -7,14 +7,18 @@ import {
     Button,
     Container,
     Grid,
+    IconButton,
+    Tooltip,
     Typography,
 } from '@mui/material';
+import HistoryIcon from '@mui/icons-material/History';
 import { WaitlistPageWrapper } from './WaitlistPage.style';
 import useAutoTimer from '../useAutoTimer';
 import List, { Customer } from './List';
-import { useAppState } from '../context/App.provider';
+import { Role, useAppState } from '../context/App.provider';
 import TapToBegin from '../TapToBegin';
 import AddToListModal from './AddToListModal';
+import WaitlistHistoryModal from './WaitlistHistoryModal';
 import { useWaitlistState } from '../context/Waitlist.provider';
 import { RestaurantKey, setLocalStorageData } from "../utils/general";
 import io from "socket.io-client";
@@ -30,6 +34,8 @@ const socket = io.connect(`${process.env.REACT_APP_BRICK_API}`);
 function WaitlistPage(props: WaitlistPageProps) {
     const timer = useAutoTimer(120); // 120 seconds
     const [list, setList] = useState([]);
+    const [historyList, setHistoryList] = useState<Customer[]>([]);
+    const [openHistoryModal, setOpenHistoryModal] = useState(false);
     const [timedOut, setTimedOut] = useState(false);
 
     const { isAdmin, role } = useAppState();
@@ -65,9 +71,10 @@ function WaitlistPage(props: WaitlistPageProps) {
         fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/getCurrent`)
             .then(res => res.json())
             .then((r) => {
-                console.log('---_R----', r);
-                const nonDeleted = r.filter((wait: Customer) => !wait.deleted)
+                const nonDeleted = r.filter((wait: Customer) => !wait.deleted && !wait.seated)
+                const history = r.filter((wait: Customer) => wait.deleted || wait.seated)
                 setList(nonDeleted);
+                setHistoryList(history);
                 setTimedOut(false);
                 setReloadList(false);
             });
@@ -97,19 +104,32 @@ function WaitlistPage(props: WaitlistPageProps) {
                                         {list.length} {list.length === 1 ? 'party' : 'parties'} waiting · Tonight
                                     </Typography>
                                 </div>
-                                <Button
-                                    className={'add-party-btn'}
-                                    onClick={() => setOpenAddToListModal(true)}
-                                    startIcon={<span className={'plus-icon'}>+</span>}
-                                >
-                                    Add party
-                                </Button>
+                                <div className={'header-actions'}>
+                                    {role === Role.ADMIN && (
+                                        <Tooltip title="View today's seated & removed parties">
+                                            <IconButton
+                                                className={'history-btn'}
+                                                onClick={() => setOpenHistoryModal(true)}
+                                            >
+                                                <HistoryIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
+                                    <Button
+                                        className={'add-party-btn'}
+                                        onClick={() => setOpenAddToListModal(true)}
+                                        startIcon={<span className={'plus-icon'}>+</span>}
+                                    >
+                                        Add party
+                                    </Button>
+                                </div>
                             </div>
                             <div className={'customer-list'}>
                                 <List list={list} location={props.location} />
                             </div>
                         </div>
                         <AddToListModal location={props.location} open={openAddToListModal} close={() => setOpenAddToListModal(false)} />
+                        <WaitlistHistoryModal list={historyList} open={openHistoryModal} close={() => setOpenHistoryModal(false)} />
                     </>
                 )
             }

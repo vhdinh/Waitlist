@@ -29,7 +29,7 @@ router.route('/getCurrent').get((req, res) => {
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         },
-        deleted: false
+        // deleted: false
     })
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
@@ -103,6 +103,13 @@ router.route('/:id/delete').post((req, res) => {
     // Customer.findByIdAndRemove(req.body.id)
     //     .then((r) => res.json(`${req.body.id} deleted`))
     //     .catch((e) => res.status(400).json('error-deleting-user: ' + e))
+});
+
+router.route('/:id/seat').post((req, res) => {
+    console.log('seat:', req.body);
+    CustomerKuma.findByIdAndUpdate(req.body.id, {seated: true})
+        .then((r) => res.json(`${req.body.id} seated`))
+        .catch((e) => res.status(400).json('error-seating-user: ' + e))
 });
 
 router.route('/reply').post((req, res) => {
