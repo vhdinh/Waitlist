@@ -6,14 +6,16 @@ import { phoneNumberAutoFormat } from './PhoneNumberColumn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-interface Customer {
+export interface Customer {
     _id: string;
     createdAt: string;
     name: string;
     partySize: number;
     phoneNumber: string;
     updatedAt: string;
+    deleted?: boolean;
     msg?: string;
+    msgAt?: string;
     notified?: boolean;
     notifiedAt?: string;
 }
@@ -179,10 +181,18 @@ function List(props: ListProps) {
                                 Added {formatAddedTime(customer.createdAt)}
                             </span>
                             {
-                                customer.notified && showAdminActions && (
+                                customer.notified && showAdminActions && !customer.msg && (
                                     <span className="meta-item">
                                         <AccessTimeIcon />
                                         Notified {formatAddedTime(customer.notifiedAt || '')}
+                                    </span>
+                                )
+                            }
+                            {
+                                customer.msgAt && showAdminActions && (
+                                    <span className="meta-item">
+                                        <AccessTimeIcon />
+                                        {customer.msg === '1' ? 'Accepted' : 'Declined'} {formatAddedTime(customer.msgAt || '')}
                                     </span>
                                 )
                             }

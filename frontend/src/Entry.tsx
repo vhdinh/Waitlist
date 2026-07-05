@@ -33,6 +33,15 @@ const EntryWrapper = styled.div`
         gap: 16px;
         justify-content: center;
         margin-bottom: 16px;
+        button {
+            text-transform: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 500;
+            box-shadow: none;
+            background-color: #d99e46;
+            color: #1c1712;
+    }
     }
 `;
 

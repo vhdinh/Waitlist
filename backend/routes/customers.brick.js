@@ -31,7 +31,7 @@ router.route('/getCurrent').get((req, res) => {
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         },
-        deleted: false
+        // deleted: false
     })
         .then(c => res.json(c))
         .catch(err => res.status(400).json('Error: ' + err));
@@ -98,7 +98,7 @@ router.route('/:id/notify').post((req, res) => {
 router.route('/:id/delete').post((req, res) => {
     console.log('delete:', req.body);
     // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAIT LIST
-    CustomerBrick.findByIdAndUpdate(req.body.id, {deleted: true})
+    CustomerBrick.findByIdAndUpdate(req.body.id, { deleted: true })
         .then((r) => res.json(`${req.body.id} deleted`))
         .catch((e) => res.status(400).json('error-deleting-user: ' + e))
     // NO LONGER DELETING, WANT TO TRACK ALL HISTORY OF WAITLIST
@@ -117,19 +117,22 @@ router.route('/reply').post(async (req, res) => {
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
-        }});
+        }
+    });
     const kumaCustomer = await CustomerKuma.find({
         phoneNumber: msgFrom,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
-        }});
+        }
+    });
     const eightCustomer = await Customer1988.find({
         phoneNumber: msgFrom,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
-        }});
+        }
+    });
     if (brickCustomer.length > 0) {
         CustomerBrick.findOneAndUpdate(
             {
@@ -138,27 +141,27 @@ router.route('/reply').post(async (req, res) => {
                 createdAt: {
                     $gte: fns.startOfDay(new Date()),
                 },
-            },{ msg: msgBody, msgAt: new Date() }).then(() => {
-            socket.ioObject.sockets.emit('brick_user_replied', {
-                message: 'reload'
-            });
-            let rspMsg = '';
-            if(msgBody == '1') {
-                console.log('notification: user accepted ', msgBody);
-                rspMsg = `Thank you, please check in to be seated promptly.`
-            } else if (msgBody == '6') {
-                console.log('notification: user rejected ', msgBody);
-                rspMsg = `Thank you, you have been removed from the Brick's waitlist.`
-            }
-            // // if we want to respond to user with another msg
-            return res.send(`
+            }, { msg: msgBody, msgAt: new Date() }).then(() => {
+                socket.ioObject.sockets.emit('brick_user_replied', {
+                    message: 'reload'
+                });
+                let rspMsg = '';
+                if (msgBody == '1') {
+                    console.log('notification: user accepted ', msgBody);
+                    rspMsg = `Thank you, please check in to be seated promptly.`
+                } else if (msgBody == '6') {
+                    console.log('notification: user rejected ', msgBody);
+                    rspMsg = `Thank you, you have been removed from the Brick's waitlist.`
+                }
+                // // if we want to respond to user with another msg
+                return res.send(`
                     <Response>
                         <Message>
                             ${rspMsg}
                         </Message>
                     </Response>
                 `);
-        })
+            })
     } else if (kumaCustomer.length > 0) {
         CustomerKuma.findOneAndUpdate(
             {
@@ -167,27 +170,27 @@ router.route('/reply').post(async (req, res) => {
                 createdAt: {
                     $gte: fns.startOfDay(new Date()),
                 },
-            },{ msg: msgBody, msgAt: new Date() }).then(() => {
-            socket.ioObject.sockets.emit('kuma_user_replied', {
-                message: 'reload'
-            });
-            let rspMsg = '';
-            if(msgBody == '1') {
-                console.log('KUMA notification: user accepted ', msgBody);
-                rspMsg = `Thank you, please check in to be seated promptly.`
-            } else if (msgBody == '6') {
-                console.log('KUMA notification: user rejected ', msgBody);
-                rspMsg = `Thank you, you have been removed from the Kuma's waitlist.`
-            }
-            // // if we want to respond to user with another msg
-            return res.send(`
+            }, { msg: msgBody, msgAt: new Date() }).then(() => {
+                socket.ioObject.sockets.emit('kuma_user_replied', {
+                    message: 'reload'
+                });
+                let rspMsg = '';
+                if (msgBody == '1') {
+                    console.log('KUMA notification: user accepted ', msgBody);
+                    rspMsg = `Thank you, please check in to be seated promptly.`
+                } else if (msgBody == '6') {
+                    console.log('KUMA notification: user rejected ', msgBody);
+                    rspMsg = `Thank you, you have been removed from the Kuma's waitlist.`
+                }
+                // // if we want to respond to user with another msg
+                return res.send(`
                     <Response>
                         <Message>
                             ${rspMsg}
                         </Message>
                     </Response>
                 `);
-        })
+            })
     } else if (eightCustomer.length > 0) {
         Customer1988.findOneAndUpdate(
             {
@@ -196,27 +199,27 @@ router.route('/reply').post(async (req, res) => {
                 createdAt: {
                     $gte: fns.startOfDay(new Date()),
                 },
-            },{ msg: msgBody, msgAt: new Date() }).then(() => {
-            socket.ioObject.sockets.emit('eight_user_replied', {
-                message: 'reload'
-            });
-            let rspMsg = '';
-            if(msgBody == '1') {
-                console.log('EIGHT notification: user accepted ', msgBody);
-                rspMsg = `Thank you, please check in to be seated promptly.`
-            } else if (msgBody == '6') {
-                console.log('EIGHT notification: user rejected ', msgBody);
-                rspMsg = `Thank you, you have been removed from the 1988's waitlist.`
-            }
-            // // if we want to respond to user with another msg
-            return res.send(`
+            }, { msg: msgBody, msgAt: new Date() }).then(() => {
+                socket.ioObject.sockets.emit('eight_user_replied', {
+                    message: 'reload'
+                });
+                let rspMsg = '';
+                if (msgBody == '1') {
+                    console.log('EIGHT notification: user accepted ', msgBody);
+                    rspMsg = `Thank you, please check in to be seated promptly.`
+                } else if (msgBody == '6') {
+                    console.log('EIGHT notification: user rejected ', msgBody);
+                    rspMsg = `Thank you, you have been removed from the 1988's waitlist.`
+                }
+                // // if we want to respond to user with another msg
+                return res.send(`
                     <Response>
                         <Message>
                             ${rspMsg}
                         </Message>
                     </Response>
                 `);
-        })
+            })
     }
 })
 

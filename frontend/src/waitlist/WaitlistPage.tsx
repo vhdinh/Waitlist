@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { WaitlistPageWrapper } from './WaitlistPage.style';
 import useAutoTimer from '../useAutoTimer';
-import List from './List';
+import List, { Customer } from './List';
 import { useAppState } from '../context/App.provider';
 import TapToBegin from '../TapToBegin';
 import AddToListModal from './AddToListModal';
@@ -65,7 +65,9 @@ function WaitlistPage(props: WaitlistPageProps) {
         fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/getCurrent`)
             .then(res => res.json())
             .then((r) => {
-                setList(r);
+                console.log('---_R----', r);
+                const nonDeleted = r.filter((wait: Customer) => !wait.deleted)
+                setList(nonDeleted);
                 setTimedOut(false);
                 setReloadList(false);
             });

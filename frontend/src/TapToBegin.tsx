@@ -25,6 +25,7 @@ const TapToBeginWrapper = styled.div`
         img {
             max-width: 250px;
             margin-bottom: 25px;
+            filter: brightness(1) invert(0);
         }
     }
 `;
@@ -38,7 +39,7 @@ function TapToBegin() {
             return brickLogo
         } else if (basePath[1] === 'kuma') {
             return kumaLogo
-        } else if (basePath[1] === '1988') {
+        } else if (basePath[1] === 'eight') {
             return eightLogo
         }
         return '';
