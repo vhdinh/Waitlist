@@ -126,6 +126,18 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
         [selectedDate]
     );
 
+    const getLocationName = (location: string) => {
+        if (location === 'brick') {
+            return 'Brick'
+        } else if (location === 'ocha') {
+            return 'Ocha'
+        } else if (location === 'kuma') {
+            return 'Kuma'
+        } else {
+            return '1988'
+        }
+    }
+
     const handleChange = (e: any) => {
         if (e.target.name === 'phoneNumber') {
             const regex = /^[0-9\.\-\/\(\)\+\\\ ]+$/;
@@ -138,7 +150,8 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
             [e.target.name]: e.target.name === 'partySize' ? Number(e.target.value) || '' : e.target.value,
         }))
         // MAP back to google calendar
-        const summary = `${props.location === 'brick' ? 'Brick' : props.location === 'kuma' ? 'Kuma' : '1988'}: ${e.target.name === 'firstName' ? e.target.value : tempEditBookingData.firstName} (${e.target.name === 'partySize' ? e.target.value : tempEditBookingData.partySize})`
+        const locationString = getLocationName(props.location);
+        const summary = `${locationString}: ${e.target.name === 'firstName' ? e.target.value : tempEditBookingData.firstName} (${e.target.name === 'partySize' ? e.target.value : tempEditBookingData.partySize})`
         const description = `${e.target.name === 'phoneNumber' ? e.target.value : tempEditBookingData.phoneNumber}\n${e.target.name === 'note' ? e.target.value : tempEditBookingData.note}`
 
         setGCBookingData((oldState) => ({
@@ -200,6 +213,8 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
         let path = '';
         if (props.location === 'brick') {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/update-event`;
+        } else if (props.location === 'ocha') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-ocha/update-event`;
         } else {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar/update-event`;
         }

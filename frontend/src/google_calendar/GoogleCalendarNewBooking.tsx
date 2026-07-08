@@ -128,6 +128,18 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
         [selectedDate]
     );
 
+    const getLocationName = (location: string) => {
+        if (location === 'brick') {
+            return 'Brick'
+        } else if (location === 'ocha') {
+            return 'Ocha'
+        } else if (location === 'kuma') {
+            return 'Kuma'
+        } else {
+            return '1988'
+        }
+    }
+
     const handleChange = (e: any) => {
         if (e.target.name === 'phoneNumber') {
             const regex = /^[0-9\.\-\/\(\)\+\\\ ]+$/;
@@ -140,7 +152,8 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
         }))
 
         // MAP back to google calendar
-        const summary = `${location === 'brick' ? 'Brick' : location === 'kuma' ? 'Kuma' : '1988'}: ${e.target.name === 'firstName' ? e.target.value : gcBookingData.firstName} (${e.target.name === 'partySize' ? e.target.value : gcBookingData.partySize})`
+        const locationString = getLocationName(location);
+        const summary = `${locationString}: ${e.target.name === 'firstName' ? e.target.value : gcBookingData.firstName} (${e.target.name === 'partySize' ? e.target.value : gcBookingData.partySize})`
         const description = `${e.target.name === 'phoneNumber' ? e.target.value : gcBookingData.phoneNumber}\n${e.target.name === 'note' ? e.target.value : gcBookingData.note}`
 
         setGCBookingData((oldState) => ({
@@ -205,6 +218,8 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
         let path = '';
         if (location === 'brick') {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/add-event`;
+        } else if (location === 'ocha') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-ocha/add-event`;
         } else {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar/add-event`;
         }
