@@ -132,6 +132,8 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
         let path = '';
         if (props.location === 'brick') {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/delete-event/${props.id}`;
+        } else if (props.location === 'ocha') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-ocha/delete-event/${props.id}`;
         } else {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar/delete-event/${props.id}`;
         }
