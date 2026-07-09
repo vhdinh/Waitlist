@@ -19,7 +19,7 @@ import TipCounter from "./tip-counter/TipCounter";
 import GoogleCalendarPage from "./google_calendar/GoogleCalendarPage";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 
 const router = createBrowserRouter([
@@ -29,7 +29,7 @@ const router = createBrowserRouter([
             <AppProvider>
                 <WaitlistProvider>
                     <CalendarProvider>
-                        <App/>
+                        <App />
                     </CalendarProvider>
                 </WaitlistProvider>
             </AppProvider>
@@ -89,14 +89,31 @@ const router = createBrowserRouter([
                 path: "/eight/reservations/:date",
                 element: <CalendarPage location={'eight'} />,
             },
+            // OCHA
+            {
+                path: "/ocha/waitlist",
+                element: <WaitlistPage location={'ocha'} />,
+            },
+            // {
+            //     path: "/ocha/reservations",
+            //     element: <CalendarPage location={'ocha'} />,
+            // },
+            {
+                path: "/ocha/reservations/:date",
+                element: <CalendarPage location={'ocha'} />,
+            },
             // GOOGLE CALENDAR
             {
-              path: '/kuma/reservations',
-              element: <GoogleCalendarPage location={'kuma'} />,
+                path: '/kuma/reservations',
+                element: <GoogleCalendarPage location={'kuma'} />,
             },
             {
-              path: '/eight/reservations',
-              element: <GoogleCalendarPage location={'eight'} />,
+                path: '/eight/reservations',
+                element: <GoogleCalendarPage location={'eight'} />,
+            },
+            {
+                path: '/ocha/reservations',
+                element: <GoogleCalendarPage location={'ocha'} />,
             },
             // TILL COUNTER
             {

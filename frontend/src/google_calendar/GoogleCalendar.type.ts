@@ -41,4 +41,5 @@ export interface GoogleCalendarEventType {
     },
     eventType?: string;
     location?: string;
+    sourceCalendar?: string;
 }

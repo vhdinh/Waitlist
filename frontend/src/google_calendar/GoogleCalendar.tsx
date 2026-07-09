@@ -190,7 +190,7 @@ function GoogleCalendar({ location, currentMonthBookings }: { location: string, 
                 <>
                     {todaysEvent.slice(0, 2).map((x, index) => (
                         <div className={'event'} key={index}>
-                            {x.start.dateTime ? moment(x.start.dateTime).format('h:mmA') : ''} {location === 'brick' ? x.summary?.substring(7) : x.summary?.substring(6)}
+                            {renderEventDisplayText(x)}
                         </div>
                     ))}
                     <div className={'more-events'}>+{todaysEvent.length - 2} more</div>
@@ -199,10 +199,27 @@ function GoogleCalendar({ location, currentMonthBookings }: { location: string, 
         } else {
             return todaysEvent && todaysEvent.map((x, index) => (
                 <div className={'event'} key={index}>
-                    {x.start.dateTime ? moment(x.start.dateTime).format('h:mmA') : ''} {location === 'brick' ? x.summary?.substring(7) : x.summary?.substring(6)}
+                    {renderEventDisplayText(x)}
                 </div>
             ))
         }
+    }
+
+    const renderEventDisplayText = (event: GoogleCalendarEventType) => {
+        const eventStartTime = event.start.dateTime ? moment(event.start.dateTime).format('h:mmA') : '';
+        let eventSummary;
+        if (location === 'brick') {
+            eventSummary = event.summary?.substring(7);
+        } else if (location === '1988' || location === 'kuma') {
+            eventSummary = event.summary?.substring(6);
+        } else {
+            if (event.sourceCalendar === 'banquet') {
+                eventSummary = event.summary?.substring(9);
+            } else {
+                eventSummary = event.summary?.substring(6);
+            }
+        }
+        return `${eventStartTime} ${eventSummary}`
     }
 
     const onDateClick = (day: any) => {

@@ -18,6 +18,7 @@ import { useCalendarState } from "./context/Calendar.provider";
 import brickLogo from './assets/BrickTransparent.png';
 import eightLogo from './assets/1988Transparent.png';
 import kumaLogo from './assets/KUMABlackTransparent.png';
+import ochaLogo from './assets/OchaTransparent.png';
 import { RestaurantKey, RoleKey, setLocalStorageData } from "./utils/general";
 
 const pages = [
@@ -76,6 +77,19 @@ const pages = [
         url: '/eight/waitlist',
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: ['eight'],
+    },
+    // OCHA
+    {
+        label: 'Reservations',
+        url: '/ocha/reservations',
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+        restaurant: ['ocha'],
+    },
+    {
+        label: 'Waitlist',
+        url: '/ocha/waitlist',
+        role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
+        restaurant: ['ocha'],
     },
     // Tip Calculator
     // {
@@ -139,6 +153,8 @@ function App() {
             return kumaLogo
         } else if (basePath[1] === 'eight') {
             return eightLogo
+        } else if (basePath[1] === 'ocha') {
+            return ochaLogo;
         }
         return '';
     };
@@ -205,13 +221,13 @@ function App() {
                                 </div>
                             </Box>
                             {
-                                url.includes('brick') || url.includes('kuma') || url.includes('eight') ? (
+                                url.includes('brick') || url.includes('kuma') || url.includes('eight') || url.includes('ocha') ? (
                                     <Box sx={{ flexGrow: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                                         {
                                             isAdmin && (
                                                 <div className={`admin-badge${role === Role.ADMIN ? ' is-admin' : ' is-employee'}`}>
                                                     <span className="admin-badge-dot" />
-                                                    {role === Role.ADMIN ? 'Admin Mode' : 'Employee Mode'}
+                                                    {role === Role.ADMIN ? 'Admin' : 'Employee'}
                                                 </div>
                                             )
                                         }

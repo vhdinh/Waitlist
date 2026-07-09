@@ -89,6 +89,8 @@ function GoogleCalendarPage({ location }: { location: string }) {
         let path = '';
         if (location === 'brick') {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/brick/${startOfMonth(currentMonth).toISOString()}/${endOfMonth(currentMonth).toISOString()}`;
+        } else if (location === 'ocha') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-ocha/ocha/${startOfMonth(currentMonth).toISOString()}/${endOfMonth(currentMonth).toISOString()}`;
         } else {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar/${location === 'kuma' ? 'kuma' : '1988'}/${startOfMonth(currentMonth).toISOString()}/${endOfMonth(currentMonth).toISOString()}`;
         }

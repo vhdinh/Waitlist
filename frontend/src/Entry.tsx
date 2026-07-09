@@ -2,6 +2,7 @@ import React from 'react';
 import brickLogo from './assets/BrickTransparent.png';
 import eightLogo from './assets/1988Transparent.png';
 import kumaLogo from './assets/KUMABlackTransparent.png';
+import ochaLogo from './assets/OchaTransparent.png';
 // import kumaLogo from './assets/KumaCircle.jpg';
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
@@ -74,6 +75,11 @@ function Entry() {
                     src={eightLogo}
                     alt="1988LoungeLogo"
                     onClick={() => setStorageAndNavigate('Eight', '/eight/reservations')}
+                />
+                <img
+                    src={ochaLogo}
+                    alt="ochaLogo"
+                    onClick={() => setStorageAndNavigate('Ocha', '/ocha/reservations')}
                 />
             </div>
             <div className={'misc-wrapper'}>

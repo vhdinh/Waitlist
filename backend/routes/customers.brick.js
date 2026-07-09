@@ -2,6 +2,7 @@ const router = require('express').Router();
 let CustomerBrick = require('../models/customer.brick.model');
 let CustomerKuma = require('../models/customer.kuma.model');
 let Customer1988 = require('../models/customer.eight.model');
+let CustomerOcha = require('../models/customer.ocha.model');
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const socket = require('../server');
 const fns = require('date-fns')
@@ -141,6 +142,13 @@ router.route('/reply').post(async (req, res) => {
             $gte: fns.startOfDay(new Date()),
         }
     });
+    const ochaCustomer = await CustomerOcha.find({
+        phoneNumber: msgFrom,
+        deleted: false,
+        createdAt: {
+            $gte: fns.startOfDay(new Date()),
+        }
+    });
     if (brickCustomer.length > 0) {
         CustomerBrick.findOneAndUpdate(
             {
@@ -155,10 +163,10 @@ router.route('/reply').post(async (req, res) => {
                 });
                 let rspMsg = '';
                 if (msgBody == '1') {
-                    console.log('notification: user accepted ', msgBody);
+                    console.log('BRICK notification: user accepted ', msgBody);
                     rspMsg = `Thank you, please check in to be seated promptly.`
                 } else if (msgBody == '6') {
-                    console.log('notification: user rejected ', msgBody);
+                    console.log('BRICK notification: user rejected ', msgBody);
                     rspMsg = `Thank you, you have been removed from the Brick's waitlist.`
                 }
                 // // if we want to respond to user with another msg
@@ -218,6 +226,35 @@ router.route('/reply').post(async (req, res) => {
                 } else if (msgBody == '6') {
                     console.log('EIGHT notification: user rejected ', msgBody);
                     rspMsg = `Thank you, you have been removed from the 1988's waitlist.`
+                }
+                // // if we want to respond to user with another msg
+                return res.send(`
+                    <Response>
+                        <Message>
+                            ${rspMsg}
+                        </Message>
+                    </Response>
+                `);
+            })
+    } else {
+        CustomerOcha.findOneAndUpdate(
+            {
+                phoneNumber: msgFrom,
+                deleted: false,
+                createdAt: {
+                    $gte: fns.startOfDay(new Date()),
+                },
+            }, { msg: msgBody, msgAt: new Date() }).then(() => {
+                socket.ioObject.sockets.emit('ocha_user_replied', {
+                    message: 'reload'
+                });
+                let rspMsg = '';
+                if (msgBody == '1') {
+                    console.log('OCHA notification: user accepted ', msgBody);
+                    rspMsg = `Thank you, please check in to be seated promptly.`
+                } else if (msgBody == '6') {
+                    console.log('OCHA notification: user rejected ', msgBody);
+                    rspMsg = `Thank you, you have been removed from the Ocha's waitlist.`
                 }
                 // // if we want to respond to user with another msg
                 return res.send(`

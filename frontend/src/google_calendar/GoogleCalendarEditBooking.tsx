@@ -126,6 +126,18 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
         [selectedDate]
     );
 
+    const getLocationName = (location: string) => {
+        if (location === 'brick') {
+            return 'Brick'
+        } else if (location === 'ocha') {
+            return 'Ocha'
+        } else if (location === 'kuma') {
+            return 'Kuma'
+        } else {
+            return '1988'
+        }
+    }
+
     const handleChange = (e: any) => {
         if (e.target.name === 'phoneNumber') {
             const regex = /^[0-9\.\-\/\(\)\+\\\ ]+$/;
@@ -138,7 +150,8 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
             [e.target.name]: e.target.name === 'partySize' ? Number(e.target.value) || '' : e.target.value,
         }))
         // MAP back to google calendar
-        const summary = `${props.location === 'brick' ? 'Brick' : props.location === 'kuma' ? 'Kuma' : '1988'}: ${e.target.name === 'firstName' ? e.target.value : tempEditBookingData.firstName} (${e.target.name === 'partySize' ? e.target.value : tempEditBookingData.partySize})`
+        const locationString = getLocationName(props.location);
+        const summary = `${locationString}: ${e.target.name === 'firstName' ? e.target.value : tempEditBookingData.firstName} (${e.target.name === 'partySize' ? e.target.value : tempEditBookingData.partySize})`
         const description = `${e.target.name === 'phoneNumber' ? e.target.value : tempEditBookingData.phoneNumber}\n${e.target.name === 'note' ? e.target.value : tempEditBookingData.note}`
 
         setGCBookingData((oldState) => ({
@@ -184,8 +197,16 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
     }
 
     const updateGoogleCalendarEvent = () => {
-        if (Number(gcBookingData.partySize) > 10) {
-            setSnackMsg({ msg: `Party larger than 10 people needs to email ${props.location === 'brick' ? 'info@thebrickrenton.com' : 'info@kumageorgetown.com'} for reservation`, severity: 'error' });
+        let restaurantText;
+        if (props.location === 'brick') restaurantText = 'info@thebrickrenton.com';
+        if (props.location === 'kuma' || props.location === '1988') restaurantText = 'info@kumageorgetown.com';
+        if (props.location === 'ocha') restaurantText = 'info@ochakitchenbar.com';
+        if (Number(gcBookingData.partySize) > 10 && props.location !== 'ocha') {
+            setSnackMsg({ msg: `Party larger than 10 people needs to email ${restaurantText} for reservation`, severity: 'error' });
+            setDisplaySnack(true);
+            return;
+        } else if (Number(gcBookingData.partySize) > 19 && props.location === 'ocha') {
+            setSnackMsg({ msg: `Party larger than 20 people needs to email ${restaurantText} for reservation`, severity: 'error' });
             setDisplaySnack(true);
             return;
         }
@@ -200,6 +221,8 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
         let path = '';
         if (props.location === 'brick') {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/update-event`;
+        } else if (props.location === 'ocha') {
+            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-ocha/update-event`;
         } else {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar/update-event`;
         }

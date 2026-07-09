@@ -105,6 +105,22 @@ const thirdDB = {
 // connect to 1988 db
 require("./connectDbs")(thirdDB.name, thirdDB.connStr);
 
+/**
+ *  FOURTH DB CONNECTION
+ *  ===================
+ * */
+
+// UPDATE YOUR DEFAULTS
+const fourthDB = {
+    name: "ocha", // for demo
+    connStr: process.env.OCHA_MONGODB_URL,
+    db: "ocha",
+    coll: "waitlist"
+};
+
+// connect to ocha db
+require("./connectDbs")(fourthDB.name, fourthDB.connStr);
+
 const customersBrickRouter = require('./routes/customers.brick');
 const bookingBrickRouter = require('./routes/booking.brick');
 
@@ -123,9 +139,18 @@ const bookingEightRouter = require('./routes/booking.eight');
 app.use('/eight/customers', customersEightRouter);
 app.use('/eight/booking', bookingEightRouter);
 
+const customersOchaRouter = require('./routes/customers.ocha');
+app.use('/ocha/customers', customersOchaRouter);
+
+// Kuma/1988 router
 const googleCalendarRouter = require('./routes/calendar.kuma');
 app.use('/google-calendar', googleCalendarRouter);
 
+// ocha router
+const googleCalendarOchaRouter = require('./routes/calendar.ocha');
+app.use('/google-calendar-ocha', googleCalendarOchaRouter);
+
+// Brick router
 const googleCalendarBrickRouter = require('./routes/calendar.brick');
 app.use('/google-calendar-brick', googleCalendarBrickRouter);
 
@@ -137,10 +162,10 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket) => {
-   console.log('----client connected:', socket.id);
-   socket.on('disconnect', (reason) => {
-       console.log('disconnected: ', reason);
-   });
+    console.log('----client connected:', socket.id);
+    socket.on('disconnect', (reason) => {
+        console.log('disconnected: ', reason);
+    });
 });
 
 const socketIoObject = io;
