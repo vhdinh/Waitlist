@@ -227,7 +227,7 @@ function App() {
                                             isAdmin && (
                                                 <div className={`admin-badge${role === Role.ADMIN ? ' is-admin' : ' is-employee'}`}>
                                                     <span className="admin-badge-dot" />
-                                                    {role === Role.ADMIN ? 'Admin Mode' : 'Employee Mode'}
+                                                    {role === Role.ADMIN ? 'Admin' : 'Employee'}
                                                 </div>
                                             )
                                         }

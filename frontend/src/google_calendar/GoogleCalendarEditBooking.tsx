@@ -197,8 +197,16 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
     }
 
     const updateGoogleCalendarEvent = () => {
-        if (Number(gcBookingData.partySize) > 10) {
-            setSnackMsg({ msg: `Party larger than 10 people needs to email ${props.location === 'brick' ? 'info@thebrickrenton.com' : 'info@kumageorgetown.com'} for reservation`, severity: 'error' });
+        let restaurantText;
+        if (props.location === 'brick') restaurantText = 'info@thebrickrenton.com';
+        if (props.location === 'kuma' || props.location === '1988') restaurantText = 'info@kumageorgetown.com';
+        if (props.location === 'ocha') restaurantText = 'info@ochakitchenbar.com';
+        if (Number(gcBookingData.partySize) > 10 && props.location !== 'ocha') {
+            setSnackMsg({ msg: `Party larger than 10 people needs to email ${restaurantText} for reservation`, severity: 'error' });
+            setDisplaySnack(true);
+            return;
+        } else if (Number(gcBookingData.partySize) > 19 && props.location === 'ocha') {
+            setSnackMsg({ msg: `Party larger than 20 people needs to email ${restaurantText} for reservation`, severity: 'error' });
             setDisplaySnack(true);
             return;
         }

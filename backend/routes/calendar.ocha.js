@@ -2,12 +2,12 @@ const { google } = require('googleapis');
 const router = require('express').Router();
 
 // uncomment when making commits to get credentials for production
-// const secrets = require('/etc/secrets/ocha-reservation-calendar.json');
-// const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_OCHA_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
+const secrets = require('/etc/secrets/ocha-reservation-calendar.json');
+const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_OCHA_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
 
 
 // uncomment for local dev
-const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_OCHA_PRIVATE_KEY.split(String.raw`\n`).join('\n');
+// const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_OCHA_PRIVATE_KEY.split(String.raw`\n`).join('\n');
 
 // GOOGLE CALENDAR INTEGRATION
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
@@ -111,9 +111,9 @@ router.route('/add-event').post((req, res) => {
     };
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        // keyFile: '/etc/secrets/ocha-reservation-calendar.json',
+        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
         // uncomment for local dev
-        keyFile: '../backend/ocha-reservation-calendar.json',
+        // keyFile: '../backend/ocha-reservation-calendar.json',
         scopes: 'https://www.googleapis.com/auth/calendar',
     });
     auth.getClient().then(a => {
@@ -133,14 +133,50 @@ router.route('/add-event').post((req, res) => {
     })
 })
 
+router.route('/add-catering-event').post((req, res) => {
+    const newEvent = {
+        summary: req.body.summary,
+        description: req.body.description,
+        start: req.body.start,
+        end: req.body.end,
+        attendees: [],
+        reminders: {
+            useDefault: true,
+        },
+        eventType: 'default'
+    };
+    const auth = new google.auth.GoogleAuth({
+        // comment out for local dev
+        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
+        // uncomment for local dev
+        // keyFile: '../backend/ocha-reservation-calendar.json',
+        scopes: 'https://www.googleapis.com/auth/calendar',
+    });
+    auth.getClient().then(a => {
+        calendar.events.insert({
+            auth: a,
+            calendarId: GOOGLE_CALENDAR_CATERING_ID,
+            resource: newEvent,
+        }, function (err, event) {
+            if (err) {
+                console.log('There was an error contacting the Calendar service: ' + err);
+                return res.status(400).json('Error: ' + err)
+            } else {
+                console.log('Catering event created: %s', event.data);
+                res.jsonp("Event successfully created!");
+            }
+        });
+    })
+})
+
 router.route('/update-event').post((req, res) => {
     console.log('route: /google-calendar/update-event', req.body);
     const updatedBody = { ...req.body };
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        // keyFile: '/etc/secrets/ocha-reservation-calendar.json',
+        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
         // uncomment for local dev
-        keyFile: '../backend/ocha-reservation-calendar.json',
+        // keyFile: '../backend/ocha-reservation-calendar.json',
         scopes: [
             'https://www.googleapis.com/auth/calendar',
             'https://www.googleapis.com/auth/calendar.events',
@@ -165,13 +201,75 @@ router.route('/update-event').post((req, res) => {
     })
 })
 
+router.route('/update-catering-event').post((req, res) => {
+    console.log('route: /google-calendar-ocha/update-catering-event', req.body);
+    const updatedBody = { ...req.body };
+    const auth = new google.auth.GoogleAuth({
+        // comment out for local dev
+        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
+        // uncomment for local dev
+        // keyFile: '../backend/ocha-reservation-calendar.json',
+        scopes: [
+            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/calendar.events',
+        ],
+    });
+
+    auth.getClient().then(a => {
+        calendar.events.patch({
+            auth: a,
+            calendarId: GOOGLE_CALENDAR_CATERING_ID,
+            eventId: req.body.id,
+            requestBody: updatedBody,
+        }, function (err, event) {
+            if (err) {
+                console.log('There was an error contacting the Calendar service: ' + err);
+                res.status(400).json('Error: ' + err)
+            } else {
+                console.log('Catering event updated: %s', JSON.stringify(event.data));
+                res.jsonp("Event successfully updated!");
+            }
+        });
+    })
+})
+
+router.route('/delete-catering-event/:id').delete((req, res) => {
+    console.log('route: /google-calendar-ocha/delete-catering-event params', req.params.id);
+    const auth = new google.auth.GoogleAuth({
+        // comment out for local dev
+        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
+        // uncomment for local dev
+        // keyFile: '../backend/ocha-reservation-calendar.json',
+        scopes: [
+            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/calendar.events',
+        ],
+    });
+    auth.getClient().then(a => {
+        calendar.events.delete({
+            auth: a,
+            calendarId: GOOGLE_CALENDAR_CATERING_ID,
+            eventId: req.params.id,
+        }, function (err, event) {
+            console.log('----after--trying-to-delete----', event, err);
+            if (err) {
+                console.log('There was an error contacting the Calendar service: ' + err);
+                res.status(400).json('Error: ' + err)
+            } else {
+                console.log('Event deleted: %s', JSON.stringify(event.data));
+                res.jsonp("Event successfully deleted!");
+            }
+        })
+    });
+})
+
 router.route('/delete-event/:id').delete((req, res) => {
     console.log('route: /google-calendar-ocha/delete-event params', req.params.id);
     const auth = new google.auth.GoogleAuth({
         // comment out for local dev
-        // keyFile: '/etc/secrets/ocha-reservation-calendar.json',
+        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
         // uncomment for local dev
-        keyFile: '../backend/ocha-reservation-calendar.json',
+        // keyFile: '../backend/ocha-reservation-calendar.json',
         scopes: [
             'https://www.googleapis.com/auth/calendar',
             'https://www.googleapis.com/auth/calendar.events',

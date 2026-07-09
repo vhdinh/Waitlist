@@ -1,11 +1,12 @@
 import { GoogleCalendarEventType } from "./GoogleCalendar.type";
-import { Button, IconButton, Typography } from "@mui/material";
+import { Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useCalendarState } from "../context/Calendar.provider";
 import styled from "@emotion/styled";
 import AddIcon from '@mui/icons-material/Add';
 import GoogleCalendarNewBooking from "./GoogleCalendarNewBooking";
+import GoogleCalendarNewCatering from "./GoogleCalendarNewCatering";
 import GoogleCalendarEvent from "./GoogleCalendarEvent";
 import { getDayFromTimestamp } from "../utils/date";
 import { InitialGCNewBooking } from "../context/GoogleCalendar.provider";
@@ -104,6 +105,8 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
     const { setSnackMsg, setDisplaySnack } = useAppState();
 
     const [day, setDay] = useState(getDayFromTimestamp(selectedDate));
+    const [bookingType, setBookingType] = useState<'reservation' | 'catering'>('reservation');
+    const [createMenuAnchorEl, setCreateMenuAnchorEl] = useState<null | HTMLElement>(null);
 
     useEffect(() => {
         setDay(getDayFromTimestamp(selectedDate));
@@ -132,21 +135,49 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
         return false
     }
 
+    const startNewBooking = (type: 'reservation' | 'catering') => {
+        setBookingType(type);
+        setGCBookingData(InitialGCNewBooking);
+        setDisplayAddNewBooking(true);
+        setCreateMenuAnchorEl(null);
+    }
+
     const displayActionButtons = () => {
         if (!displayAddNewBooking && (!getActionButtonDisabledState() && !disableButtonStateWhenClosed())) {
             return (
-                <Button
-                    className="create-btn"
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={() => {
-                        setGCBookingData(InitialGCNewBooking);
-                        setDisplayAddNewBooking(true);
-                    }}
-                    disabled={getActionButtonDisabledState() || disableButtonStateWhenClosed() || isEditing}
-                >
-                    Create
-                </Button>
+                <>
+                    <Button
+                        className="create-btn"
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={(e) => {
+                            if (location === 'ocha') {
+                                setCreateMenuAnchorEl(e.currentTarget);
+                            } else {
+                                startNewBooking('reservation');
+                            }
+                        }}
+                        disabled={getActionButtonDisabledState() || disableButtonStateWhenClosed() || isEditing}
+                    >
+                        Create
+                    </Button>
+                    <Menu
+                        anchorEl={createMenuAnchorEl}
+                        open={Boolean(createMenuAnchorEl)}
+                        onClose={() => setCreateMenuAnchorEl(null)}
+                        PaperProps={{
+                            sx: {
+                                backgroundColor: gcColors.panelBgHover,
+                                color: gcColors.textPrimary,
+                                border: `1px solid ${gcColors.border}`,
+                                '& .MuiMenuItem-root:hover': { backgroundColor: gcColors.eventBg },
+                            },
+                        }}
+                    >
+                        <MenuItem onClick={() => startNewBooking('reservation')}>Reservation</MenuItem>
+                        <MenuItem onClick={() => startNewBooking('catering')}>Catering</MenuItem>
+                    </Menu>
+                </>
             )
         }
         return null;
@@ -154,7 +185,7 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
 
     const getLabelText = () => {
         if (isEditing) return 'Editing reservation';
-        if (displayAddNewBooking) return 'Adding new reservation';
+        if (displayAddNewBooking) return bookingType === 'catering' ? 'Adding new catering' : 'Adding new reservation';
         return `${currentDayBookings.length} Reservation${currentDayBookings.length !== 1 ? 's' : ''}`;
     }
 
@@ -177,7 +208,11 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
             </div>
             <div className={'event-container'}>
                 {
-                    displayAddNewBooking ? <GoogleCalendarNewBooking location={location} /> :
+                    displayAddNewBooking ? (
+                        bookingType === 'catering'
+                            ? <GoogleCalendarNewCatering />
+                            : <GoogleCalendarNewBooking location={location} />
+                    ) :
                         currentDayBookings.map((b, index) => (
                             <GoogleCalendarEvent {...b} key={`${index}-${b.id}-${b.summary}-${b.description}-${b.start.dateTime}-${b.end.dateTime}`} location={location} />
                         ))

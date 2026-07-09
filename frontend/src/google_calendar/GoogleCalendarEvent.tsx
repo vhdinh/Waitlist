@@ -13,6 +13,7 @@ import React, { useMemo, useState } from "react";
 import { getTodayTimeMapping, TimeSlot } from "../calendar/util";
 import { useCalendarState } from "../context/Calendar.provider";
 import GoogleCalendarEditBooking from "./GoogleCalendarEditBooking";
+import GoogleCalendarEditCatering from "./GoogleCalendarEditCatering";
 import styled from "@emotion/styled";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -114,6 +115,7 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
     const [isItemEditing, setIsItemEditing] = useState(false);
     const [isItemDeleting, setIsItemDeleting] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
+    const isCatering = currentBooking.sourceCalendar === 'banquet';
 
     const memoizedGetTodayTimeMapping = useMemo((): TimeSlot[] =>
         getTodayTimeMapping(selectedDate),
@@ -133,7 +135,9 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
         if (props.location === 'brick') {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/delete-event/${props.id}`;
         } else if (props.location === 'ocha') {
-            path = `${process.env.REACT_APP_BRICK_API}/google-calendar-ocha/delete-event/${props.id}`;
+            path = isCatering
+                ? `${process.env.REACT_APP_BRICK_API}/google-calendar-ocha/delete-catering-event/${props.id}`
+                : `${process.env.REACT_APP_BRICK_API}/google-calendar-ocha/delete-event/${props.id}`;
         } else {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar/delete-event/${props.id}`;
         }
@@ -169,7 +173,11 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
     return (
         <GoogleCalendarEventWrapper>
             {
-                isItemEditing ? <GoogleCalendarEditBooking event={props} setHandleItemEditing={handleItemEditing} location={props.location || ''} /> : (
+                isItemEditing ? (
+                    isCatering
+                        ? <GoogleCalendarEditCatering event={props} setHandleItemEditing={handleItemEditing} />
+                        : <GoogleCalendarEditBooking event={props} setHandleItemEditing={handleItemEditing} location={props.location || ''} />
+                ) : (
                     <Card className="event-card">
                         {
                             isLoading && isItemDeleting ? <LinearProgress sx={{ backgroundColor: gcColors.eventBg, '& .MuiLinearProgress-bar': { backgroundColor: gcColors.accent } }} /> : <div style={{ height: '4px' }} />
