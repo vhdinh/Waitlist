@@ -116,6 +116,7 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
     const [isItemDeleting, setIsItemDeleting] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const isCatering = currentBooking.sourceCalendar === 'banquet';
+    const isReadOnlyBanquetEvent = props.location === 'ocha' && currentBooking.summary?.startsWith('Banquet');
 
     const memoizedGetTodayTimeMapping = useMemo((): TimeSlot[] =>
         getTodayTimeMapping(selectedDate),
@@ -199,30 +200,34 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                                     )
                                 }
                             </div>
-                            <div className="actions">
-                                <IconButton
-                                    className={'icon-btn delete'}
-                                    onClick={() => setOpenDialog(true)}
-                                    size="small"
-                                    disabled={isEditing || isLoading || getActionButtonDisabledState()}
-                                    style={{ display: getActionButtonDisabledState() ? 'none' : 'inline-flex' }}
-                                >
-                                    <DeleteIcon fontSize="small" />
-                                </IconButton>
-                                <IconButton
-                                    className={'icon-btn'}
-                                    size="small"
-                                    disabled={isEditing || isLoading || getActionButtonDisabledState()}
-                                    style={{ display: getActionButtonDisabledState() ? 'none' : 'inline-flex' }}
-                                    onClick={() => {
-                                        setGCBookingData(props);
-                                        setIsItemEditing(true);
-                                        setIsEditing(true);
-                                    }}
-                                >
-                                    <ModeEditIcon fontSize="small" />
-                                </IconButton>
-                            </div>
+                            {
+                                !isReadOnlyBanquetEvent && (
+                                    <div className="actions">
+                                        <IconButton
+                                            className={'icon-btn delete'}
+                                            onClick={() => setOpenDialog(true)}
+                                            size="small"
+                                            disabled={isEditing || isLoading || getActionButtonDisabledState()}
+                                            style={{ display: getActionButtonDisabledState() ? 'none' : 'inline-flex' }}
+                                        >
+                                            <DeleteIcon fontSize="small" />
+                                        </IconButton>
+                                        <IconButton
+                                            className={'icon-btn'}
+                                            size="small"
+                                            disabled={isEditing || isLoading || getActionButtonDisabledState()}
+                                            style={{ display: getActionButtonDisabledState() ? 'none' : 'inline-flex' }}
+                                            onClick={() => {
+                                                setGCBookingData(props);
+                                                setIsItemEditing(true);
+                                                setIsEditing(true);
+                                            }}
+                                        >
+                                            <ModeEditIcon fontSize="small" />
+                                        </IconButton>
+                                    </div>
+                                )
+                            }
                         </div>
 
                     </Card>
