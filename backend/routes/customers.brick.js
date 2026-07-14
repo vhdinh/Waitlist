@@ -121,34 +121,38 @@ router.route('/reply').post(async (req, res) => {
     const msgBody = req.body.Body;
     const num = msgFrom.substring(1);
     console.log(`Brick webhook user replied from: ${msgFrom}, number: ${num}, msg: ${msgBody}`);
-    const brickCustomer = await CustomerBrick.find({
+
+    const todayFilter = {
         phoneNumber: msgFrom,
         deleted: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         }
-    });
-    const kumaCustomer = await CustomerKuma.find({
-        phoneNumber: msgFrom,
-        deleted: false,
-        createdAt: {
-            $gte: fns.startOfDay(new Date()),
-        }
-    });
-    const eightCustomer = await Customer1988.find({
-        phoneNumber: msgFrom,
-        deleted: false,
-        createdAt: {
-            $gte: fns.startOfDay(new Date()),
-        }
-    });
-    const ochaCustomer = await CustomerOcha.find({
-        phoneNumber: msgFrom,
-        deleted: false,
-        createdAt: {
-            $gte: fns.startOfDay(new Date()),
-        }
-    });
+    };
+
+    let brickCustomer, kumaCustomer, eightCustomer, ochaCustomer;
+    try {
+        // Run concurrently: sequential awaits meant one slow/dead DB
+        // connection would serialize a 10s buffering timeout in front of
+        // every other lookup (up to ~40s worst case) before this handler
+        // could even respond to Twilio.
+        [brickCustomer, kumaCustomer, eightCustomer, ochaCustomer] = await Promise.all([
+            CustomerBrick.find(todayFilter),
+            CustomerKuma.find(todayFilter),
+            Customer1988.find(todayFilter),
+            CustomerOcha.find(todayFilter),
+        ]);
+    } catch (err) {
+        console.error('error looking up customer for /reply:', err);
+        return res.send(`
+            <Response>
+                <Message>
+                    Sorry, we're having trouble processing your reply right now. Please call the restaurant directly.
+                </Message>
+            </Response>
+        `);
+    }
+
     if (brickCustomer.length > 0) {
         CustomerBrick.findOneAndUpdate(
             {
@@ -174,6 +178,16 @@ router.route('/reply').post(async (req, res) => {
                     <Response>
                         <Message>
                             ${rspMsg}
+                        </Message>
+                    </Response>
+                `);
+            })
+            .catch((err) => {
+                console.error('error updating brick customer for /reply:', err);
+                return res.send(`
+                    <Response>
+                        <Message>
+                            Sorry, we're having trouble processing your reply right now. Please call the restaurant directly.
                         </Message>
                     </Response>
                 `);
@@ -207,6 +221,16 @@ router.route('/reply').post(async (req, res) => {
                     </Response>
                 `);
             })
+            .catch((err) => {
+                console.error('error updating kuma customer for /reply:', err);
+                return res.send(`
+                    <Response>
+                        <Message>
+                            Sorry, we're having trouble processing your reply right now. Please call the restaurant directly.
+                        </Message>
+                    </Response>
+                `);
+            })
     } else if (eightCustomer.length > 0) {
         Customer1988.findOneAndUpdate(
             {
@@ -236,6 +260,16 @@ router.route('/reply').post(async (req, res) => {
                     </Response>
                 `);
             })
+            .catch((err) => {
+                console.error('error updating eight customer for /reply:', err);
+                return res.send(`
+                    <Response>
+                        <Message>
+                            Sorry, we're having trouble processing your reply right now. Please call the restaurant directly.
+                        </Message>
+                    </Response>
+                `);
+            })
     } else {
         CustomerOcha.findOneAndUpdate(
             {
@@ -261,6 +295,16 @@ router.route('/reply').post(async (req, res) => {
                     <Response>
                         <Message>
                             ${rspMsg}
+                        </Message>
+                    </Response>
+                `);
+            })
+            .catch((err) => {
+                console.error('error updating ocha customer for /reply:', err);
+                return res.send(`
+                    <Response>
+                        <Message>
+                            Sorry, we're having trouble processing your reply right now. Please call the restaurant directly.
                         </Message>
                     </Response>
                 `);

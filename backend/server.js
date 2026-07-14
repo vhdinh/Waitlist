@@ -58,68 +58,14 @@ const googleBrickKeys = {
 fs.writeFileSync('../backend/brick-reservation-calendar.json', JSON.stringify(googleBrickKeys));
 
 
-/**
- *  FIRST DB CONNECTION
- *  ===================
- * */
-
-// UPDATE YOUR DEFAULTS
-const firstDB = {
-    name: "Brick", // for demo
-    connStr: process.env.BRICK_MONGODB_URL,
-    db: "brick",
-    coll: "brick"
-};
-// connect to brick db
-require("./connectDbs")(firstDB.name, firstDB.connStr);
-
-/**
- *  SECOND DB CONNECTION
- *  ===================
- * */
-
-// UPDATE YOUR DEFAULTS
-const secondDB = {
-    name: "Kuma", // for demo
-    connStr: process.env.KUMA_MONGODB_URL,
-    db: "kuma",
-    coll: "kuma"
-};
-
-// connect to kuma db
-require("./connectDbs")(secondDB.name, secondDB.connStr);
-
-/**
- *  THIRD DB CONNECTION
- *  ===================
- * */
-
-// UPDATE YOUR DEFAULTS
-const thirdDB = {
-    name: "1988", // for demo
-    connStr: process.env.EIGHT_MONGODB_URL,
-    db: "1988",
-    coll: "1988"
-};
-
-// connect to 1988 db
-require("./connectDbs")(thirdDB.name, thirdDB.connStr);
-
-/**
- *  FOURTH DB CONNECTION
- *  ===================
- * */
-
-// UPDATE YOUR DEFAULTS
-const fourthDB = {
-    name: "ocha", // for demo
-    connStr: process.env.OCHA_MONGODB_URL,
-    db: "ocha",
-    coll: "waitlist"
-};
-
-// connect to ocha db
-require("./connectDbs")(fourthDB.name, fourthDB.connStr);
+// NOTE: DB connections are established by each model (see models/*.model.js,
+// which call connectDbs themselves). Do not call connectDbs here too -
+// mongoose.createConnection() opens a brand new connection every time it's
+// called, so doing it again here just doubles the open connections per DB
+// without ever being used (this was previously calling connectDbs 4x and
+// discarding the result, wasting connection-pool slots against the Atlas
+// limit and making it more likely a request would hit a connection that
+// was still spinning up).
 
 const customersBrickRouter = require('./routes/customers.brick');
 const bookingBrickRouter = require('./routes/booking.brick');
