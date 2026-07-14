@@ -158,13 +158,21 @@ const io = new Server(server, {
     cors: {
         origin: process.env.UI_URL,
         methods: ['GET', 'POST']
-    }
+    },
+    // Detect dead connections quickly (default 25s/20s leaves broadcasts
+    // dropped on a half-open socket for up to ~45s before the client
+    // reconnects and can resync).
+    pingInterval: 10000,
+    pingTimeout: 5000,
 })
 
 io.on('connection', (socket) => {
     console.log('----client connected:', socket.id);
     socket.on('disconnect', (reason) => {
         console.log('disconnected: ', reason);
+    });
+    socket.on('error', (err) => {
+        console.log('socket error: ', err.message);
     });
 });
 
