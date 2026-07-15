@@ -47,6 +47,12 @@ export const AppWrapper = styled.div<AppWrapperProps>`
             border-radius: 8px;
             min-width: 110px;
             padding: 6px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            .nav-btn-icon {
+                font-size: 18px;
+            }
             &:hover {
                 background-color: rgba(255, 255, 255, 0.06);
                 color: #e8eaed;
@@ -120,6 +126,16 @@ export const AppWrapper = styled.div<AppWrapperProps>`
         .app-bar {
             .MuiToolbar-root {
                 height: 50px;
+            }
+            .nav-btn {
+                min-width: unset;
+                padding: 8px 14px;
+                .nav-btn-icon {
+                    font-size: 22px;
+                }
+                .nav-btn-label {
+                    display: none;
+                }
             }
         }
         #body-content {

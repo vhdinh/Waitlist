@@ -8,6 +8,8 @@ import { AppWrapper } from './App.style';
 import SettingsIcon from '@mui/icons-material/Settings';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import HomeIcon from '@mui/icons-material/Home';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import Tooltip from '@mui/material/Tooltip';
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -134,6 +136,15 @@ function App() {
         navigate(url);
     };
 
+    const renderNavIcon = (label: string) => {
+        if (label === 'Reservations') {
+            return <CalendarMonthIcon className="nav-btn-icon" />;
+        } else if (label === 'Waitlist') {
+            return <ListAltIcon className="nav-btn-icon" />;
+        }
+        return null;
+    };
+
     const handleCloseUserMenu = () => {
         if (role === Role.USER) {
             return setDisplayAdminDialog(true);
@@ -213,7 +224,8 @@ function App() {
                                                     onClick={() => handleCloseNavMenu(page.url)}
                                                     className={`nav-btn${isActive ? ' active' : ''}`}
                                                 >
-                                                    {page.label}
+                                                    {renderNavIcon(page.label)}
+                                                    <span className="nav-btn-label">{page.label}</span>
                                                 </Button>
                                             )
                                         }
