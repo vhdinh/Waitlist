@@ -125,10 +125,13 @@ router.route('/reply').post(async (req, res) => {
     const todayFilter = {
         phoneNumber: msgFrom,
         deleted: false,
+        seated: false,
         createdAt: {
             $gte: fns.startOfDay(new Date()),
         }
     };
+
+    console.log('today-filter:', todayFilter);
 
     let brickCustomer, kumaCustomer, eightCustomer, ochaCustomer;
     try {
