@@ -127,7 +127,7 @@ router.route('/reply').post(async (req, res) => {
         deleted: false,
         seated: false,
         createdAt: {
-            $gte: fns.startOfDay(new Date()),
+            $gte: new Date(new Date().setHours(0, 0, 0, 0)),
         }
     };
 
