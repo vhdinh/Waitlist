@@ -115,8 +115,8 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
     const [isItemEditing, setIsItemEditing] = useState(false);
     const [isItemDeleting, setIsItemDeleting] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
-    const isCatering = currentBooking.sourceCalendar === 'banquet' || currentBooking.sourceCalendar === 'private-event';
-    const isReadOnlyBanquetEvent = props.location === 'ocha' && currentBooking.summary?.startsWith('Banquet');
+    const isCatering = currentBooking.sourceCalendar === 'banquet';
+    const isReadOnlyBanquetEvent = props.location === 'ocha' && currentBooking.summary?.startsWith('Banquet') || currentBooking.sourceCalendar === 'private-event';
 
     const memoizedGetTodayTimeMapping = useMemo((): TimeSlot[] =>
         getTodayTimeMapping(selectedDate),
