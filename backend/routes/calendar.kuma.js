@@ -14,6 +14,7 @@ const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CAL_KUMA_CLIENT_EMAIL;
 const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_CAL_KUMA_PROJECT_NUMBER;
 const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CAL_KUMA_CALENDAR_ID;
+const GOOGLE_PRIVATE_CALENDAR_ID = process.env.GOOGLE_CAL_KUMA_PRIVATE_CALENDAR_ID;
 
 const jwtClient = new google.auth.JWT(
     GOOGLE_CLIENT_EMAIL,
@@ -28,46 +29,111 @@ const calendar = google.calendar({
     auth: jwtClient
 });
 
-router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
+router.route('/:location/:startOfMonth/:endOfMonth').get(async (req, res) => {
     const start = req.params.startOfMonth;
     const end = req.params.endOfMonth;
-    calendar.events.list({
-        calendarId: GOOGLE_CALENDAR_ID,
-        timeMin: start,
-        timeMax: end,
-        singleEvents: true,
-        orderBy: 'startTime',
-    }, (error, result) => {
-        if (error) {
-            res.send(JSON.stringify({ error: error }));
-        } else {
-            if (result.data.items.length) {
-                const filteredByRestaurant = result.data.items.filter((i) => {
-                    const restaurantLowerCase = i.summary.toLowerCase();
-                    return restaurantLowerCase.includes(req.params.location.toLowerCase());
-                })
-                const mappedEvents = filteredByRestaurant.map((i) => {
-                    const newStartDate = new Date(i.start.dateTime || i.start.date);
-                    const unixStartTime = Math.floor(newStartDate.getTime())
-                    const newEndDate = new Date(i.end.dateTime || i.start.date);
-                    const unixEndTime = Math.floor(newEndDate.getTime())
-                    return {
-                        ...i,
-                        firstName: i.summary?.split(' ').slice(1, -1).join(' '),
-                        phoneNumber: i.description?.split('\n').shift(),
-                        partySize: i.summary?.split(' ').pop().replace(/\D/g, ''),
-                        note: i.description?.split('\n').slice(1).join('\n') || '',
-                        startTime: unixStartTime,
-                        endTime: unixEndTime,
-                    };
-                })
-                res.send(JSON.stringify({ events: result.data.items, mappedEvents }));
-            } else {
-                // no event, return empty events array
-                res.send(JSON.stringify({ events: result.data.items }));
+    const calendarIds = [
+        GOOGLE_CALENDAR_ID,
+        GOOGLE_PRIVATE_CALENDAR_ID
+    ];
+
+    //
+
+    try {
+        // 1. Fetch from all calendar IDs concurrently
+        const fetchPromises = calendarIds.map(async (id) => {
+            try {
+                const response = await calendar.events.list({
+                    calendarId: id,
+                    timeMin: start,
+                    timeMax: end,
+                    singleEvents: true,
+                    orderBy: 'startTime',
+                });
+
+                // (Optional) Tag each event with its source calendar
+                return (response.data.items || []).map(event => ({
+                    ...event,
+                    sourceCalendar: id === 'info@kumageorgetown.com' ? 'reservation' : 'private-event',
+                }));
+            } catch (err) {
+                console.error(`Error fetching calendar ${id}:`, err.message);
+                return []; // Return empty array so one failure doesn't break the entire request
             }
-        }
-    });
+        });
+        const resultsArray = await Promise.all(fetchPromises);
+        // 2. Flatten nested arrays into a single list
+        const allEvents = resultsArray.flat();
+        // 3. Sort the combined list chronologically
+        allEvents.sort((a, b) => {
+            const startA = new Date(a.start.dateTime || a.start.date).getTime();
+            const startB = new Date(b.start.dateTime || b.start.date).getTime();
+            return startA - startB;
+        });
+        const filteredByRestaurant = allEvents.filter((i) => {
+            const restaurantLowerCase = i.summary.toLowerCase();
+            return restaurantLowerCase.includes(req.params.location.toLowerCase());
+        })
+        // 4. Map or transform events as needed
+        const mappedEvents = filteredByRestaurant.map((i) => {
+            const unixStartTime = new Date(i.start.dateTime || i.start.date).getTime();
+            const unixEndTime = new Date(i.end.dateTime || i.end.date || i.start.date).getTime();
+            return {
+                ...i,
+                firstName: i.summary?.split(' ').slice(1, -1).join(' '),
+                phoneNumber: i.description?.split('\n').shift(),
+                partySize: i.summary?.split(' ').pop().replace(/\D/g, ''),
+                note: i.description?.split('\n').slice(1).join('\n') || '',
+                startTime: unixStartTime,
+                endTime: unixEndTime,
+            };
+        });
+        res.json({ events: allEvents, mappedEvents });
+    } catch (error) {
+        console.error('Error fetching calendar events:', error);
+        res.status(500).json({ error: error.message });
+    }
+
+    //
+
+
+    // calendar.events.list({
+    //     calendarId: GOOGLE_CALENDAR_ID,
+    //     timeMin: start,
+    //     timeMax: end,
+    //     singleEvents: true,
+    //     orderBy: 'startTime',
+    // }, (error, result) => {
+    //     if (error) {
+    //         res.send(JSON.stringify({ error: error }));
+    //     } else {
+    //         if (result.data.items.length) {
+    //             const filteredByRestaurant = result.data.items.filter((i) => {
+    //                 const restaurantLowerCase = i.summary.toLowerCase();
+    //                 return restaurantLowerCase.includes(req.params.location.toLowerCase());
+    //             })
+    //             const mappedEvents = filteredByRestaurant.map((i) => {
+    //                 const newStartDate = new Date(i.start.dateTime || i.start.date);
+    //                 const unixStartTime = Math.floor(newStartDate.getTime())
+    //                 const newEndDate = new Date(i.end.dateTime || i.start.date);
+    //                 const unixEndTime = Math.floor(newEndDate.getTime())
+    //                 return {
+    //                     ...i,
+    //                     firstName: i.summary?.split(' ').slice(1, -1).join(' '),
+    //                     phoneNumber: i.description?.split('\n').shift(),
+    //                     partySize: i.summary?.split(' ').pop().replace(/\D/g, ''),
+    //                     note: i.description?.split('\n').slice(1).join('\n') || '',
+    //                     startTime: unixStartTime,
+    //                     endTime: unixEndTime,
+    //                 };
+    //             })
+    //             res.send(JSON.stringify({ events: result.data.items, mappedEvents }));
+    //         } else {
+    //             // no event, return empty events array
+    //             res.send(JSON.stringify({ events: result.data.items }));
+    //         }
+    //     }
+    // });
 });
 
 router.route('/add-event').post((req, res) => {
