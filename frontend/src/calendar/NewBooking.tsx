@@ -8,7 +8,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {getTodayTimeMapping, NearClosingTime, NewBookingType, TimeMapping, TimeSlot} from "./util";
+import {getDefaultEndTimeSlot, getTodayTimeMapping, getValidEndTimeSlots, NewBookingType, TimeSlot} from "./util";
 import {useCalendarState} from "../context/Calendar.provider";
 
 const NewBookingWrapper = styled.div`
@@ -47,21 +47,11 @@ function NewBooking() {
 
     useEffect(() => {
         if (bookingData.start) {
-            const endT = memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
-                .find((t) => t.value === (bookingData.start + 7200000));
-            if (endT) {
-                setBookingData((oldState: NewBookingType) => ({
-                    ...oldState,
-                    end: endT.value,
-                }))
-            } else {
-                const newEndT = memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
-                    .find((t) => t.value === memoizedGetTodayTimeMapping[memoizedGetTodayTimeMapping.length - 1].value);
-                setBookingData((oldState: NewBookingType) => ({
-                    ...oldState, //@ts-ignore
-                    end: newEndT.value,
-                }))
-            }
+            const endT = getDefaultEndTimeSlot(bookingData.start, memoizedGetTodayTimeMapping);
+            setBookingData((oldState: NewBookingType) => ({
+                ...oldState,
+                end: endT.value,
+            }))
         };
     }, [bookingData.start])
 
@@ -159,15 +149,7 @@ function NewBooking() {
                                     name={'end'}
                                     onChange={handleSelectChange}
                                 >
-                                    {memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
-                                        .filter((t) => {
-                                            const twoHrsLater = bookingData.start + 7200000;
-                                            if (t.value >= twoHrsLater) {
-                                                return t.value >= twoHrsLater;
-                                            } else {
-                                                return t.label === '11:00 PM'
-                                            }
-                                        })
+                                    {getValidEndTimeSlots(bookingData.start, memoizedGetTodayTimeMapping)
                                         .map((t) => {
                                             return <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
                                     })}

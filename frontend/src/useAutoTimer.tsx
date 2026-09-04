@@ -4,9 +4,7 @@ const useAutoTimer = (startTime: number) => {
     const [timer, setTimer] = useState(startTime);
     useEffect(() => {
         const myInterval = setInterval(() => {
-            if (timer > 0) {
-                setTimer(timer - 1);
-            }
+            setTimer((t) => (t > 0 ? t - 1 : t));
         }, 1000);
         const resetTimeout = () => {
             setTimer(startTime);
@@ -28,7 +26,7 @@ const useAutoTimer = (startTime: number) => {
                 window.removeEventListener(events[i], resetTimeout);
             }
         };
-    });
+    }, [startTime]);
     return timer;
 };
 

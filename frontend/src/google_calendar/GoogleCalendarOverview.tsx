@@ -2,14 +2,13 @@ import { GoogleCalendarEventType } from "./GoogleCalendar.type";
 import { Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
-import { useCalendarState } from "../context/Calendar.provider";
+import { InitialGCNewBooking, useCalendarState } from "../context/Calendar.provider";
 import styled from "@emotion/styled";
 import AddIcon from '@mui/icons-material/Add';
 import GoogleCalendarNewBooking from "./GoogleCalendarNewBooking";
 import GoogleCalendarNewCatering from "./GoogleCalendarNewCatering";
 import GoogleCalendarEvent from "./GoogleCalendarEvent";
 import { getDayFromTimestamp } from "../utils/date";
-import { InitialGCNewBooking } from "../context/GoogleCalendar.provider";
 import { useAppState } from "../context/App.provider";
 import { gcColors, gcFonts } from "./GoogleCalendar.theme";
 
@@ -123,11 +122,6 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
     }
 
     const disableButtonStateWhenClosed = (): boolean => {
-        // Disable reservation for Kuma and 1988 on Sunday, not Open
-        // kuma closed for Sunday
-        // if (location === 'kuma' && day === 'Sunday') {
-        //     return true;
-        // }
         // 1988 closed for Sunday-Tuesday
         if (location === 'eight' && (day === 'Sunday' || day === 'Monday' || day === 'Tuesday')) {
             return true;

@@ -4,3 +4,10 @@
 /frontend/node_modules
 
 /backend/.env
+
+# Google service-account credential files. No longer generated at boot
+# (backend/server.js now passes credentials to googleapis in-memory), but
+# ignored defensively in case they're ever regenerated or hand-placed here.
+/backend/reservation-calendar.json
+/backend/brick-reservation-calendar.json
+/backend/ocha-reservation-calendar.json

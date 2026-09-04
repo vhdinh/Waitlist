@@ -65,7 +65,11 @@ export const InitialGCNewBooking: GoogleCalendarEventType = {
     end: {
         dateTime: new Date().toISOString(),
         timeZone: 'America/Los_Angeles'
-    }
+    },
+    firstName: '',
+    phoneNumber: undefined,
+    partySize: '',
+    note: '',
 }
 
 export const CalendarProvider = ({

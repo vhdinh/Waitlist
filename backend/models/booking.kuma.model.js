@@ -49,6 +49,10 @@ const bookingSchema = new Schema({
     collation: 'brick'
 });
 
+// Speeds up the /getMonth and /getDay range queries, which previously had
+// no index to use and fell back to a full collection scan.
+bookingSchema.index({ start: 1, end: 1, deleted: 1 });
+
 const BookingKuma = kumaDb.model('Booking', bookingSchema);
 
 module.exports = BookingKuma;

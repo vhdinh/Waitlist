@@ -154,22 +154,25 @@ function AddToListModal(props: AddToListModalProps) {
                 body: JSON.stringify({ phoneNumber: state.phoneNumber, name: state.name, partySize: state.party })
             };
             fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/customers/add`, requestOptions)
-                .then(res => res.json())
-                .then((r) => {
-                    console.log('RRR', r.includes('error-invalid-phone'));
-                    if (r.includes('error-invalid-phone')) {
-                        setSnackMsg({ msg: `Invalid phone number`, severity: 'error' });
+                .then(async (res) => {
+                    const r = await res.json();
+                    // The backend already sets a 4xx status on failure (see
+                    // customers.*.js /add) - check that first instead of
+                    // pattern-matching the response body, so this doesn't
+                    // silently break if the backend's error wording changes.
+                    if (!res.ok) {
+                        const msg = typeof r === 'string' && r.includes('error-invalid-phone')
+                            ? 'Invalid phone number'
+                            : 'Unable to add to waitlist, please try again';
+                        setSnackMsg({ msg, severity: 'error' });
                         setDisplaySnack(true);
-                    } else if (r.includes('error-saving-user')) {
-                        setSnackMsg({ msg: `Unable to add to waitlist, please try again`, severity: 'error' });
-                        setDisplaySnack(true);
-                    } else {
-                        console.log('added Customer', r);
-                        setSnackMsg({ msg: `${state.name} has been added to the waitlist`, severity: 'success' });
-                        setDisplaySnack(true);
-                        setReloadList(true);
-                        handleClose();
+                        return;
                     }
+                    console.log('added Customer', r);
+                    setSnackMsg({ msg: `${state.name} has been added to the waitlist`, severity: 'success' });
+                    setDisplaySnack(true);
+                    setReloadList(true);
+                    handleClose();
                 }).catch((e) => {
                     console.log('caughtttt', e);
                 }).finally(() => setLoading(false));

@@ -46,7 +46,6 @@ function CalendarOverview(props: CalendarOverviewProps) {
     const { isAdmin } = useAppState();
     const {selectedDate, setReloadCalendar, reloadCalendar, bookingData, setBookingData, displayAddNewBooking, setDisplayAddNewBooking, isEditing } = useCalendarState();
     const [bookings, setBookings] = useState<Booking[]>([]);
-    // const [displayAddNewBooking, setDisplayAddNewBooking] = useState(false);
     const [loadingOverview, setLoadingOverview] = useState(false);
     const [day, setDay] = useState(getDayFromTimestamp(selectedDate));
 
@@ -162,13 +161,6 @@ function CalendarOverview(props: CalendarOverviewProps) {
     }
 
     const disableButtonStateWhenClosed = (): boolean => {
-        // Disable reservation for Kuma and 1988 on Sunday, not Open
-        console.log('------disabling stuff---', props.location, day);
-
-        // kuma closed for Sunday
-        if (props.location === 'kuma' && day === 'Sunday') {
-            return true;
-        }
         // 1988 closed for Sunday-Tuesday
         if (props.location === 'eight' && (day === 'Sunday' || day === 'Monday' || day === 'Tuesday')) {
             return true;

@@ -228,7 +228,6 @@ export const AppWrapper = styled.div<AppWrapperProps>`
                 .party {
                     display: flex;
                     align-items: center;
-                    //align-content: left;
                     gap: 12px;
                     width: 20%;
                 }

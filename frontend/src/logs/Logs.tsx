@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import styled from '@emotion/styled';
 import PhoneNumberColumn from "../waitlist/PhoneNumberColumn";
-import moment from "moment";
+import { format } from "date-fns";
 
 const getColumns = (): GridColDef[] => {
     const arr: GridColDef[] = [
@@ -48,7 +48,7 @@ const getColumns = (): GridColDef[] => {
             align: 'left',
             valueFormatter: (params) => {
                 if (params.value) {
-                    return moment(params?.value).format('MM-DD-YY h:mm a');
+                    return format(new Date(params.value), 'MM-dd-yy h:mm a');
                 }
             },
             minWidth: 150,
@@ -75,7 +75,7 @@ const getColumns = (): GridColDef[] => {
             align: 'left',
             valueFormatter: (params) => {
                 if (params.value) {
-                    return moment(params?.value).format('MM-DD-YY h:mm a');
+                    return format(new Date(params.value), 'MM-dd-yy h:mm a');
                 }
             },
             minWidth: 150,
@@ -110,7 +110,7 @@ const getColumns = (): GridColDef[] => {
             align: 'left',
             valueFormatter: (params) => {
                 if (params.value) {
-                    return moment(params?.value).format('MM-DD-YY h:mm a');
+                    return format(new Date(params.value), 'MM-dd-yy h:mm a');
                 }
             },
             minWidth: 150,
@@ -161,14 +161,6 @@ function Logs(props: LogsProps) {
                 <DataGrid
                     rows={props.list}
                     columns={getColumns()}
-                    // initialState={{
-                    //     pagination: {
-                    //         paginationModel: {
-                    //             pageSize: 20,
-                    //         },
-                    //     },
-                    // }}
-                    // pageSizeOptions={[20]}
                     disableRowSelectionOnClick
                     disableColumnMenu
                     hideFooterPagination

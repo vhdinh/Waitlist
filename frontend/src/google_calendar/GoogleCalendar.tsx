@@ -18,11 +18,11 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Button, IconButton, Skeleton } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSwipeable } from 'react-swipeable';
+import WeekdayHeaderRow from "../calendar/WeekdayHeaderRow";
 
 function GoogleCalendar({ location, currentMonthBookings }: { location: string, currentMonthBookings: GoogleCalendarEventType[] }) {
     const {
@@ -96,28 +96,14 @@ function GoogleCalendar({ location, currentMonthBookings }: { location: string, 
         );
     }
 
-    const renderDays = () => {
-        const dateFormat = "EEE"; // Short day name (Mon, Tue, etc.)
-        const days = [];
-        let startDate = startOfWeek(currentMonth);
-        for (let i = 0; i < 7; i++) {
-            days.push(
-                <div className="col col-center" key={i}>
-                    {format(addDays(startDate, i), dateFormat)}
-                </div>
-            );
-        }
-        return <div className="days row">{days}</div>;
-    }
+    const renderDays = () => (
+        <WeekdayHeaderRow currentMonth={currentMonth} dateFormat="EEE" />
+    );
 
     const renderCloseStatus = (day: Date) => {
         const dayInteger = day.getDay();
-        // kuma closed for Sunday
         // [0 = sunday, 1 = monday...]
-        // if (location === 'kuma' && dayInteger === 0) {
-        //     return <span className={'closed'}>Closed</span>;
-        // }
-        // // 1988 closed for Sunday-Tuesday
+        // 1988 closed for Sunday-Tuesday
         if (location === 'eight' && (dayInteger === 0 || dayInteger === 1 || dayInteger === 2)) {
             return <span className={'closed'}>Closed</span>;
         }
@@ -206,7 +192,7 @@ function GoogleCalendar({ location, currentMonthBookings }: { location: string, 
     }
 
     const renderEventDisplayText = (event: GoogleCalendarEventType) => {
-        const eventStartTime = event.start.dateTime ? moment(event.start.dateTime).format('h:mmA') : '';
+        const eventStartTime = event.start.dateTime ? format(new Date(event.start.dateTime), 'h:mma') : '';
         let eventSummary;
         if (location === 'brick') {
             eventSummary = event.summary?.substring(7);

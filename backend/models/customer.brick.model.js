@@ -47,6 +47,12 @@ const customerSchema = new Schema({
     timestamps: true,
 });
 
+// Speeds up the /reply webhook lookup (phoneNumber + deleted + createdAt)
+// and the /logs, /getCurrent date-range queries, which previously had no
+// index to use and fell back to a full collection scan.
+customerSchema.index({ phoneNumber: 1, deleted: 1, createdAt: 1 });
+customerSchema.index({ createdAt: 1 });
+
 const CustomerBrick = brickDb.model('Customer', customerSchema);
 
 module.exports = CustomerBrick;

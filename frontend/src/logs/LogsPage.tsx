@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -46,16 +46,7 @@ const LogsPageWrapper = styled.div`
 function LogsPage() {
     const [start, setStart] = React.useState<Dayjs | null>(null);
     const [end, setEnd] = React.useState<Dayjs | null>(null);
-    const [endMinDate, setEndMinDate] = React.useState<Dayjs | null>(null);
     const [logs, setLogs] = useState([]);
-
-    // useEffect(() => {
-    //     if (start?.millisecond() > end?.millisecond()) {
-    //         setEnd(null)
-    //     } else {
-    //         setEndMinDate(start);
-    //     }
-    // }, [start]);
 
     const handleLogsSearch = () => {
         // Simple GET request with a JSON body using fetch

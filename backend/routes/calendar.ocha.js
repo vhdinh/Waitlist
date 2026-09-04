@@ -1,13 +1,7 @@
 const { google } = require('googleapis');
 const router = require('express').Router();
 
-// uncomment when making commits to get credentials for production
-const secrets = require('/etc/secrets/ocha-reservation-calendar.json');
-const GOOGLE_PRIVATE_KEY = secrets ? secrets.private_key.replace(/\\n/g, '\n') : process.env.private_key.replace(/\\n/g, '\n') ? process.env.GOOGLE_CAL_OCHA_PRIVATE_KEY.replace(/\\n/g, '\n') : '';
-
-
-// uncomment for local dev
-// const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_OCHA_PRIVATE_KEY.split(String.raw`\n`).join('\n');
+const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_CAL_OCHA_PRIVATE_KEY.split(String.raw`\n`).join('\n');
 
 // GOOGLE CALENDAR INTEGRATION
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
@@ -28,6 +22,21 @@ const calendar = google.calendar({
     project: GOOGLE_PROJECT_NUMBER,
     auth: jwtClient
 });
+
+// Write-scope auth client for add/update/delete below, built once from the
+// same in-memory credentials as the read-only jwtClient above instead of a
+// keyFile on disk. This also removes the need to write the service account
+// key out to a JSON file on every server boot (see server.js) just so these
+// handlers could read it back in.
+const writeJwtClient = new google.auth.JWT(
+    GOOGLE_CLIENT_EMAIL,
+    null,
+    GOOGLE_PRIVATE_KEY,
+    [
+        'https://www.googleapis.com/auth/calendar',
+        'https://www.googleapis.com/auth/calendar.events',
+    ]
+);
 
 router.route('/:location/:startOfMonth/:endOfMonth').get((req, res) => {
     const start = req.params.startOfMonth;
@@ -109,28 +118,19 @@ router.route('/add-event').post((req, res) => {
         },
         eventType: 'default'
     };
-    const auth = new google.auth.GoogleAuth({
-        // comment out for local dev
-        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
-        // uncomment for local dev
-        // keyFile: '../backend/ocha-reservation-calendar.json',
-        scopes: 'https://www.googleapis.com/auth/calendar',
+    calendar.events.insert({
+        auth: writeJwtClient,
+        calendarId: GOOGLE_CALENDAR_ID,
+        resource: newEvent,
+    }, function (err, event) {
+        if (err) {
+            console.log('There was an error contacting the Calendar service: ' + err);
+            return res.status(400).json('Error: ' + err)
+        } else {
+            console.log('Event created');
+            res.jsonp("Event successfully created!");
+        }
     });
-    auth.getClient().then(a => {
-        calendar.events.insert({
-            auth: a,
-            calendarId: GOOGLE_CALENDAR_ID,
-            resource: newEvent,
-        }, function (err, event) {
-            if (err) {
-                console.log('There was an error contacting the Calendar service: ' + err);
-                return res.status(400).json('Error: ' + err)
-            } else {
-                console.log('Event created: %s', event.data);
-                res.jsonp("Event successfully created!");
-            }
-        });
-    })
 })
 
 router.route('/add-catering-event').post((req, res) => {
@@ -145,152 +145,87 @@ router.route('/add-catering-event').post((req, res) => {
         },
         eventType: 'default'
     };
-    const auth = new google.auth.GoogleAuth({
-        // comment out for local dev
-        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
-        // uncomment for local dev
-        // keyFile: '../backend/ocha-reservation-calendar.json',
-        scopes: 'https://www.googleapis.com/auth/calendar',
+    calendar.events.insert({
+        auth: writeJwtClient,
+        calendarId: GOOGLE_CALENDAR_CATERING_ID,
+        resource: newEvent,
+    }, function (err, event) {
+        if (err) {
+            console.log('There was an error contacting the Calendar service: ' + err);
+            return res.status(400).json('Error: ' + err)
+        } else {
+            console.log('Catering event created');
+            res.jsonp("Event successfully created!");
+        }
     });
-    auth.getClient().then(a => {
-        calendar.events.insert({
-            auth: a,
-            calendarId: GOOGLE_CALENDAR_CATERING_ID,
-            resource: newEvent,
-        }, function (err, event) {
-            if (err) {
-                console.log('There was an error contacting the Calendar service: ' + err);
-                return res.status(400).json('Error: ' + err)
-            } else {
-                console.log('Catering event created: %s', event.data);
-                res.jsonp("Event successfully created!");
-            }
-        });
-    })
 })
 
 router.route('/update-event').post((req, res) => {
-    console.log('route: /google-calendar/update-event', req.body);
     const updatedBody = { ...req.body };
-    const auth = new google.auth.GoogleAuth({
-        // comment out for local dev
-        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
-        // uncomment for local dev
-        // keyFile: '../backend/ocha-reservation-calendar.json',
-        scopes: [
-            'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/calendar.events',
-        ],
+    calendar.events.patch({
+        auth: writeJwtClient,
+        calendarId: GOOGLE_CALENDAR_ID,
+        eventId: req.body.id,
+        requestBody: updatedBody,
+    }, function (err, event) {
+        if (err) {
+            console.log('There was an error contacting the Calendar service: ' + err);
+            res.status(400).json('Error: ' + err)
+        } else {
+            console.log('Event updated');
+            res.jsonp("Event successfully updated!");
+        }
     });
-
-    auth.getClient().then(a => {
-        calendar.events.patch({
-            auth: a,
-            calendarId: GOOGLE_CALENDAR_ID,
-            eventId: req.body.id,
-            requestBody: updatedBody,
-        }, function (err, event) {
-            if (err) {
-                console.log('There was an error contacting the Calendar service: ' + err);
-                res.status(400).json('Error: ' + err)
-            } else {
-                console.log('Event updated: %s', JSON.stringify(event.data));
-                res.jsonp("Event successfully updated!");
-            }
-        });
-    })
 })
 
 router.route('/update-catering-event').post((req, res) => {
-    console.log('route: /google-calendar-ocha/update-catering-event', req.body);
     const updatedBody = { ...req.body };
-    const auth = new google.auth.GoogleAuth({
-        // comment out for local dev
-        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
-        // uncomment for local dev
-        // keyFile: '../backend/ocha-reservation-calendar.json',
-        scopes: [
-            'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/calendar.events',
-        ],
+    calendar.events.patch({
+        auth: writeJwtClient,
+        calendarId: GOOGLE_CALENDAR_CATERING_ID,
+        eventId: req.body.id,
+        requestBody: updatedBody,
+    }, function (err, event) {
+        if (err) {
+            console.log('There was an error contacting the Calendar service: ' + err);
+            res.status(400).json('Error: ' + err)
+        } else {
+            console.log('Catering event updated');
+            res.jsonp("Event successfully updated!");
+        }
     });
-
-    auth.getClient().then(a => {
-        calendar.events.patch({
-            auth: a,
-            calendarId: GOOGLE_CALENDAR_CATERING_ID,
-            eventId: req.body.id,
-            requestBody: updatedBody,
-        }, function (err, event) {
-            if (err) {
-                console.log('There was an error contacting the Calendar service: ' + err);
-                res.status(400).json('Error: ' + err)
-            } else {
-                console.log('Catering event updated: %s', JSON.stringify(event.data));
-                res.jsonp("Event successfully updated!");
-            }
-        });
-    })
 })
 
 router.route('/delete-catering-event/:id').delete((req, res) => {
-    console.log('route: /google-calendar-ocha/delete-catering-event params', req.params.id);
-    const auth = new google.auth.GoogleAuth({
-        // comment out for local dev
-        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
-        // uncomment for local dev
-        // keyFile: '../backend/ocha-reservation-calendar.json',
-        scopes: [
-            'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/calendar.events',
-        ],
-    });
-    auth.getClient().then(a => {
-        calendar.events.delete({
-            auth: a,
-            calendarId: GOOGLE_CALENDAR_CATERING_ID,
-            eventId: req.params.id,
-        }, function (err, event) {
-            console.log('----after--trying-to-delete----', event, err);
-            if (err) {
-                console.log('There was an error contacting the Calendar service: ' + err);
-                res.status(400).json('Error: ' + err)
-            } else {
-                console.log('Event deleted: %s', JSON.stringify(event.data));
-                res.jsonp("Event successfully deleted!");
-            }
-        })
-    });
+    calendar.events.delete({
+        auth: writeJwtClient,
+        calendarId: GOOGLE_CALENDAR_CATERING_ID,
+        eventId: req.params.id,
+    }, function (err, event) {
+        if (err) {
+            console.log('There was an error contacting the Calendar service: ' + err);
+            res.status(400).json('Error: ' + err)
+        } else {
+            console.log('Event deleted');
+            res.jsonp("Event successfully deleted!");
+        }
+    })
 })
 
 router.route('/delete-event/:id').delete((req, res) => {
-    console.log('route: /google-calendar-ocha/delete-event params', req.params.id);
-    const auth = new google.auth.GoogleAuth({
-        // comment out for local dev
-        keyFile: '/etc/secrets/ocha-reservation-calendar.json',
-        // uncomment for local dev
-        // keyFile: '../backend/ocha-reservation-calendar.json',
-        scopes: [
-            'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/calendar.events',
-        ],
-    });
-    auth.getClient().then(a => {
-        calendar.events.delete({
-            auth: a,
-            calendarId: GOOGLE_CALENDAR_ID,
-            eventId: req.params.id,
-        }, function (err, event) {
-            console.log('----after--trying-to-delete----', event, err);
-            if (err) {
-                console.log('There was an error contacting the Calendar service: ' + err);
-                res.status(400).json('Error: ' + err)
-            } else {
-                console.log('Event deleted: %s', JSON.stringify(event.data));
-                res.jsonp("Event successfully deleted!");
-            }
-        })
-    });
+    calendar.events.delete({
+        auth: writeJwtClient,
+        calendarId: GOOGLE_CALENDAR_ID,
+        eventId: req.params.id,
+    }, function (err, event) {
+        if (err) {
+            console.log('There was an error contacting the Calendar service: ' + err);
+            res.status(400).json('Error: ' + err)
+        } else {
+            console.log('Event deleted');
+            res.jsonp("Event successfully deleted!");
+        }
+    })
 })
 
 module.exports = router;

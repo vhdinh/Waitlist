@@ -162,7 +162,6 @@ export const CalendarWrapper = styled.div`
     .calendar .days {
         text-transform: uppercase;
         font-weight: 400;
-        //color: #ccc;
         font-size: 80%;
         padding: .75em 0;
         border-bottom: 1px solid #eee;

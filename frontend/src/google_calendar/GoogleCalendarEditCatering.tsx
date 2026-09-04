@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { Button, FormControl, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { GoogleCalendarEventType } from "./GoogleCalendar.type";
@@ -6,81 +5,9 @@ import { getTodayTimeMapping, TimeSlot } from "../calendar/util";
 import { useCalendarState } from "../context/Calendar.provider";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
-import moment from "moment/moment";
+import { formatISO } from "date-fns";
 import { gcColors } from "./GoogleCalendar.theme";
-
-const GCEditCateringWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-    border: 1px solid ${gcColors.border};
-    border-radius: 8px;
-    background-color: ${gcColors.panelBg};
-    box-shadow: none;
-    margin: 12px 0;
-
-    .input-label {
-        font-size: 14px;
-        font-weight: 500;
-        color: ${gcColors.textPrimary};
-        margin-bottom: 4px;
-    }
-
-    .row {
-        display: flex;
-        gap: 16px;
-        width: 100%;
-    }
-
-    .field-container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 8px;
-    }
-
-    .MuiOutlinedInput-root {
-        border-radius: 4px;
-        font-size: 14px;
-        color: ${gcColors.textPrimary};
-        background-color: ${gcColors.panelBgHover};
-
-        .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.border};
-        }
-
-        &:hover .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.accent};
-        }
-
-        &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.accent};
-            border-width: 2px;
-        }
-    }
-
-    .MuiSelect-icon {
-        color: ${gcColors.textSecondary};
-    }
-
-    .MuiButton-root {
-        text-transform: none;
-        font-weight: 500;
-        border-radius: 8px;
-        box-shadow: none;
-
-        &:hover {
-            box-shadow: none;
-        }
-    }
-`;
+import { GCFormWrapper } from "./GCFormWrapper";
 
 interface GoogleCalendarEditCateringProps {
     event: GoogleCalendarEventType;
@@ -123,11 +50,11 @@ function GoogleCalendarEditCatering(props: GoogleCalendarEditCateringProps) {
             summary: `Catering: ${title}`,
             description: note,
             start: {
-                dateTime: moment(startTime).format(),
+                dateTime: formatISO(new Date(startTime)),
                 timeZone: 'America/Los_Angeles',
             },
             end: {
-                dateTime: moment(endTime).format(),
+                dateTime: formatISO(new Date(endTime)),
                 timeZone: 'America/Los_Angeles',
             },
         };
@@ -148,7 +75,7 @@ function GoogleCalendarEditCatering(props: GoogleCalendarEditCateringProps) {
     }
 
     return (
-        <GCEditCateringWrapper>
+        <GCFormWrapper variant="edit">
             {isLoading && <LinearProgress sx={{ backgroundColor: gcColors.eventBg, '& .MuiLinearProgress-bar': { backgroundColor: gcColors.accent } }} />}
 
             <div className="row">
@@ -241,7 +168,7 @@ function GoogleCalendarEditCatering(props: GoogleCalendarEditCateringProps) {
                     Update
                 </Button>
             </div>
-        </GCEditCateringWrapper>
+        </GCFormWrapper>
     )
 };
 

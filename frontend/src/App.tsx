@@ -61,12 +61,6 @@ const pages = [
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: ['kuma'],
     },
-    // {
-    //     label: 'Reservations',
-    //     url: '/kuma/reservations',
-    //     role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
-    //     restaurant: ['kuma'],
-    // },
     // 1988
     {
         label: 'Reservations',
@@ -93,20 +87,6 @@ const pages = [
         role: [Role.USER, Role.EMPLOYEE, Role.ADMIN],
         restaurant: ['ocha'],
     },
-    // Tip Calculator
-    // {
-    //     label: 'Till',
-    //     url: '/till-counter',
-    //     role: [Role.ADMIN],
-    //     // restaurant: [],
-    //     restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
-    // },
-    // {
-    //     label: 'Tips',
-    //     url: '/tip-counter',
-    //     role: [Role.ADMIN],
-    //     restaurant: ['kuma', 'eight', 'brick', 'till-counter', 'tip-counter'],
-    // }
 ];
 
 function App() {

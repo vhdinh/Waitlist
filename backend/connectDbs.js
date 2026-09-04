@@ -1,5 +1,17 @@
 const mongoose = require("mongoose");
+
+// Each restaurant's customer/booking models call this with the same
+// connString (they share one physical DB). Without caching, every model
+// file's `require("../connectDbs")(...)` call opened its own brand-new
+// connection + pool via mongoose.createConnection(), doubling the number of
+// open connections per restaurant DB for no benefit. Memoizing by connString
+// means the second model just reuses the first connection.
+const connectionCache = {};
+
 module.exports = (name, connString) => {
+    if (connectionCache[connString]) {
+        return connectionCache[connString];
+    }
     const db = mongoose.createConnection(connString, { useNewUrlParser: true,  useUnifiedTopology: true });
     db.on('connected', () => {
         console.info(`${name} MongoDB connection succeeded!`);
@@ -23,6 +35,7 @@ module.exports = (name, connString) => {
             process.exit(0);
         });
     });
+    connectionCache[connString] = db;
     // EXPORT DB OBJECT
     return db;
 }

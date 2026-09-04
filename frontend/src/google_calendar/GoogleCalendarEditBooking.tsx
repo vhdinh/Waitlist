@@ -1,94 +1,14 @@
-import styled from "@emotion/styled";
 import { Button, FormControl, LinearProgress, MenuItem, Select, TextField, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { GoogleCalendarEventType } from "./GoogleCalendar.type";
-import { getTodayTimeMapping, TimeSlot } from "../calendar/util";
+import { getTodayTimeMapping, getValidEndTimeSlots, TimeSlot } from "../calendar/util";
 import { useCalendarState } from "../context/Calendar.provider";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
-import moment from "moment/moment";
+import { formatISO } from "date-fns";
 import { useAppState } from "../context/App.provider";
 import { gcColors } from "./GoogleCalendar.theme";
-
-const GCEditBookingWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-    border: 1px solid ${gcColors.border};
-    border-radius: 8px;
-    background-color: ${gcColors.panelBg};
-    box-shadow: none;
-    margin: 12px 0;
-
-    .input-label {
-        font-size: 14px;
-        font-weight: 500;
-        color: ${gcColors.textPrimary};
-        margin-bottom: 4px;
-    }
-
-    .helper-text {
-        color: ${gcColors.textMuted} !important;
-        font-size: 12px !important;
-        margin-left: 0 !important;
-        margin-top: 4px !important;
-    }
-
-    .row {
-        display: flex;
-        gap: 16px;
-        width: 100%;
-    }
-
-    .field-container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 8px;
-    }
-
-    .MuiOutlinedInput-root {
-        border-radius: 4px;
-        font-size: 14px;
-        color: ${gcColors.textPrimary};
-        background-color: ${gcColors.panelBgHover};
-
-        .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.border};
-        }
-
-        &:hover .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.accent};
-        }
-
-        &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.accent};
-            border-width: 2px;
-        }
-    }
-
-    .MuiSelect-icon {
-        color: ${gcColors.textSecondary};
-    }
-
-    .MuiButton-root {
-        text-transform: none;
-        font-weight: 500;
-        border-radius: 8px;
-        box-shadow: none;
-
-        &:hover {
-            box-shadow: none;
-        }
-    }
-`;
+import { GCFormWrapper } from "./GCFormWrapper";
 
 interface GoogleCalendarEditBookingProps {
     event: GoogleCalendarEventType;
@@ -160,11 +80,11 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
             summary,
             description,
             start: {
-                dateTime: moment(tempEditBookingData.startTime).format(),
+                dateTime: formatISO(new Date(tempEditBookingData.startTime || 0)),
                 timeZone: 'America/Los_Angeles',
             },
             end: {
-                dateTime: moment(tempEditBookingData.endTime).format(),
+                dateTime: formatISO(new Date(tempEditBookingData.endTime || 0)),
                 timeZone: 'America/Los_Angeles',
             },
         }))
@@ -176,7 +96,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                 ...oldState,
                 startTime: e.target.value,
                 start: {
-                    dateTime: moment(e.target.value).format(),
+                    dateTime: formatISO(new Date(e.target.value)),
                     timeZone: 'America/Los_Angeles',
                 },
             }))
@@ -185,7 +105,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                 ...oldState,
                 endTime: e.target.value,
                 end: {
-                    dateTime: moment(e.target.value).format(),
+                    dateTime: formatISO(new Date(e.target.value)),
                     timeZone: 'America/Los_Angeles',
                 },
             }))
@@ -238,7 +158,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
     }
 
     return (
-        <GCEditBookingWrapper>
+        <GCFormWrapper variant="edit">
             {isLoading && <LinearProgress sx={{ backgroundColor: gcColors.eventBg, '& .MuiLinearProgress-bar': { backgroundColor: gcColors.accent } }} />}
 
             <div className="row">
@@ -300,15 +220,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                             onChange={handleSelectChange}
                             MenuProps={selectMenuProps}
                         >
-                            {memoizedGetTodayTimeMapping
-                                .filter((t) => {
-                                    const twoHrsLater = (tempEditBookingData.startTime || 0) + 3600000;
-                                    if (t.value >= twoHrsLater) {
-                                        return t.value >= twoHrsLater;
-                                    } else {
-                                        return t.label === '11:00 PM'
-                                    }
-                                })
+                            {getValidEndTimeSlots(tempEditBookingData.startTime, memoizedGetTodayTimeMapping)
                                 .map((t) => (
                                     <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
                                 ))}
@@ -375,7 +287,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
                     Update
                 </Button>
             </div>
-        </GCEditBookingWrapper>
+        </GCFormWrapper>
     )
 };
 

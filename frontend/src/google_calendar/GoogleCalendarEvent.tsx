@@ -5,7 +5,7 @@ import {
     IconButton,
     LinearProgress,
 } from "@mui/material";
-import moment from "moment";
+import { format } from "date-fns";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ScheduleIcon from '@mui/icons-material/Schedule';
@@ -190,7 +190,7 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                                 </div>
                                 <div className="time">
                                     <ScheduleIcon />
-                                    {currentBooking.start.dateTime ? moment(currentBooking.start.dateTime).format('h:mm A') : 'All Day'}
+                                    {currentBooking.start.dateTime ? format(new Date(currentBooking.start.dateTime), 'h:mm a') : 'All Day'}
                                 </div>
                                 {
                                     currentBooking.description && (

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     format,
     parse,
@@ -23,6 +23,7 @@ import { Button } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import useIsMobile from "../hook/useIsMobile";
 import {getDayFromTimestamp} from "../utils/date";
+import WeekdayHeaderRow from "./WeekdayHeaderRow";
 
 interface CalendarProps {
     location: string;
@@ -39,18 +40,26 @@ function Calendar(props: CalendarProps) {
         setReloadCalendar
     } = useCalendarState();
     const [ currentMonthBookings, setCurrentMonthBookings ] = useState<Booking[]>([]);
+    const latestBookingRequestId = useRef(0);
 
     const navigate = useNavigate();
     const isMobile = useIsMobile();
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            console.log('This will run every 24 hours!');
+        // Reload once at the next local midnight rather than every 86400000ms
+        // from whenever this component happened to mount - the old fixed
+        // interval meant this kiosk screen would reload at a different,
+        // arbitrary time each day. The reload itself restarts the app, which
+        // re-registers this effect and schedules the following midnight.
+        const now = new Date();
+        const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+        const msUntilMidnight = nextMidnight.getTime() - now.getTime();
+        const timeout = setTimeout(() => {
             setReloadCalendar(true);
             setSelectedDate(StartOfToday);
             window.location.reload();
-        }, 86400000);
-        return () => clearInterval(interval);
+        }, msUntilMidnight);
+        return () => clearTimeout(timeout);
     }, []);
 
     useEffect(() => {
@@ -65,17 +74,16 @@ function Calendar(props: CalendarProps) {
     }, [reloadCalendar])
 
     const getCurrentMonthBooking = () => {
-        // console.log('GET_CURRENT_MONTH_BOOKING', {
-        //     startOfMonth: startOfMonth(currentMonth),
-        //     startOfMonthTime: startOfMonth(currentMonth).getTime(),
-        //     endOfMonth: endOfMonth(currentMonth),
-        //     endOfMonthTime: endOfMonth(currentMonth).getTime(),
-        // });
-        // Simple GET request with a JSON body using fetch
+        // Tag each request so a slower, older response (e.g. from rapidly
+        // clicking prev/next month) can't land after a newer one and
+        // overwrite it with stale data.
+        const requestId = ++latestBookingRequestId.current;
         fetch(`${process.env.REACT_APP_BRICK_API}/${props.location}/booking/getMonth/${startOfMonth(currentMonth).getTime()}/${endOfMonth(currentMonth).getTime()}`)
             .then(res => res.json())
             .then((r) => {
-                setCurrentMonthBookings(r);
+                if (requestId === latestBookingRequestId.current) {
+                    setCurrentMonthBookings(r);
+                }
             });
     }
 
@@ -112,19 +120,9 @@ function Calendar(props: CalendarProps) {
         );
     }
 
-    const renderDays = () => {
-        const dateFormat = isMobile ? "EE" : "EEEE";
-        const days = [];
-        let startDate = startOfWeek(currentMonth);
-        for (let i = 0; i < 7; i++) {
-            days.push(
-                <div className="col col-center" key={i}>
-                    {format(addDays(startDate, i), dateFormat)}
-                </div>
-            );
-        }
-        return <div className="days row">{days}</div>;
-    }
+    const renderDays = () => (
+        <WeekdayHeaderRow currentMonth={currentMonth} dateFormat={isMobile ? "EE" : "EEEE"} />
+    );
 
     const updateBooking = (id: string, startTime: number, endTime: number) => {
         // Simple POST request with a JSON body using fetch
@@ -184,12 +182,9 @@ function Calendar(props: CalendarProps) {
                             e.preventDefault();
                         }}
                         onDrop={(e) => {
-                            const data = e.dataTransfer.getData("text");
+                            const { id, startTime, endTime } = JSON.parse(e.dataTransfer.getData("text"));
                             // @ts-ignore
                             const d = new Date(e.target.getAttribute('data-key'));
-                            const id =data.split('-')[0];
-                            const startTime = data.split('-')[1];
-                            const endTime = data.split('-')[2];
                             const startTimeAsDate = new Date(`${format(d, 'MM/dd/yyyy')} ${startTime}`).getTime();
                             const endTimeAsDate = new Date(`${format(d, 'MM/dd/yyyy')} ${endTime}`).getTime();
                             setTimeout(() => {
@@ -231,12 +226,8 @@ function Calendar(props: CalendarProps) {
 
     const renderCloseStatus = (day: Date) => {
         const dayInteger = day.getDay();
-        // kuma closed for Sunday
         // [0 = sunday, 1 = monday...]
-        if (props.location === 'kuma' && dayInteger === 0) {
-            return <span className={'closed'}>Closed</span>;
-        }
-        // // 1988 closed for Sunday-Tuesday
+        // 1988 closed for Sunday-Tuesday
         if (props.location === 'eight' && (dayInteger === 0 || dayInteger === 1 || dayInteger === 2)) {
             return <span className={'closed'}>Closed</span>;
         }

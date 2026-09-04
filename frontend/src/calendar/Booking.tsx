@@ -46,15 +46,6 @@ const BookingComponentWrapper = styled.div`
       justify-content: center;
     }
   }
-  //.bc-actions {
-  //  padding: 0 18px 18px 18px !important;
-  //  .bc-item {
-  //    display: flex;
-  //    .header {
-  //      width: 75px;
-  //    }
-  //  }
-  //}
   button {
     color: black;
   }
@@ -96,7 +87,13 @@ function BookingComponent(props: Booking) {
         elem.textContent = `${props.name} (${props.partySize})`;
         document.body.appendChild(elem);
         ev.dataTransfer.setDragImage(elem, 0, 0);
-        ev.dataTransfer.setData("text", `${ev.target.id}-${props.formatStart}-${props.formatEnd}`);
+        // JSON instead of a delimited string - splitting on "-" would break
+        // if an id or formatted time ever contained a literal "-".
+        ev.dataTransfer.setData("text", JSON.stringify({
+            id: ev.target.id,
+            startTime: props.formatStart,
+            endTime: props.formatEnd,
+        }));
     }
 
     return (

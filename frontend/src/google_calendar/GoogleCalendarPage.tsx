@@ -1,12 +1,11 @@
 import '@fontsource/playfair-display';
 import GoogleCalendar from "./GoogleCalendar";
 import GoogleCalendarOverview from "./GoogleCalendarOverview";
-import { endOfMonth, startOfMonth } from "date-fns";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 import { GoogleCalendarEventType } from "./GoogleCalendar.type";
 import { useCalendarState } from "../context/Calendar.provider";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppState } from "../context/App.provider";
-import moment from "moment";
 import styled from "@emotion/styled";
 import { gcColors } from "./GoogleCalendar.theme";
 
@@ -71,6 +70,7 @@ function GoogleCalendarPage({ location }: { location: string }) {
     const { setSnackMsg, setDisplaySnack } = useAppState();
     const [currentMonthBookings, setCurrentMonthBookings] = useState<GoogleCalendarEventType[]>([]);
     const [currentDayBookings, setCurrentDayBookings] = useState<GoogleCalendarEventType[]>([]);
+    const latestBookingRequestId = useRef(0);
     useEffect(() => {
         getGoogleCurrentMonthBooking();
     }, [currentMonth])
@@ -86,6 +86,10 @@ function GoogleCalendarPage({ location }: { location: string }) {
 
     const getGoogleCurrentMonthBooking = () => {
         setIsLoading(true);
+        // Tag each request so a slower, older response (e.g. from rapidly
+        // clicking prev/next month) can't land after a newer one and
+        // overwrite it with stale data.
+        const requestId = ++latestBookingRequestId.current;
         let path = '';
         if (location === 'brick') {
             path = `${process.env.REACT_APP_BRICK_API}/google-calendar-brick/brick/${startOfMonth(currentMonth).toISOString()}/${endOfMonth(currentMonth).toISOString()}`;
@@ -97,6 +101,9 @@ function GoogleCalendarPage({ location }: { location: string }) {
         fetch(path)
             .then(res => res.json())
             .then((r) => {
+                if (requestId !== latestBookingRequestId.current) {
+                    return;
+                }
                 if (r.message) {
                     setCurrentMonthBookings([]);
                 } else {
@@ -106,6 +113,9 @@ function GoogleCalendarPage({ location }: { location: string }) {
                 }
                 setIsLoading(false);
             }).catch((e) => {
+                if (requestId !== latestBookingRequestId.current) {
+                    return;
+                }
                 setSnackMsg({ msg: `Failed to get events`, severity: 'error' });
                 setDisplaySnack(true);
                 setIsLoading(false);
@@ -125,7 +135,7 @@ function GoogleCalendarPage({ location }: { location: string }) {
                 setCurrentDayBookings(todaysBooking);
             } else {
                 // only clear booking in current day if on same month
-                if (moment(currentMonth).format('MMM-YY') === moment(selectedDate).format('MMM-YY')) {
+                if (format(currentMonth, 'MMM-yy') === format(new Date(selectedDate), 'MMM-yy')) {
                     setCurrentDayBookings([]);
                 }
             }

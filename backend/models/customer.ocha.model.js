@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // connect to ocha db
-const ochaDb = require("../connectDbs")('Kuma', process.env.OCHA_MONGODB_URL);
+const ochaDb = require("../connectDbs")('Ocha', process.env.OCHA_MONGODB_URL);
 
 const Schema = mongoose.Schema;
 
@@ -46,6 +46,12 @@ const customerSchema = new Schema({
 }, {
     timestamps: true,
 });
+
+// Speeds up the /reply webhook lookup (phoneNumber + deleted + createdAt)
+// and the /logs, /getCurrent date-range queries, which previously had no
+// index to use and fell back to a full collection scan.
+customerSchema.index({ phoneNumber: 1, deleted: 1, createdAt: 1 });
+customerSchema.index({ createdAt: 1 });
 
 const CustomerOcha = ochaDb.model('Customer', customerSchema);
 

@@ -8,95 +8,15 @@ import {
     LinearProgress
 } from "@mui/material";
 import React, { useEffect, useMemo } from "react";
-import styled from "@emotion/styled";
-import { getTodayTimeMapping, TimeSlot } from "../calendar/util";
+import { getDefaultEndTimeSlot, getTodayTimeMapping, getValidEndTimeSlots, TimeSlot } from "../calendar/util";
 import { useCalendarState } from "../context/Calendar.provider";
-import moment from "moment";
+import { formatISO } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
-import { InitialGCNewBooking } from "../context/GoogleCalendar.provider";
+import { InitialGCNewBooking } from "../context/Calendar.provider";
 import { useAppState } from "../context/App.provider";
 import { gcColors } from "./GoogleCalendar.theme";
-
-const GCNewBookingWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-    border: 1px solid ${gcColors.border};
-    border-radius: 8px;
-    background-color: ${gcColors.panelBg};
-    box-shadow: none;
-    margin-bottom: 16px;
-
-    .input-label {
-        font-size: 14px;
-        font-weight: 500;
-        color: ${gcColors.textPrimary};
-        margin-bottom: 4px;
-    }
-
-    .helper-text {
-        color: ${gcColors.textMuted} !important;
-        font-size: 12px !important;
-        margin-left: 0 !important;
-        margin-top: 4px !important;
-    }
-
-    .row {
-        display: flex;
-        gap: 16px;
-        width: 100%;
-    }
-
-    .field-container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 8px;
-    }
-
-    .MuiOutlinedInput-root {
-        border-radius: 4px;
-        font-size: 14px;
-        color: ${gcColors.textPrimary};
-        background-color: ${gcColors.panelBgHover};
-
-        .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.border};
-        }
-
-        &:hover .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.accent};
-        }
-
-        &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: ${gcColors.accent};
-            border-width: 2px;
-        }
-    }
-
-    .MuiSelect-icon {
-        color: ${gcColors.textSecondary};
-    }
-
-    .MuiButton-root {
-        text-transform: none;
-        font-weight: 500;
-        border-radius: 8px;
-        box-shadow: none;
-
-        &:hover {
-            box-shadow: none;
-        }
-    }
-`;
+import { GCFormWrapper } from "./GCFormWrapper";
 
 function GoogleCalendarNewBooking({ location }: { location: string }) {
     const {
@@ -161,11 +81,11 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
             summary,
             description,
             start: {
-                dateTime: moment(gcBookingData.startTime).format(),
+                dateTime: formatISO(new Date(gcBookingData.startTime || 0)),
                 timeZone: 'America/Los_Angeles',
             },
             end: {
-                dateTime: moment(gcBookingData.endTime).format(),
+                dateTime: formatISO(new Date(gcBookingData.endTime || 0)),
                 timeZone: 'America/Los_Angeles',
             },
         }))
@@ -180,21 +100,11 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
 
     useEffect(() => {
         if (gcBookingData.startTime) {
-            const endT = memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
-                .find((t) => t.value === ((gcBookingData.startTime || 0) + 7200000));
-            if (endT) {
-                setGCBookingData((oldState) => ({
-                    ...oldState,
-                    endTime: endT.value,
-                }))
-            } else {
-                const newEndT = memoizedGetTodayTimeMapping // filter out the values after 2 hrs of start time (7,200,000 ms)
-                    .find((t) => t.value === memoizedGetTodayTimeMapping[memoizedGetTodayTimeMapping.length - 1].value);
-                setGCBookingData((oldState) => ({
-                    ...oldState, //@ts-ignore
-                    endTime: newEndT.value,
-                }))
-            }
+            const endT = getDefaultEndTimeSlot(gcBookingData.startTime, memoizedGetTodayTimeMapping);
+            setGCBookingData((oldState) => ({
+                ...oldState,
+                endTime: endT.value,
+            }))
         };
     }, [gcBookingData.startTime])
 
@@ -242,7 +152,7 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
     }
 
     return (
-        <GCNewBookingWrapper>
+        <GCFormWrapper variant="new">
             {isLoading && <LinearProgress sx={{ backgroundColor: gcColors.eventBg, '& .MuiLinearProgress-bar': { backgroundColor: gcColors.accent } }} />}
 
             <div className="row">
@@ -304,15 +214,7 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
                             onChange={handleSelectChange}
                             MenuProps={selectMenuProps}
                         >
-                            {memoizedGetTodayTimeMapping
-                                .filter((t) => {
-                                    const twoHrsLater = (gcBookingData.startTime || 0) + 7200000;
-                                    if (t.value >= twoHrsLater) {
-                                        return t.value >= twoHrsLater;
-                                    } else {
-                                        return t.label === '11:00 PM'
-                                    }
-                                })
+                            {getValidEndTimeSlots(gcBookingData.startTime, memoizedGetTodayTimeMapping)
                                 .map((t) => (
                                     <MenuItem value={t.value} key={t.value}>{t.label}</MenuItem>
                                 ))}
@@ -377,7 +279,7 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
                     Save
                 </Button>
             </div>
-        </GCNewBookingWrapper>
+        </GCFormWrapper>
     )
 }
 
