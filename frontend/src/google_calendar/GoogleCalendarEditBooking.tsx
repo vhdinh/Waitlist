@@ -130,7 +130,7 @@ function GoogleCalendarEditBooking(props: GoogleCalendarEditBookingProps) {
         if (location === 'brick') {
             return 'Brick'
         } else if (location === 'ocha') {
-            return 'Ocha'
+            return 'Reservation'
         } else if (location === 'kuma') {
             return 'Kuma'
         } else {

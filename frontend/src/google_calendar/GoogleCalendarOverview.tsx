@@ -105,7 +105,7 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
     const { setSnackMsg, setDisplaySnack } = useAppState();
 
     const [day, setDay] = useState(getDayFromTimestamp(selectedDate));
-    const [bookingType, setBookingType] = useState<'reservation' | 'catering'>('reservation');
+    const [bookingType, setBookingType] = useState<'reservation' | 'Catering' | 'Banquet'>('reservation');
     const [createMenuAnchorEl, setCreateMenuAnchorEl] = useState<null | HTMLElement>(null);
 
     useEffect(() => {
@@ -135,7 +135,7 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
         return false
     }
 
-    const startNewBooking = (type: 'reservation' | 'catering') => {
+    const startNewBooking = (type: 'reservation' | 'Catering' | 'Banquet') => {
         setBookingType(type);
         setGCBookingData(InitialGCNewBooking);
         setDisplayAddNewBooking(true);
@@ -175,7 +175,9 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
                         }}
                     >
                         <MenuItem onClick={() => startNewBooking('reservation')}>Reservation</MenuItem>
-                        <MenuItem onClick={() => startNewBooking('catering')}>Catering</MenuItem>
+                        <MenuItem onClick={() => startNewBooking('Catering')}>Catering</MenuItem>
+                        <MenuItem onClick={() => startNewBooking('Banquet')}>Banquet</MenuItem>
+
                     </Menu>
                 </>
             )
@@ -185,7 +187,7 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
 
     const getLabelText = () => {
         if (isEditing) return 'Editing reservation';
-        if (displayAddNewBooking) return bookingType === 'catering' ? 'Adding new catering' : 'Adding new reservation';
+        if (displayAddNewBooking) return bookingType === 'Catering' ? 'Adding new catering' : bookingType === 'Banquet' ? 'Adding new banquet' : 'Adding new reservation';
         return `${currentDayBookings.length} Reservation${currentDayBookings.length !== 1 ? 's' : ''}`;
     }
 
@@ -209,8 +211,8 @@ function GoogleCalendarOverview({ location, currentDayBookings }: { location: st
             <div className={'event-container'}>
                 {
                     displayAddNewBooking ? (
-                        bookingType === 'catering'
-                            ? <GoogleCalendarNewCatering />
+                        bookingType === 'Catering' || bookingType === 'Banquet'
+                            ? <GoogleCalendarNewCatering bookingType={bookingType} />
                             : <GoogleCalendarNewBooking location={location} />
                     ) :
                         currentDayBookings.map((b, index) => (

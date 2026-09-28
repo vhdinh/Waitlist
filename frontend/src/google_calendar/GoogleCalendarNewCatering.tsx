@@ -96,7 +96,7 @@ const GCNewCateringWrapper = styled.div`
     }
 `;
 
-function GoogleCalendarNewCatering() {
+function GoogleCalendarNewCatering({ bookingType }: { bookingType: string }) {
     const {
         selectedDate,
         isLoading,
@@ -153,7 +153,7 @@ function GoogleCalendarNewCatering() {
     const saveGoogleCalendarCateringEvent = () => {
         setIsLoading(true);
         const newEvent = {
-            summary: `Catering: ${title}`,
+            summary: `${bookingType}: ${title}`,
             description: note,
             start: {
                 dateTime: moment(startTime).format(),

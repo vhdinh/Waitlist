@@ -213,11 +213,15 @@ function GoogleCalendar({ location, currentMonthBookings }: { location: string, 
         } else if (location === '1988' || location === 'kuma') {
             eventSummary = event.summary?.substring(6);
         } else {
-            if (event.sourceCalendar === 'banquet') {
-                eventSummary = event.summary?.substring(9);
-            } else {
-                eventSummary = event.summary?.substring(6);
-            }
+            eventSummary = event.summary;
+
+            // if (event.sourceCalendar === 'banquet') {
+            //     // eventSummary = event.summary?.substring(9);
+            //     eventSummary = event.summary;
+            // } else {
+            //     // eventSummary = event.summary?.substring(6);
+            //     eventSummary = event.summary;
+            // }
         }
         return `${eventStartTime} ${eventSummary}`
     }
