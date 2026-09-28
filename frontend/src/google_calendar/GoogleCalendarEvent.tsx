@@ -1,14 +1,19 @@
-import { GoogleCalendarEventType } from "./GoogleCalendar.type";
+import { GoogleCalendarEventType, GoogleCalendarAttachment } from "./GoogleCalendar.type";
 import {
     Button,
     Card,
     IconButton,
     LinearProgress,
+    Tooltip,
+    Menu,
+    MenuItem,
 } from "@mui/material";
 import moment from "moment";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import React, { useMemo, useState } from "react";
 import { getTodayTimeMapping, TimeSlot } from "../calendar/util";
 import { useCalendarState } from "../context/Calendar.provider";
@@ -66,6 +71,29 @@ const GoogleCalendarEventWrapper = styled.div`
                         font-size: 16px;
                         color: ${gcColors.accent};
                     }
+
+                    .attachment-btn {
+                        padding: 2px 4px;
+                        border-radius: 4px;
+                        color: ${gcColors.accent};
+                        background-color: transparent;
+                        transition: all 0.2s ease;
+                        margin-left: 2px;
+
+                        svg {
+                            font-size: 16px;
+                            color: ${gcColors.accent};
+                        }
+
+                        &:hover {
+                            background-color: ${gcColors.eventBgHover};
+                            color: ${gcColors.accentHover};
+
+                            svg {
+                                color: ${gcColors.accentHover};
+                            }
+                        }
+                    }
                 }
 
                 .description {
@@ -115,6 +143,26 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
     const [isItemEditing, setIsItemEditing] = useState(false);
     const [isItemDeleting, setIsItemDeleting] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
+    const [attachmentMenuAnchorEl, setAttachmentMenuAnchorEl] = useState<null | HTMLElement>(null);
+
+    const attachments = props.attachments || currentBooking.attachments || [];
+    const hasAttachments = attachments.length > 0;
+
+    const handleAttachmentClick = (e: React.MouseEvent<HTMLElement>) => {
+        e.stopPropagation();
+        if (attachments.length === 1) {
+            if (attachments[0].fileUrl) {
+                window.open(attachments[0].fileUrl, '_blank', 'noopener,noreferrer');
+            }
+        } else if (attachments.length > 1) {
+            setAttachmentMenuAnchorEl(e.currentTarget);
+        }
+    };
+
+    const attachmentTooltip = attachments.length === 1
+        ? (attachments[0].title ? `Attachment: ${attachments[0].title}` : 'View attachment')
+        : `View attachments (${attachments.length})`;
+
     const isCatering = currentBooking.sourceCalendar === 'banquet';
     const isReadOnlyBanquetEvent = props.location === 'ocha' && (currentBooking.summary?.startsWith('Banquet') || currentBooking.summary?.startsWith('Catering')) || currentBooking.sourceCalendar === 'private-event';
 
@@ -190,7 +238,67 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                                 </div>
                                 <div className="time">
                                     <ScheduleIcon />
-                                    {currentBooking.start.dateTime ? moment(currentBooking.start.dateTime).format('h:mm A') : 'All Day'}
+                                    <span>{currentBooking.start.dateTime ? moment(currentBooking.start.dateTime).format('h:mm A') : 'All Day'}</span>
+                                    {
+                                        hasAttachments && (
+                                            <>
+                                                <Tooltip title={attachmentTooltip} arrow>
+                                                    <IconButton
+                                                        className="attachment-btn"
+                                                        size="small"
+                                                        aria-label="View attachment"
+                                                        onClick={handleAttachmentClick}
+                                                    >
+                                                        <AttachFileIcon fontSize="inherit" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                {
+                                                    attachments.length > 1 && (
+                                                        <Menu
+                                                            anchorEl={attachmentMenuAnchorEl}
+                                                            open={Boolean(attachmentMenuAnchorEl)}
+                                                            onClose={(e: any) => {
+                                                                if (e && e.stopPropagation) e.stopPropagation();
+                                                                setAttachmentMenuAnchorEl(null);
+                                                            }}
+                                                            PaperProps={{
+                                                                sx: {
+                                                                    backgroundColor: gcColors.panelBgHover,
+                                                                    color: gcColors.textPrimary,
+                                                                    border: `1px solid ${gcColors.border}`,
+                                                                    boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                                                                    '& .MuiMenuItem-root': {
+                                                                        fontSize: '13px',
+                                                                        gap: '8px',
+                                                                        '&:hover': { backgroundColor: gcColors.eventBg },
+                                                                    },
+                                                                },
+                                                            }}
+                                                        >
+                                                            {attachments.map((attachment, idx) => (
+                                                                <MenuItem
+                                                                    key={idx}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setAttachmentMenuAnchorEl(null);
+                                                                        if (attachment.fileUrl) {
+                                                                            window.open(attachment.fileUrl, '_blank', 'noopener,noreferrer');
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <AttachFileIcon sx={{ fontSize: '16px', color: gcColors.accent }} />
+                                                                    <span style={{ maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                        {attachment.title || `Attachment ${idx + 1}`}
+                                                                    </span>
+                                                                    <OpenInNewIcon sx={{ fontSize: '14px', color: gcColors.textSecondary, marginLeft: 'auto' }} />
+                                                                </MenuItem>
+                                                            ))}
+                                                        </Menu>
+                                                    )
+                                                }
+                                            </>
+                                        )
+                                    }
                                 </div>
                                 {
                                     currentBooking.description && (

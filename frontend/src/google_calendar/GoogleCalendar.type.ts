@@ -1,5 +1,13 @@
 
 
+export interface GoogleCalendarAttachment {
+    fileUrl: string;
+    title?: string;
+    mimeType?: string;
+    iconLink?: string;
+    fileId?: string;
+}
+
 export interface GoogleCalendarEventType {
     summary?: string;
     description?: string;
@@ -14,11 +22,11 @@ export interface GoogleCalendarEventType {
         dateTime: string;
         date?: string;
         timeZone: string;
-    },
+    };
     end: {
         dateTime: string;
         timeZone: string;
-    },
+    };
     kind?: string;
     etag?: string;
     id?: string;
@@ -28,18 +36,19 @@ export interface GoogleCalendarEventType {
     updated?: string;
     creator?: {
         email?: string;
-    },
+    };
     organizer?: {
         email?: string;
         displayName?: string;
         self?: boolean;
-    },
+    };
     iCalUID?: string;
-    sequence?: number,
+    sequence?: number;
     reminders?: {
-    useDefault?: boolean;
-    },
+        useDefault?: boolean;
+    };
     eventType?: string;
     location?: string;
     sourceCalendar?: string;
+    attachments?: GoogleCalendarAttachment[];
 }
