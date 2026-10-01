@@ -302,8 +302,9 @@ function GoogleCalendarEvent(props: GoogleCalendarEventType) {
                                 </div>
                                 {
                                     currentBooking.description && (
-                                        <div className="description">
-                                            {currentBooking.description}
+                                        <div className="description" dangerouslySetInnerHTML={{ __html: currentBooking.description }}>
+                                            {/* <div dangerouslySetInnerHTML={{ __html: apiHtmlString }} />*/}
+                                            {/* {currentBooking.description} */}
                                         </div>
                                     )
                                 }
