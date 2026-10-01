@@ -211,8 +211,8 @@ function GoogleCalendarNewBooking({ location }: { location: string }) {
             setSnackMsg({ msg: `Party larger than 10 people needs to email ${restaurantText} for reservation`, severity: 'error' });
             setDisplaySnack(true);
             return;
-        } else if (Number(gcBookingData.partySize) > 19 && location === 'ocha') {
-            setSnackMsg({ msg: `Party larger than 20 people needs to email ${restaurantText} for reservation`, severity: 'error' });
+        } else if (Number(gcBookingData.partySize) > 24 && location === 'ocha') {
+            setSnackMsg({ msg: `Party larger than 25 people needs to email ${restaurantText} for reservation`, severity: 'error' });
             setDisplaySnack(true);
             return;
         }
